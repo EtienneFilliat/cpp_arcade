@@ -28,7 +28,7 @@ SRCS	=	src/Core.cpp        	\
 
 SRCS_T	=	tests/Exception.cpp	\
 
-OBJS	=	$(SRC:.cpp=.o)
+OBJS	=	$(SRCS:.cpp=.o)
 
 OBJS_T	=	$(SRCS_T:.cpp=.o)
 

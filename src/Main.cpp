@@ -12,10 +12,9 @@
 
 int main(void)
 {
-	DynamicLib<IGame> gameLib("./monKAKA.so");
+	arc::DynamicLib<IGame> gameLib("./myLib.so");
 	gameLib.open();
 	gameLib.instantiate();
-	LoadedLib<IGame> myGame(gameLib.getObject());
-	myGame.run()->displaySomeShit();
+	arc::LoadedLib<IGame> myGame(gameLib.getObject());
 	return 0;
 }

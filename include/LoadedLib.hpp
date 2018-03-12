@@ -11,16 +11,19 @@
 	#include <string>
 	#include <memory>
 
+namespace arc {
+
 	template <class T>
 	class LoadedLib {
-		public:
-			LoadedLib(T *libObject)
-				: _object(libObject) {}
-			~LoadedLib() {}
-			std::unique_ptr<T> &run() { return _object; }
+	public:
+		LoadedLib(T *libObject)
+			: _object(libObject) {}
+		~LoadedLib() {}
+		std::unique_ptr<T> &run() { return _object; }
 
-		private:
-			std::unique_ptr<T> _object;
+	private:
+		std::unique_ptr<T> _object;
 	};
+}
 
 #endif /* !LOADEDLIB_HPP_ */
