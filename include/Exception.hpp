@@ -15,8 +15,8 @@ namespace arc
 	{
 	public:
 		Exception(const std::string &errorMessage = "Error",
-			const std::string &project = "CPP_ARCADE",
-			const std::string &parentClass = "Unknown") throw();
+			const std::string &parentClass = "Unknown",
+			const std::string &project = "CPP_ARCADE") throw();
 		~Exception() throw() = default;
 		virtual const char *what() const throw();
 	private:
