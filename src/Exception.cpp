@@ -9,8 +9,8 @@
 #include "Exception.hpp"
 
 arc::Exception::Exception(const std::string &errorMessage,
-	const std::string &project,
-	const std::string &parentClass) throw()
+	const std::string &parentClass,
+	const std::string &project) throw()
 	: _errorMessage("[" + project + "] " + "[" + parentClass + "] " +
 	errorMessage)
 {}
