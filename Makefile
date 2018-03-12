@@ -21,7 +21,7 @@ MAINOBJ	=	$(MAINSRC:.cpp=.o)
 
 SRC	=	src/Core.cpp
 
-OBJS	=	$(SRCS:.cpp=.o)
+OBJS	=	$(SRC:.cpp=.o)
 
 all:			$(NAME)
 
