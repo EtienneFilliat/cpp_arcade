@@ -22,7 +22,7 @@ MAINOBJ	=	$(MAINSRC:.cpp=.o)
 SRCS	=	src/Core.cpp        \
             	src/Exception.cpp   \
 
-OBJS	=	$(SRCS:.cpp=.o)
+OBJS	=	$(SRC:.cpp=.o)
 
 all:			$(NAME)
 
