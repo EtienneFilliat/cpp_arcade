@@ -19,7 +19,8 @@ MAINSRC	=	src/Main.cpp
 
 MAINOBJ	=	$(MAINSRC:.cpp=.o)
 
-SRC	=	src/Core.cpp
+SRCS	=	src/Core.cpp        \
+            	src/Exception.cpp   \
 
 OBJS	=	$(SRCS:.cpp=.o)
 
