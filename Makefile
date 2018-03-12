@@ -19,14 +19,14 @@ MAINSRC	=	src/Main.cpp
 
 MAINOBJ	=	$(MAINSRC:.cpp=.o)
 
-SRC	=	src/Core.cpp
+SRCS	=
 
 OBJS	=	$(SRCS:.cpp=.o)
 
 all:			$(NAME)
 
 $(NAME):		$(OBJS) $(MAINOBJ)
-			$(CXX) $(OBJS) $(MAINOBJ) -o $(NAME)
+			$(CXX) $(OBJS) $(MAINOBJ) -ldl -o $(NAME)
 
 clean:
 		$(RM) $(OBJS)

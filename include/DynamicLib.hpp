@@ -7,6 +7,7 @@
 
 #ifndef OPENLIB_HPP_
 	#define OPENLIB_HPP_
+	#include <dlfcn.h>
 	#include <string>
 	#include <stdexcept>
 

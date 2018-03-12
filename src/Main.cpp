@@ -6,15 +6,16 @@
 */
 
 #include <dlfcn.h>
+#include "IGame.hpp"
 #include "DynamicLib.hpp"
-#include "GameLibManager.hpp"
+#include "LoadedLib.hpp"
 
 int main(void)
 {
 	DynamicLib<IGame> gameLib("./monKAKA.so");
 	gameLib.open();
 	gameLib.instantiate();
-	GameLibManager myGame(gameLib.getObject());
-	myGame.display();
+	LoadedLib<IGame> myGame(gameLib.getObject());
+	myGame.run()->displaySomeShit();
 	return 0;
 }
