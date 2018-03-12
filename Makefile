@@ -28,7 +28,7 @@ SRCS	=	src/Core.cpp        	\
 
 SRCS_T	=	tests/Exception.cpp	\
 
-OBJS	=	$(SRC:.cpp=.o)
+OBJS	=	$(SRCS:.cpp=.o)
 
 OBJS_T	=	$(SRCS_T:.cpp=.o)
 
@@ -37,7 +37,7 @@ all:			$(NAME)
 test:			$(NAME_T)
 
 $(NAME):		$(OBJS) $(MAINOBJ)
-			$(CXX) $(OBJS) $(MAINOBJ) -o $(NAME)
+			$(CXX) $(OBJS) $(MAINOBJ) -ldl -o $(NAME)
 
 $(NAME_T):		$(OBJS) $(OBJS_T)
 			$(CXX) $(OBJS) $(OBJS_T) -o $(NAME_T) $(LDFLAGS)
