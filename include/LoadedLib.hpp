@@ -17,10 +17,7 @@
 			LoadedLib(T *libObject)
 				: _object(libObject) {}
 			~LoadedLib() {}
-			std::unique_ptr<T> &run()
-			{
-				return _object;
-			}
+			std::unique_ptr<T> &run() { return _object; }
 
 		private:
 			std::unique_ptr<T> _object;

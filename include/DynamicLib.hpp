@@ -15,8 +15,8 @@
 	class DynamicLib {
 		public:
 			DynamicLib(const std::string &libName)
-				: _libName(libName) {}
-			~DynamicLib() {}
+				: _libName(libName), _libObject(nullptr) {}
+			~DynamicLib() {dlclose(_handle);}
 			void open()
 			{
 				std::string name = "./";
@@ -39,11 +39,10 @@
 				if (!dlsym(_handle, "create_object"))
 					throw std::runtime_error(err);
 				T *(*create)() = (T *(*)()) dlsym(_handle,
-					"create_object");
+							"create_object");
 				_libObject = create();
 			}
 			T *getObject() { return _libObject; }
-			void close() { dlclose(_handle); }
 		private:
 			std::string _libName;
 			void *_handle;
