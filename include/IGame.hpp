@@ -10,8 +10,8 @@
 
 class IGame {
 	public:
-		IGame();
-		~IGame();
+		virtual ~IGame() = default;
+		virtual void displaySomeShit() = 0;
 	protected:
 	private:
 };
