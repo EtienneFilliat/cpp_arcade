@@ -1,3 +1,6 @@
 .vscode/*
 *.o
 arcade
+.idea/*
+*.swp
+~*
