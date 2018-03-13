@@ -13,29 +13,21 @@
 	#include "IDisplay.hpp"
 
 namespace arc {
+	class IGame;
+};
 
-	class IGame {
-	public:
-		struct GridInfo {
-			int x;
-			int y;
-			int pixelStep;
-		};
-
-		struct Item {
-			std::string name;
-			std::string spritePath;
-			int x;
-			int y;
-
-		};
-		using ItemList = std::vector<Item>;
-
-		virtual ~IGame() = default;
-		virtual ItemList &getItemList() = 0;
-		virtual GridInfo &getGridInfo() = 0;
-		virtual void ComputeKey(IDisplay::Keys &) = 0;
+class arc::IGame {
+public:
+	struct GridInfo {
+		int x;
+		int y;
+		int pixelStep;
 	};
-}
+
+	virtual ~IGame() = default;
+	virtual arc::ItemList &getItemList() = 0;
+	virtual GridInfo &getGridInfo() = 0;
+	virtual void ComputeKey(arc::Keys &) = 0;
+};
 
 #endif /* !IGAME_HPP_ */
