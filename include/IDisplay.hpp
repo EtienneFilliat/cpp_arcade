@@ -12,13 +12,14 @@
 
 namespace arc {
 
-class arc::IDisplay {
+class IDisplay {
 public:
 	virtual ~IDisplay() = default;
-	virtual arc::KeysList getKeys() = 0;
+	virtual KeysList getKeys() = 0;
 	virtual void drawSprite(const Item &) = 0;
 	virtual void refresh() = 0;
 	virtual void clear() = 0;
 };
+}
 
 #endif /* !IDISPLAY_HPP_ */
