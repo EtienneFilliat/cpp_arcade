@@ -29,6 +29,7 @@ namespace arc {
 	struct Item {
 		std::string name;
 		std::string spritePath;
+		uint8_t spriteChar;
 		int x;
 		int y;
 
