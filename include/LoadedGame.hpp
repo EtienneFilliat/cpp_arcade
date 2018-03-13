@@ -8,7 +8,6 @@
 
 #ifndef LOADEDGAME_HPP_
 	#define LOADEDGAME_HPP_
-	#include <string>
 	#include <memory>
 	#include "IGame.hpp"
 
@@ -16,10 +15,10 @@ namespace arc {
 
 	class LoadedGame {
 	public:
-		LoadedGame(arc::IGame *libObject);
+		LoadedGame(IGame *gameObject);
 		~LoadedGame();
 	private:
-		std::unique_ptr<arc::IGame> _object;
+		std::unique_ptr<IGame> _object;
 	};
 }
 

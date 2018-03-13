@@ -8,7 +8,7 @@
 #include <memory>
 #include "LoadedGame.hpp"
 
-arc::LoadedGame::LoadedGame(arc::IGame *gameObject)
+arc::LoadedGame::LoadedGame(IGame *gameObject)
 	: _object(gameObject)
 {}
 
