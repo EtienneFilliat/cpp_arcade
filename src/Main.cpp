@@ -11,6 +11,5 @@
 int main(void)
 {
 	arc::Core core;
-	core.loadLibs();
 	return 0;
 }

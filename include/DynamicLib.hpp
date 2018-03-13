@@ -51,7 +51,7 @@ namespace arc {
 				throw Exception(err, "DynamicLib");
 			_create = (fptrCreate) dlsym(_handle, "create_object");
 		}
-		T *create() { return _create(); }
+		T *load() { return _create(); }
 	private:
 		std::string _libName;
 		void *_handle;

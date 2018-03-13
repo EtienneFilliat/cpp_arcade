@@ -11,14 +11,14 @@
 #include "IGame.hpp"
 
 arc::Core::Core()
-{}
+{
+	_gameLib.open("snake.so");
+	_displayLib.open("sfml.so");
+	_gameLib.instantiate();
+	_displayLib.instantiate();
+	_game.reset(_gameLib.load());
+	_display.reset(_displayLib.load());
+}
 
 arc::Core::~Core()
 {}
-
-void arc::Core::loadLibs()
-{
-	_gameLib.open("libgame.so");
-	_gameLib.instantiate();
-	_game.reset(_gameLib.create());
-}

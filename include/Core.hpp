@@ -21,7 +21,7 @@ namespace arc {
 		void loadLibs();
 	private:
 		DynamicLib<IGame> _gameLib;
-		DynamicLib<IGame> _displayLib;
+		DynamicLib<IDisplay> _displayLib;
 		std::unique_ptr<IGame> _game;
 		std::unique_ptr<IDisplay> _display;
 	};
