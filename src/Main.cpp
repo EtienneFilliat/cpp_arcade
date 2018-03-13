@@ -6,15 +6,10 @@
 */
 
 #include <dlfcn.h>
-#include "IGame.hpp"
-#include "DynamicLib.hpp"
-#include "LoadedLib.hpp"
+#include "Core.hpp"
 
 int main(void)
 {
-	arc::DynamicLib<IGame> gameLib("./myLib.so");
-	gameLib.open();
-	gameLib.instantiate();
-	arc::LoadedLib<IGame> myGame(gameLib.getObject());
+	arc::Core core;
 	return 0;
 }

@@ -11,8 +11,6 @@
 	#include "Arc.hpp"
 
 namespace arc {
-	class IDisplay;
-}
 
 class arc::IDisplay {
 public:

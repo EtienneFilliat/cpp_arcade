@@ -16,18 +16,27 @@ namespace arc {
 	template <class T>
 	class DynamicLib {
 	public:
-		DynamicLib(const std::string &libName)
-			: _libName(libName) {}
-		~DynamicLib() {dlclose(_handle);}
-		void open()
+		using fptrCreate = T *(*)();
+		DynamicLib()
+			: _handle(nullptr)
+		{}
+		~DynamicLib()
+		{
+			if (_handle)
+				dlclose(_handle);
+		}
+		void open(const std::string &libName)
 		{
 			std::string name = "./";
 			std::string err = "Cannot open \'";
 
+			_libName = libName;
 			name += _libName;
 			err += _libName;
 			err += "\' library!";
-			_handle = dlopen(_libName.c_str(), RTLD_LAZY);
+			if (_handle)
+				dlclose(_handle);
+			_handle = dlopen(name.c_str(), RTLD_LAZY);
 			if (!_handle)
 				throw Exception(err, "DynamicLib");
 		}
@@ -35,20 +44,18 @@ namespace arc {
 		{
 			std::string err = "Missing \'create_object\'";
 
-			err += "symbol in \'";
+			err +=" symbol in \'";
 			err += _libName;
 			err += "\'!";
 			if (!dlsym(_handle, "create_object"))
 				throw Exception(err, "DynamicLib");
-			T *(*create)() = (T *(*)()) dlsym(_handle,
-						"create_object");
-			_libObject = create();
+			_create = (fptrCreate) dlsym(_handle, "create_object");
 		}
-		T *getObject() { return _libObject; }
+		T *load() { return _create(); }
 	private:
 		std::string _libName;
 		void *_handle;
-		T *_libObject;
+		fptrCreate _create;
 	};
 }
 
