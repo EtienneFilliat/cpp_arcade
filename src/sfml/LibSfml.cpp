@@ -5,7 +5,6 @@
 ** LibSfml
 */
 
-#include <stdexcept>
 #include <iostream>
 #include "LibSfml.hpp"
 
@@ -45,25 +44,25 @@ void arc::LibSfml::clear()
 void arc::LibSfml::drawSprite(const arc::Item &item)
 {
 	auto sprite = std::unique_ptr<sf::Sprite>(new sf::Sprite);
-	sf::Texture texture;
-	sf::Vector2f pos;
+	auto texture = std::unique_ptr<sf::Texture>(new sf::Texture);
+	auto sp = std::unique_ptr<spriteStruct>(new spriteStruct);
 	auto search = _map.find(item.name);
 
-	// std::cout << "item.x = " << item.x << std::endl;
-	// std::cout << "item.y = " << item.y << std::endl;
 	if (search == _map.end()) {
-		texture.loadFromFile(item.spritePath);
-		sprite->setTexture(texture);
+		texture->loadFromFile(item.spritePath);
+		sprite->setTexture(*texture);
 		sprite->setPosition(item.x, item.y);
-		pos = sprite->getPosition();
+		std::cout << item.name << std::endl;
 		_window.draw(*sprite);
-		_map.emplace(item.name, std::move(sprite));
+		sp->sprite = std::move(sprite);
+		sp->texture = std::move(texture);
+		_map.emplace(item.name, std::move(sp));
 	} else {
-		search->second->setPosition(item.x, item.y);
-		_window.draw(*search->second);
+		search->second->sprite->setPosition(item.x, item.y);
+		_window.draw(*search->second->sprite);
 	}
-	std::cout << "x = " << pos.x << std::endl;
-	std::cout << "y = " << pos.y << std::endl;
+	std::cout << "item.x = " << item.x << std::endl;
+	std::cout << "item.y = " << item.y << std::endl;
 }
 
 arc::KeysList arc::LibSfml::getKeys()

@@ -26,15 +26,15 @@ class LibSfml : public IDisplay {
 		void drawSprite(const Item &);
 
 	private:
+		struct spriteStruct {
+			std::unique_ptr<sf::Sprite> sprite;
+			std::unique_ptr<sf::Texture> texture;
+		};
+		using spriteMap = std::unordered_map<
+			std::string, std::unique_ptr<spriteStruct>>;
 		void setKeys();
 		arc::KeysList _key;
 		sf::RenderWindow _window;
-		// struct spriteStruct {
-		// 	sf::Sprite *sprite;
-		// 	sf::Texture *texture;
-		// };
-		using spriteMap = std::unordered_map<
-			std::string, std::unique_ptr<sf::Sprite>>;
 		spriteMap _map;
 };
 }
