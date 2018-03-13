@@ -5,13 +5,13 @@
 ** LibSfml
 */
 
+#include <stdexcept>
+#include <iostream>
 #include "LibSfml.hpp"
 
 arc::LibSfml::LibSfml()
-	: _shape(100.f)
 {
 	_window.create(sf::VideoMode(200, 200), "Cpp_Arcade");
-	_shape.setFillColor(sf::Color::Green);
 }
 
 arc::LibSfml::~LibSfml()
@@ -34,14 +34,36 @@ void arc::LibSfml::setKeys() {
 
 void arc::LibSfml::refresh()
 {
-	_window.draw(_shape);
 	_window.display();
-
 }
 
 void arc::LibSfml::clear()
 {
 	_window.clear();
+}
+
+void arc::LibSfml::drawSprite(const arc::Item &item)
+{
+	auto sprite = std::unique_ptr<sf::Sprite>(new sf::Sprite);
+	sf::Texture texture;
+	sf::Vector2f pos;
+	auto search = _map.find(item.name);
+
+	// std::cout << "item.x = " << item.x << std::endl;
+	// std::cout << "item.y = " << item.y << std::endl;
+	if (search == _map.end()) {
+		texture.loadFromFile(item.spritePath);
+		sprite->setTexture(texture);
+		sprite->setPosition(item.x, item.y);
+		pos = sprite->getPosition();
+		_window.draw(*sprite);
+		_map.emplace(item.name, std::move(sprite));
+	} else {
+		search->second->setPosition(item.x, item.y);
+		_window.draw(*search->second);
+	}
+	std::cout << "x = " << pos.x << std::endl;
+	std::cout << "y = " << pos.y << std::endl;
 }
 
 arc::KeysList arc::LibSfml::getKeys()
