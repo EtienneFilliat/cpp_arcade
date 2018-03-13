@@ -23,8 +23,9 @@ MAINSRC	=	src/Main.cpp
 
 MAINOBJ	=	$(MAINSRC:.cpp=.o)
 
-SRCS	=	src/Core.cpp        	\
-            	src/Exception.cpp   	\
+SRCS	=	src/Core.cpp		\
+		src/Exception.cpp	\
+		src/LoadedGame.cpp
 
 SRCS_T	=	tests/Exception.cpp	\
 

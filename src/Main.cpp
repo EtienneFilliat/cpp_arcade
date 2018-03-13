@@ -8,13 +8,13 @@
 #include <dlfcn.h>
 #include "IGame.hpp"
 #include "DynamicLib.hpp"
-#include "LoadedLib.hpp"
+#include "LoadedGame.hpp"
 
 int main(void)
 {
-	arc::DynamicLib<IGame> gameLib("./myLib.so");
+	arc::DynamicLib<arc::IGame> gameLib("./myLib.so");
 	gameLib.open();
 	gameLib.instantiate();
-	arc::LoadedLib<IGame> myGame(gameLib.getObject());
+	arc::LoadedGame myGame(gameLib.getObject());
 	return 0;
 }
