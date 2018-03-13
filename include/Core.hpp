@@ -18,7 +18,6 @@ namespace arc {
 	public:
 		Core();
 		~Core();
-		void loadLibs();
 	private:
 		DynamicLib<IGame> _gameLib;
 		DynamicLib<IDisplay> _displayLib;
