@@ -1,0 +1,28 @@
+//
+// EPITECH PROJECT, 2018
+// arcade
+// File description:
+// core hpp
+//
+
+#ifndef CORE_HPP_
+	#define CORE_HPP_
+	#include <memory>
+	#include "IGame.hpp"
+	#include "IDisplay.hpp"
+
+namespace arc {
+
+	class Core {
+	public:
+		Core();
+		~Core();
+		void loadLibs();
+	private:
+		std::unique_ptr<IGame> _game;
+		std::unique_ptr<IDisplay> _display;
+		void *_currentHandle;
+	};
+}
+
+#endif /* !CORE_HPP_ */

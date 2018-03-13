@@ -16,9 +16,11 @@ namespace arc {
 	template <class T>
 	class DynamicLib {
 	public:
+		typedef T *(*fptr) ();
+		//using fptr = T *(*)();
 		DynamicLib(const std::string &libName)
 			: _libName(libName) {}
-		~DynamicLib() {dlclose(_handle);}
+		~DynamicLib() { dlclose(_handle); }
 		void open()
 		{
 			std::string name = "./";
@@ -27,11 +29,11 @@ namespace arc {
 			name += _libName;
 			err += _libName;
 			err += "\' library!";
-			_handle = dlopen(_libName.c_str(), RTLD_LAZY);
+			_handle = dlopen(name.c_str(), RTLD_LAZY);
 			if (!_handle)
 				throw Exception(err, "DynamicLib");
 		}
-		void instantiate()
+		fptr instantiate()
 		{
 			std::string err = "Missing \'create_object\'";
 
@@ -40,15 +42,17 @@ namespace arc {
 			err += "\'!";
 			if (!dlsym(_handle, "create_object"))
 				throw Exception(err, "DynamicLib");
-			T *(*create)() = (T *(*)()) dlsym(_handle,
+			fptr create = (fptr) dlsym(_handle,
 						"create_object");
-			_libObject = create();
+			return create;
 		}
-		T *getObject() { return _libObject; }
+		void *getHandle()
+		{
+			return _handle;
+		}
 	private:
 		std::string _libName;
 		void *_handle;
-		T *_libObject;
 	};
 }
 

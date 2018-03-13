@@ -5,7 +5,7 @@
 ## Makefile
 ##
 
-CXX	=	g++
+CXX	=	g++ -g3
 
 RM	=	rm -rf
 
@@ -24,9 +24,7 @@ MAINSRC	=	src/Main.cpp
 MAINOBJ	=	$(MAINSRC:.cpp=.o)
 
 SRCS	=	src/Core.cpp		\
-		src/Exception.cpp	\
-		src/LoadedGame.cpp	\
-		src/LoadedDisplay.cpp
+		src/Exception.cpp
 
 SRCS_T	=	tests/Exception.cpp	\
 
