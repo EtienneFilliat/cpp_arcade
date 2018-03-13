@@ -23,12 +23,12 @@ MAINSRC	=	src/Main.cpp
 
 MAINOBJ	=	$(MAINSRC:.cpp=.o)
 
-SRCS	=	src/Core.cpp        	\
-            	src/Exception.cpp   	\
+SRCS	=	src/Core.cpp		\
+		src/Exception.cpp	\
 
 SRCS_T	=	tests/Exception.cpp	\
 
-OBJS	=	$(SRC:.cpp=.o)
+OBJS	=	$(SRCS:.cpp=.o)
 
 OBJS_T	=	$(SRCS_T:.cpp=.o)
 
