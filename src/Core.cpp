@@ -11,20 +11,14 @@
 #include "IGame.hpp"
 
 arc::Core::Core()
-	: _currentHandle(nullptr)
 {}
 
 arc::Core::~Core()
-{
-	_game.release();
-}
+{}
 
 void arc::Core::loadLibs()
 {
-	arc::DynamicLib<IGame>::fptr create;
-	arc::DynamicLib<arc::IGame> gameLib("libgame.so");
-	gameLib.open();
-	create = gameLib.instantiate();
-	_game.reset(create());
-	_game->printKK();
+	_gameLib.open("libgame.so");
+	_gameLib.instantiate();
+	_game.reset(_gameLib.create());
 }
