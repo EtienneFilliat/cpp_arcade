@@ -16,26 +16,25 @@ namespace arc {
 
 	class IGame {
 	public:
-		// struct GridInfo {
-		// 	int x;
-		// 	int y;
-		// 	int pixelStep;
-		// };
+		struct GridInfo {
+			int x;
+			int y;
+			int pixelStep;
+		};
 
-		// struct Item {
-		// 	std::string name;
-		// 	std::string spritePath;
-		// 	int x;
-		// 	int y;
+		struct Item {
+			std::string name;
+			std::string spritePath;
+			int x;
+			int y;
 
-		// };
-		// using ItemList = std::vector<Item>;
+		};
+		using ItemList = std::vector<Item>;
 
 		virtual ~IGame() = default;
-		virtual void printKK() = 0;
-		// virtual ItemList &getItemList() = 0;
-		// virtual GridInfo &getGridInfo() = 0;
-		// virtual void ComputeKey(IDisplay::Keys &) = 0;
+		virtual ItemList &getItemList() = 0;
+		virtual GridInfo &getGridInfo() = 0;
+		virtual void ComputeKey(IDisplay::Keys &) = 0;
 	};
 }
 

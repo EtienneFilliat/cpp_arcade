@@ -16,9 +16,7 @@ namespace arc {
 	template <class T>
 	class DynamicLib {
 	public:
-		typedef T *(*fptrCreate) ();
-		typedef void (*fptrDestroy) (T *);
-		//using fptr = T *(*)();
+		using fptrCreate = T *(*)();
 		DynamicLib()
 			: _handle(nullptr)
 		{}
