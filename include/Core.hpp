@@ -20,6 +20,7 @@ namespace arc {
 		~Core();
 		void launchGame();
 		void gameLoop(Item &item);
+		bool computeKeys(arc::Item &item, KeysList &keys);
 	private:
 		DynamicLib<IGame> _gameLib;
 		DynamicLib<IDisplay> _displayLib;

@@ -33,6 +33,8 @@ void arc::LibSfml::setKeys() {
 			_key.push(arc::Keys::MOVE_LEFT);
 		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
 			_key.push(arc::Keys::MOVE_RIGHT);
+		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
+			_key.push(arc::Keys::QUIT);
 	}
 }
 

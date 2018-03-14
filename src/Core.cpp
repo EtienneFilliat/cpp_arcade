@@ -5,7 +5,7 @@
 ** Core
 */
 
-#include <dlfcn.h>
+#include <unistd.h>
 #include "Core.hpp"
 #include "DynamicLib.hpp"
 #include "IGame.hpp"
@@ -34,13 +34,32 @@ void arc::Core::launchGame()
 
 void arc::Core::gameLoop(arc::Item &item)
 {
-	//arc::KeysList keys;
+	arc::KeysList keys;
 
-	while (1) {
+	keys = _display->getKeys();
+	while (computeKeys(item, keys)) {
+		usleep(50000);
 		_display->clear();
 		_display->drawSprite(item);
 		_display->refresh();
-		//keys = _display->getKeys();
-		//keys.
+		keys = _display->getKeys();
 	}
+}
+
+bool arc::Core::computeKeys(arc::Item &item, arc::KeysList &keys)
+{
+	while (!keys.empty()) {
+		if (keys.front() == arc::Keys::MOVE_UP)
+			item.y -= 5;
+		else if (keys.front() == arc::Keys::MOVE_DOWN)
+			item.y += 5;
+		else if (keys.front() == arc::Keys::MOVE_LEFT)
+			item.x -= 5;
+		else if (keys.front() == arc::Keys::MOVE_RIGHT)
+			item.x += 5;
+		else if (keys.front() == arc::Keys::QUIT)
+			return false;
+		keys.pop();
+	}
+	return true;
 }
