@@ -6,7 +6,14 @@
 */
 
 #include <iostream>
+#include <memory>
 #include "LibSfml.hpp"
+
+extern "C" std::unique_ptr<arc::IDisplay> create_object()
+{
+	std::unique_ptr<arc::IDisplay> ptr(new arc::LibSfml);
+	return std::move(ptr);
+}
 
 arc::LibSfml::LibSfml()
 {
@@ -16,6 +23,11 @@ arc::LibSfml::LibSfml()
 arc::LibSfml::~LibSfml()
 {
 	_window.close();
+}
+
+void arc::LibSfml::closeWindow()
+{
+	this->~LibSfml();
 }
 
 void arc::LibSfml::setKeys() {

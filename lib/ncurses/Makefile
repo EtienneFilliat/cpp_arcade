@@ -18,7 +18,7 @@ SRC		=	LibNcurses.cpp		\
 
 OBJ		=	$(SRC:.cpp=.o)
 
-NAME		=	lib_arcade_ncurces.so
+NAME		=	lib_arcade_ncurses.so
 
 all:	$(NAME)
 

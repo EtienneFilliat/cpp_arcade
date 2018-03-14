@@ -11,5 +11,6 @@
 int main(void)
 {
 	arc::Core core;
+	core.launchGame();
 	return 0;
 }

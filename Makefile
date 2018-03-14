@@ -5,7 +5,7 @@
 ## Makefile
 ##
 
-CXX	=	g++ -g3
+CXX	=	g++
 
 RM	=	rm -rf
 

@@ -16,7 +16,7 @@ namespace arc {
 	template <class T>
 	class DynamicLib {
 	public:
-		using fptrCreate = T *(*)();
+		using fptrCreate = std::unique_ptr<T> (*)();
 		DynamicLib()
 			: _handle(nullptr)
 		{}
@@ -27,16 +27,14 @@ namespace arc {
 		}
 		void open(const std::string &libName)
 		{
-			std::string name = "./";
 			std::string err = "Cannot open \'";
 
 			_libName = libName;
-			name += _libName;
 			err += _libName;
 			err += "\' library!";
 			if (_handle)
 				dlclose(_handle);
-			_handle = dlopen(name.c_str(), RTLD_LAZY);
+			_handle = dlopen(_libName.c_str(), RTLD_LAZY);
 			if (!_handle)
 				throw Exception(err, "DynamicLib");
 		}
@@ -51,7 +49,8 @@ namespace arc {
 				throw Exception(err, "DynamicLib");
 			_create = (fptrCreate) dlsym(_handle, "create_object");
 		}
-		T *load() { return _create(); }
+		std::unique_ptr<T> load() { return _create(); }
+		void close() { dlclose(_handle); }
 	private:
 		std::string _libName;
 		void *_handle;

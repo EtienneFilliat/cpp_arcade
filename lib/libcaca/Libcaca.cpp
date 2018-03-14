@@ -6,8 +6,15 @@
 */
 
 #include <iostream>
+#include <memory>
 #include "Libcaca.hpp"
 #include "Exception.hpp"
+
+extern "C" std::unique_ptr<arc::IDisplay> create_object()
+{
+	std::unique_ptr<arc::IDisplay> ptr(new Libcaca);
+	return std::move(ptr);
+}
 
 Libcaca::Libcaca()
 {
@@ -22,6 +29,11 @@ Libcaca::~Libcaca()
 {
 	caca_free_canvas(this->_canvas);
 	caca_free_display(this->_window);
+}
+
+void Libcaca::closeWindow()
+{
+	this->~Libcaca();
 }
 
 arc::KeysList Libcaca::getKeys()
