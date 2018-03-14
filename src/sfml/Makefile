@@ -12,6 +12,7 @@ RM	=	rm -rf
 CXXFLAGS	+=	-W -Wall -Wextra -Werror
 CXXFLAGS	+=	-I../../include/
 CXXFLAGS	+=	-std=c++11
+#CXXFLAGS	+=	-shared -fPIC
 
 NAME		=	bla
 
@@ -30,7 +31,7 @@ $(NAME):		$(OBJS)
 clean:
 		$(RM) $(OBJS)
 
-fclean:
+fclean:		clean
 		$(RM) $(NAME)
 
 re:		fclean all
