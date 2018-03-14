@@ -7,28 +7,25 @@
 
 CXX		=	g++
 
+RM	=	rm -rf
+
 CXXFLAGS	=	-W -Wall -Werror -Wextra -I ../../include/ -shared -fPIC
 
 LDFLAGS		=	-lcaca
 
 SRC		=	Libcaca.cpp		\
-			../Exception.cpp	\
+			../../src/Exception.cpp	\
 
-OBJ		=	$(SRC:.cpp=.o)
-
-NAME		=	libarcadecaca.so
+NAME		=	lib_arcade_caca.so
 
 all:	$(NAME)
 
 $(NAME):	$(OBJ)
-	$(CXX) $(CXXFLAGS) $(OBJ) -o $(NAME) $(LDFLAGS)
+		$(CXX) $(CXXFLAGS) $(SRC) -o $(NAME) $(LDFLAGS)
 
-clean:
-	rm -rf $(OBJ)
-
-fclean:	clean
-	rm -rf $(NAME)
+fclean:
+	$(RM) $(NAME)
 
 re:	fclean all
 
-.PHONY:	all clean fclean re
+.PHONY:	all fclean re

@@ -16,7 +16,6 @@ class IDisplay {
 public:
 	virtual ~IDisplay() = default;
 	virtual KeysList getKeys() = 0;
-	virtual void drawSprite(const Item &) = 0;
 	virtual void refresh() = 0;
 	virtual void clear() = 0;
 	virtual void drawSprite(const Item &) = 0;
