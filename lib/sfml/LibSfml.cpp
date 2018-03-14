@@ -8,6 +8,11 @@
 #include <iostream>
 #include "LibSfml.hpp"
 
+extern "C" arc::IDisplay *create_object()
+{
+	return new arc::LibSfml;
+}
+
 arc::LibSfml::LibSfml()
 {
 	_window.create(sf::VideoMode(200, 200), "Cpp_Arcade");

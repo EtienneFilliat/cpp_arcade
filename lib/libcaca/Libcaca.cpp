@@ -9,6 +9,11 @@
 #include "Libcaca.hpp"
 #include "Exception.hpp"
 
+extern "C" arc::IDisplay *create_object()
+{
+	return new Libcaca;
+}
+
 Libcaca::Libcaca()
 {
 	this->_window = caca_create_display(nullptr);
