@@ -41,6 +41,8 @@ graphicals:
 		@mv lib/libcaca/*.so ./
 		$(MAKE) --no-print-directory -C lib/sfml/
 		@mv lib/sfml/*.so ./
+		$(MAKE) --no-print-directory -C lib/ncurses
+		@mv lib/ncurses/*.so ./
 
 $(CORE):	$(OBJS) $(MAINOBJ)
 		$(CXX) $(OBJS) $(MAINOBJ) -ldl -o $(CORE)

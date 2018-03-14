@@ -20,7 +20,7 @@ NAME		=	lib_arcade_caca.so
 
 all:	$(NAME)
 
-$(NAME):	$(OBJ)
+$(NAME):
 		$(CXX) $(CXXFLAGS) $(SRC) -o $(NAME) $(LDFLAGS)
 
 fclean:

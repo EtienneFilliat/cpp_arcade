@@ -7,27 +7,27 @@
 
 CXX		=	g++
 
+RM		=	rm -rf
+
 CXXFLAGS	=	-W -Wall -Werror -Wextra -I ../../include/ -shared -fPIC
 
 LDFLAGS		=	-lncurses
 
 SRC		=	LibNcurses.cpp		\
-			../Exception.cpp	\
+			../../src/Exception.cpp	\
 
 OBJ		=	$(SRC:.cpp=.o)
 
-NAME		=	libarcadencurces.so
+NAME		=	lib_arcade_ncurces.so
 
 all:	$(NAME)
 
-$(NAME):	$(OBJ)
-	$(CXX) $(CXXFLAGS) $(OBJ) -o $(NAME) $(LDFLAGS)
+$(NAME):
+	$(CXX) $(CXXFLAGS) $(SRC) -o $(NAME) $(LDFLAGS)
 
-clean:
-	rm -rf $(OBJ)
 
-fclean:	clean
-	rm -rf $(NAME)
+fclean:
+	$(RM) $(NAME)
 
 re:	fclean all
 
