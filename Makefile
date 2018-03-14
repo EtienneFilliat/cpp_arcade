@@ -15,7 +15,7 @@ CXXFLAGS	+=	-std=c++11
 
 LDFLAGS		+=	-lcriterion
 
-NAME	=	arcade
+CORE	=	arcade
 
 NAME_T	=	unit_test
 
@@ -32,23 +32,34 @@ OBJS	=	$(SRCS:.cpp=.o)
 
 OBJS_T	=	$(SRCS_T:.cpp=.o)
 
-all:			$(NAME)
+all:		core graphicals
 
-test:			$(NAME_T)
+core:		$(CORE)
 
-$(NAME):		$(OBJS) $(MAINOBJ)
-			$(CXX) $(OBJS) $(MAINOBJ) -ldl -o $(NAME)
+graphicals:
+		$(MAKE) --no-print-directory -C lib/libcaca/
+		@mv lib/libcaca/*.so ./
+		$(MAKE) --no-print-directory -C lib/sfml/
+		@mv lib/sfml/*.so ./
 
-$(NAME_T):		$(OBJS) $(OBJS_T)
-			$(CXX) $(OBJS) $(OBJS_T) -o $(NAME_T) $(LDFLAGS)
+$(CORE):	$(OBJS) $(MAINOBJ)
+		$(CXX) $(OBJS) $(MAINOBJ) -ldl -o $(CORE)
+
+
+test:		$(NAME_T)
+
+$(NAME_T):	$(OBJS) $(OBJS_T)
+		$(CXX) $(OBJS) $(OBJS_T) -o $(NAME_T) $(LDFLAGS)
 
 clean:
 		$(RM) $(OBJS)
 		$(RM) $(OBJS_T)
 		$(RM) $(MAINOBJ)
+		@$(MAKE) --no-print-directory fclean -C lib/libcaca/
+		@$(MAKE) --no-print-directory fclean -C lib/sfml/
 
 fclean:		clean
-		$(RM) $(NAME)
+		$(RM) $(CORE)
 		$(RM) $(NAME_T)
 
 re:		fclean all
