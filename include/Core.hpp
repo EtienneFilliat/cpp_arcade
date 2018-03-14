@@ -18,6 +18,8 @@ namespace arc {
 	public:
 		Core();
 		~Core();
+		void launchGame();
+		void gameLoop(Item &item);
 	private:
 		DynamicLib<IGame> _gameLib;
 		DynamicLib<IDisplay> _displayLib;
