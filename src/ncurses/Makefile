@@ -11,8 +11,7 @@ CXXFLAGS	=	-W -Wall -Werror -Wextra -I ../../include/ -shared -fPIC
 
 LDFLAGS		=	-lncurses
 
-SRC		=	Test.cpp		\
-			LibNcurses.cpp		\
+SRC		=	LibNcurses.cpp		\
 			../Exception.cpp	\
 
 OBJ		=	$(SRC:.cpp=.o)
