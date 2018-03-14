@@ -33,8 +33,14 @@ void arc::LibSfml::setKeys() {
 			_key.push(arc::Keys::MOVE_LEFT);
 		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
 			_key.push(arc::Keys::MOVE_RIGHT);
+		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::O))
+			_key.push(arc::Keys::PREV_LIB);
 		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::P))
 			_key.push(arc::Keys::NEXT_LIB);
+		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::L))
+			_key.push(arc::Keys::PREV_GAME);
+		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::M))
+			_key.push(arc::Keys::NEXT_GAME);
 		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
 			_key.push(arc::Keys::QUIT);
 	}
