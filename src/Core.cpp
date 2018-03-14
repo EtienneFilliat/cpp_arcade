@@ -12,11 +12,8 @@
 
 arc::Core::Core()
 {
-	_gameLib.open("./snake.so");
-	_displayLib.open("./sfml.so");
-	_gameLib.instantiate();
+	_displayLib.open("./lib_arcade_sfml.so");
 	_displayLib.instantiate();
-	_game.reset(_gameLib.load());
 	_display.reset(_displayLib.load());
 }
 
