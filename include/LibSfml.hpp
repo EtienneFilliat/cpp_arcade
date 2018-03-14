@@ -8,10 +8,13 @@
 #ifndef LIBSFML_HPP_
 	#define LIBSFML_HPP_
 
+	#include <unordered_map>
+	#include <memory>
 	#include <SFML/Graphics.hpp>
 	#include "IDisplay.hpp"
 
 namespace arc {
+
 
 class LibSfml : public IDisplay {
 	public:
@@ -20,12 +23,19 @@ class LibSfml : public IDisplay {
 		arc::KeysList getKeys();
 		void refresh();
 		void clear();
+		void drawSprite(const Item &);
 
 	private:
+		struct spriteStruct {
+			std::unique_ptr<sf::Sprite> sprite;
+			std::unique_ptr<sf::Texture> texture;
+		};
+		using spriteMap = std::unordered_map<
+			std::string, std::unique_ptr<spriteStruct>>;
 		void setKeys();
 		arc::KeysList _key;
 		sf::RenderWindow _window;
-		sf::CircleShape _shape;
+		spriteMap _map;
 };
 }
 
