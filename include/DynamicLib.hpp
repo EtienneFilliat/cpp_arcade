@@ -27,16 +27,14 @@ namespace arc {
 		}
 		void open(const std::string &libName)
 		{
-			std::string name = "./";
 			std::string err = "Cannot open \'";
 
 			_libName = libName;
-			name += _libName;
 			err += _libName;
 			err += "\' library!";
 			if (_handle)
 				dlclose(_handle);
-			_handle = dlopen(name.c_str(), RTLD_LAZY);
+			_handle = dlopen(_libName.c_str(), RTLD_LAZY);
 			if (!_handle)
 				throw Exception(err, "DynamicLib");
 		}
