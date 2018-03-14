@@ -61,8 +61,6 @@ void arc::LibSfml::drawSprite(const arc::Item &item)
 		search->second->sprite->setPosition(item.x, item.y);
 		_window.draw(*search->second->sprite);
 	}
-	std::cout << "item.x = " << item.x << std::endl;
-	std::cout << "item.y = " << item.y << std::endl;
 }
 
 arc::KeysList arc::LibSfml::getKeys()
