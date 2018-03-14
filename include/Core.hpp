@@ -20,7 +20,7 @@ namespace arc {
 		~Core();
 		void launchGame();
 		void gameLoop(Item &item);
-		void switchGraphics();
+		void switchGraphics(const std::string &cmd);
 		bool computeKeys(arc::Item &item, KeysList &keys);
 	private:
 		DynamicLib<IGame> _gameLib;

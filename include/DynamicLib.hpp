@@ -16,7 +16,7 @@ namespace arc {
 	template <class T>
 	class DynamicLib {
 	public:
-		using fptrCreate = T *(*)();
+		using fptrCreate = std::unique_ptr<T> (*)();
 		DynamicLib()
 			: _handle(nullptr)
 		{}
@@ -49,7 +49,8 @@ namespace arc {
 				throw Exception(err, "DynamicLib");
 			_create = (fptrCreate) dlsym(_handle, "create_object");
 		}
-		T *load() { return _create(); }
+		std::unique_ptr<T> load() { return _create(); }
+		void close() { dlclose(_handle); }
 	private:
 		std::string _libName;
 		void *_handle;

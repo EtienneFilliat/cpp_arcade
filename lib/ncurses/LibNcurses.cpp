@@ -6,8 +6,15 @@
 */
 
 #include <iostream>
+#include <memory>
 #include "LibNcurses.hpp"
 #include "Exception.hpp"
+
+extern "C" std::unique_ptr<arc::IDisplay> create_object()
+{
+	std::unique_ptr<arc::IDisplay> ptr(new LibNcurses);
+	return std::move(ptr);
+}
 
 LibNcurses::LibNcurses()
 	: _window(nullptr)
@@ -23,6 +30,11 @@ LibNcurses::LibNcurses()
 LibNcurses::~LibNcurses()
 {
 	endwin();
+}
+
+void LibNcurses::closeWindow()
+{
+	this->~LibNcurses();
 }
 
 void LibNcurses::clear()

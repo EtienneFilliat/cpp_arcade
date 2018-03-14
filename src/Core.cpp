@@ -12,26 +12,32 @@
 
 arc::Core::Core()
 {
-	_displayList.push_back("./lib_arcade_sfml.so");
 	_displayList.push_back("./lib_arcade_libcaca.so");
+	_displayList.push_back("./lib_arcade_ncurses.so");
+	_displayList.push_back("./lib_arcade_sfml.so");
 	_it = _displayList.begin();
 	_displayLib.open(*_it);
 	_displayLib.instantiate();
-	_display.reset(_displayLib.load());
+	_display = _displayLib.load();
 }
 
 arc::Core::~Core()
 {}
 
-void arc::Core::switchGraphics()
+void arc::Core::switchGraphics(const std::string &cmd)
 {
-	//_display->~IDisplay();
-	// _it++;
-	// if (_it == _displayList.end())
-	// 	_it = _displayList.begin();
+	_display->closeWindow();
+	_it = (cmd == "next") ? _it + 1 : _it - 1;
+	if (_it == _displayList.end())
+		_it = _displayList.begin();
+	else if (_it < _displayList.begin()) {
+		_it = _displayList.end();
+		_it--;
+	}
 	_displayLib.open(*_it);
 	_displayLib.instantiate();
-	_display.reset(_displayLib.load());
+	_display.release();
+	_display = _displayLib.load();
 }
 
 void arc::Core::launchGame()
@@ -41,8 +47,8 @@ void arc::Core::launchGame()
 	item.name = "lapin";
 	item.spritePath = "lib/sfml/Lunatic.png";
 	item.spriteChar = '#';
-	item.x = 50;
-	item.y = 50;
+	item.x = 0;
+	item.y = 0;
 	gameLoop(item);
 }
 
@@ -71,10 +77,10 @@ bool arc::Core::computeKeys(arc::Item &item, arc::KeysList &keys)
 			item.x -= 2;
 		else if (keys.front() == arc::Keys::MOVE_RIGHT)
 			item.x += 2;
-		else if (keys.front() == arc::Keys::NEXT_LIB) {
-			switchGraphics();
-			return true;
-		}
+		else if (keys.front() == arc::Keys::NEXT_LIB)
+			switchGraphics("next");
+		else if (keys.front() == arc::Keys::PREV_LIB)
+			switchGraphics("prev");
 		else if (keys.front() == arc::Keys::QUIT)
 			return false;
 		keys.pop();
