@@ -20,12 +20,15 @@ namespace arc {
 		~Core();
 		void launchGame();
 		void gameLoop(Item &item);
+		void switchGraphics();
 		bool computeKeys(arc::Item &item, KeysList &keys);
 	private:
 		DynamicLib<IGame> _gameLib;
 		DynamicLib<IDisplay> _displayLib;
 		std::unique_ptr<IGame> _game;
 		std::unique_ptr<IDisplay> _display;
+		std::vector<std::string> _displayList;
+		std::vector<std::string>::iterator _it;
 	};
 }
 
