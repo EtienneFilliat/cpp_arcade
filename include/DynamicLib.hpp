@@ -50,7 +50,6 @@ namespace arc {
 			_create = (fptrCreate) dlsym(_handle, "create_object");
 		}
 		std::unique_ptr<T> load() { return _create(); }
-		void close() { dlclose(_handle); }
 	private:
 		std::string _libName;
 		void *_handle;
