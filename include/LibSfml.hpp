@@ -16,7 +16,7 @@
 namespace arc {
 
 
-class LibSfml : public IDisplay {
+class LibSfml : public arc::IDisplay {
 	public:
 		LibSfml();
 		~LibSfml();
