@@ -32,11 +32,6 @@ LibNcurses::~LibNcurses()
 	endwin();
 }
 
-void LibNcurses::closeWindow()
-{
-	this->~LibNcurses();
-}
-
 void LibNcurses::clear()
 {
 	wclear(this->_window);

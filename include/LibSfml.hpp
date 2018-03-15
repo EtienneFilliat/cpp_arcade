@@ -24,7 +24,6 @@ class LibSfml : public arc::IDisplay {
 		void refresh();
 		void clear();
 		void drawSprite(const Item &);
-		void closeWindow();
 
 	private:
 		struct spriteStruct {

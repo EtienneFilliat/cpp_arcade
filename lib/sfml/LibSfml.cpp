@@ -25,11 +25,6 @@ arc::LibSfml::~LibSfml()
 	_window.close();
 }
 
-void arc::LibSfml::closeWindow()
-{
-	this->~LibSfml();
-}
-
 void arc::LibSfml::setKeys() {
 	if (_window.isOpen()) {
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Z))

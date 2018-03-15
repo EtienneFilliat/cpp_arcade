@@ -18,7 +18,6 @@ public:
 	void drawSprite(const arc::Item &sprite);
 	void refresh();
 	void clear();
-	void closeWindow();
 private:
 	arc::KeysList _keys;
 	WINDOW *_window;
