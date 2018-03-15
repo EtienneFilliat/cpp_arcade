@@ -41,12 +41,12 @@ all:		core graphicals
 core:		$(CORE)
 
 graphicals:
-		$(MAKE) -C lib/libcaca/
-		@mv lib/libcaca/*.so ./
-		$(MAKE) -C lib/sfml/
-		@mv lib/sfml/*.so ./
-		$(MAKE) --no-print-directory -C lib/ncurses
-		@mv lib/ncurses/*.so ./
+		@$(MAKE) -C lib/libcaca/
+		@cp lib/libcaca/*.so ./
+		@$(MAKE) -C lib/sfml/
+		@cp lib/sfml/*.so ./
+		@$(MAKE) --no-print-directory -C lib/ncurses
+		@cp lib/ncurses/*.so ./
 
 $(CORE):	$(OBJS) $(MAINOBJ)
 		$(CXX) $(OBJS) $(MAINOBJ) -ldl -o $(CORE)
