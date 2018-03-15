@@ -18,16 +18,18 @@ extern "C" std::unique_ptr<arc::IDisplay> create_object()
 
 arc::LibSfml::LibSfml()
 {
-	_window.create(sf::VideoMode(400, 400), "Cpp_Arcade");
+	_window.reset(new sf::RenderWindow(sf::VideoMode(400, 400),
+			"Cpp_Arcade"));
+	if (!_window.get())
+		throw arc::Exception("Cannot create window", "LibSFML");
 }
 
 arc::LibSfml::~LibSfml()
 {
-	_window.close();
 }
 
 void arc::LibSfml::setKeys() {
-	if (_window.isOpen()) {
+	if (_window->isOpen()) {
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Z))
 			_key.push(arc::Keys::MOVE_UP);
 		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
@@ -51,12 +53,12 @@ void arc::LibSfml::setKeys() {
 
 void arc::LibSfml::refresh()
 {
-	_window.display();
+	_window->display();
 }
 
 void arc::LibSfml::clear()
 {
-	_window.clear();
+	_window->clear();
 }
 
 void arc::LibSfml::drawSprite(const arc::Item &item)
@@ -74,13 +76,13 @@ void arc::LibSfml::drawSprite(const arc::Item &item)
 		sprite->setTexture(*texture);
 		sprite->setPosition(x, y);
 		std::cout << item.name << std::endl;
-		_window.draw(*sprite);
+		_window->draw(*sprite);
 		sp->sprite = std::move(sprite);
 		sp->texture = std::move(texture);
 		_map.emplace(item.name, std::move(sp));
 	} else {
 		search->second->sprite->setPosition(x, y);
-		_window.draw(*search->second->sprite);
+		_window->draw(*search->second->sprite);
 	}
 }
 

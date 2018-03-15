@@ -34,7 +34,7 @@ class LibSfml : public arc::IDisplay {
 			std::string, std::unique_ptr<spriteStruct>>;
 		void setKeys();
 		arc::KeysList _key;
-		sf::RenderWindow _window;
+		std::unique_ptr<sf::RenderWindow> _window;
 		spriteMap _map;
 };
 }
