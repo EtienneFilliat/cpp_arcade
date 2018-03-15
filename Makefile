@@ -42,11 +42,11 @@ core:		$(CORE)
 
 graphicals:
 		@$(MAKE) -C lib/libcaca/
-		@cp lib/libcaca/*.so ./
+		@ln -sf lib/libcaca/*.so ./
 		@$(MAKE) -C lib/sfml/
-		@cp lib/sfml/*.so ./
+		@ln -sf lib/sfml/*.so ./
 		@$(MAKE) --no-print-directory -C lib/ncurses
-		@cp lib/ncurses/*.so ./
+		@ln -sf lib/ncurses/*.so ./
 
 $(CORE):	$(OBJS) $(MAINOBJ)
 		$(CXX) $(OBJS) $(MAINOBJ) -ldl -o $(CORE)
@@ -61,9 +61,9 @@ clean:
 		$(RM) $(OBJS)
 		$(RM) $(OBJS_T)
 		$(RM) $(MAINOBJ)
-		@$(MAKE) fclean -C lib/libcaca/
-		@$(MAKE) fclean -C lib/sfml/
-		@$(MAKE) fclean -C lib/ncurses/
+		@$(MAKE) fclean fsym -C lib/libcaca/
+		@$(MAKE) fclean fsym -C lib/sfml/
+		@$(MAKE) fclean fsym -C lib/ncurses/
 
 fclean:		clean
 		$(RM) $(CORE)
