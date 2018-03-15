@@ -14,7 +14,7 @@ CXXFLAGS	=	-W -Wall -Wextra -Werror	\
 			-std=c++11			\
 			-shared -fPIC
 
-NAME		=	lib_arcade_SFML.so
+NAME		=	lib_arcade_sfml.so
 
 SRC		=	LibSfml.cpp
 
@@ -27,6 +27,7 @@ $(NAME):		$(OBJS)
 
 fclean:
 		$(RM) $(NAME)
+		$(RM) ../../$(NAME)
 
 re:		fclean all
 

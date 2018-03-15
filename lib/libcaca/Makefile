@@ -16,15 +16,16 @@ LDFLAGS		=	-lcaca
 SRC		=	Libcaca.cpp		\
 			../../src/Exception.cpp	\
 
-NAME		=	lib_arcade_caca.so
+NAME		=	lib_arcade_libcaca.so
 
 all:	$(NAME)
 
-$(NAME):	$(OBJ)
+$(NAME):
 		$(CXX) $(CXXFLAGS) $(SRC) -o $(NAME) $(LDFLAGS)
 
 fclean:
 	$(RM) $(NAME)
+	$(RM) ../../$(NAME)
 
 re:	fclean all
 
