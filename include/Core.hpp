@@ -19,10 +19,11 @@ namespace arc {
 		Core();
 		~Core();
 		int displayUsage();
-		void setFirstGraphics(char *libName);
+		void setFirstGraphics(const std::string &libName);
 		void launchGame();
 		void gameLoop(Item &item);
-		void switchGraphics(const std::string &cmd);
+		void switchToNextGraphics();
+		void switchToPrevGraphics();
 		bool computeKeys(arc::Item &item, KeysList &keys);
 	private:
 		DynamicLib<IGame> _gameLib;
@@ -30,7 +31,7 @@ namespace arc {
 		std::unique_ptr<IGame> _game;
 		std::unique_ptr<IDisplay> _display;
 		std::vector<std::string> _displayList;
-		std::vector<std::string>::iterator _it;
+		std::string _displayName;
 	};
 }
 
