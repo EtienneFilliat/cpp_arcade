@@ -6,23 +6,40 @@
 */
 
 #include <unistd.h>
+#include <iostream>
 #include "Core.hpp"
 #include "DynamicLib.hpp"
 #include "IGame.hpp"
 
 arc::Core::Core()
 {
-	_displayList.push_back("./lib_arcade_libcaca.so");
 	_displayList.push_back("./lib_arcade_ncurses.so");
+	_displayList.push_back("./lib_arcade_libcaca.so");
 	_displayList.push_back("./lib_arcade_sfml.so");
 	_it = _displayList.begin();
-	_displayLib.open(*_it);
-	_displayLib.instantiate();
-	_display = _displayLib.load();
 }
 
 arc::Core::~Core()
 {}
+
+int arc::Core::displayUsage()
+{
+	std::cout << "USAGE:" << std::endl;
+	std::cout << "\t./arcade libname" << std::endl;
+	return 0;
+}
+
+void arc::Core::setFirstGraphics(char *libName)
+{
+	std::string graphics = libName;
+
+	_displayLib.open(graphics);
+	_displayLib.instantiate();
+	_display = _displayLib.load();
+	_it = _displayList.begin();
+	while (*_it != graphics)
+		_it++;
+}
 
 void arc::Core::switchGraphics(const std::string &cmd)
 {

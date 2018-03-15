@@ -5,12 +5,21 @@
 ** Main
 */
 
-#include <dlfcn.h>
+#include <iostream>
 #include "Core.hpp"
 
-int main(void)
+int main(int ac, char **av)
 {
 	arc::Core core;
-	core.launchGame();
+
+	if (ac != 2)
+		return core.displayUsage();
+	try {
+		core.setFirstGraphics(av[1]);
+		core.launchGame();
+	}
+	catch (std::exception &err) {
+		std::cerr << err.what() << std::endl;
+	}
 	return 0;
 }

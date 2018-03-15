@@ -18,6 +18,8 @@ namespace arc {
 	public:
 		Core();
 		~Core();
+		int displayUsage();
+		void setFirstGraphics(char *libName);
 		void launchGame();
 		void gameLoop(Item &item);
 		void switchGraphics(const std::string &cmd);
