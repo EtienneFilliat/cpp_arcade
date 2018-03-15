@@ -28,7 +28,9 @@ $(NAME):		$(OBJS)
 
 fclean:
 		$(RM) $(NAME)
-		$(RM) ../../$(NAME)
+
+fsym:
+	$(RM) ../../$(NAME)
 
 re:		fclean all
 

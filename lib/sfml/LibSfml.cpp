@@ -18,7 +18,7 @@ extern "C" std::unique_ptr<arc::IDisplay> create_object()
 
 arc::LibSfml::LibSfml()
 {
-	_window.create(sf::VideoMode(200, 200), "Cpp_Arcade");
+	_window.create(sf::VideoMode(400, 400), "Cpp_Arcade");
 }
 
 arc::LibSfml::~LibSfml()
@@ -65,19 +65,21 @@ void arc::LibSfml::drawSprite(const arc::Item &item)
 	auto texture = std::unique_ptr<sf::Texture>(new sf::Texture);
 	auto sp = std::unique_ptr<spriteStruct>(new spriteStruct);
 	auto search = _map.find(item.name);
+	auto x = item.x * 5;
+	auto y = item.y * 5;
 
 	if (search == _map.end()) {
 		if (!texture->loadFromFile(item.spritePath))
 			throw arc::Exception("Cannot load sprite", "LibSFML");
 		sprite->setTexture(*texture);
-		sprite->setPosition(item.x, item.y);
+		sprite->setPosition(x, y);
 		std::cout << item.name << std::endl;
 		_window.draw(*sprite);
 		sp->sprite = std::move(sprite);
 		sp->texture = std::move(texture);
 		_map.emplace(item.name, std::move(sp));
 	} else {
-		search->second->sprite->setPosition(item.x, item.y);
+		search->second->sprite->setPosition(x, y);
 		_window.draw(*search->second->sprite);
 	}
 }
