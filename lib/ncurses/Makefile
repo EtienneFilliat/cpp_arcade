@@ -16,15 +16,12 @@ LDFLAGS		=	-lncurses
 SRC		=	LibNcurses.cpp		\
 			../../src/Exception.cpp	\
 
-OBJ		=	$(SRC:.cpp=.o)
-
 NAME		=	lib_arcade_ncurses.so
 
 all:	$(NAME)
 
 $(NAME):
 	$(CXX) $(CXXFLAGS) $(SRC) -o $(NAME) $(LDFLAGS)
-
 
 fclean:
 	$(RM) $(NAME)

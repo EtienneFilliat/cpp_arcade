@@ -63,6 +63,7 @@ clean:
 		$(RM) $(MAINOBJ)
 		@$(MAKE) fclean -C lib/libcaca/
 		@$(MAKE) fclean -C lib/sfml/
+		@$(MAKE) fclean -C lib/ncurses/
 
 fclean:		clean
 		$(RM) $(CORE)
