@@ -8,6 +8,7 @@
 #include <iostream>
 #include <memory>
 #include "LibSfml.hpp"
+#include "Exception.hpp"
 
 extern "C" std::unique_ptr<arc::IDisplay> create_object()
 {
@@ -71,7 +72,8 @@ void arc::LibSfml::drawSprite(const arc::Item &item)
 	auto search = _map.find(item.name);
 
 	if (search == _map.end()) {
-		texture->loadFromFile(item.spritePath);
+		if (!texture->loadFromFile(item.spritePath))
+			throw arc::Exception("Cannot load sprite", "LibSFML");
 		sprite->setTexture(*texture);
 		sprite->setPosition(item.x, item.y);
 		std::cout << item.name << std::endl;
