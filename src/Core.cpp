@@ -42,6 +42,9 @@ void arc::Core::switchToNextGraphics()
 	auto it = std::find(_displayList.begin(),
 				_displayList.end(), _displayName);
 
+	if (it == std::end(_displayList))
+		throw Exception("Display library \'" + _displayName +
+				"\' not found in library list!", "Core");
 	_display->~IDisplay();
 	it = std::next(it, 1);
 	if (it == _displayList.end())
@@ -58,6 +61,9 @@ void arc::Core::switchToPrevGraphics()
 	auto it = std::find(_displayList.begin(),
 				_displayList.end(), _displayName);
 
+	if (it == std::end(_displayList))
+		throw Exception("Display library \'" + _displayName +
+				"\' not found in library list!", "Core");
 	_display->~IDisplay();
 	if (it == _displayList.begin())
 		it = _displayList.end();
