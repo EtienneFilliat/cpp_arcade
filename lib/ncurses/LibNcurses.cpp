@@ -64,13 +64,13 @@ void LibNcurses::setKeys()
 
 	key = getch();
 	if (key == 'q')
-		this->_keys.push(arc::Keys::MOVE_UP);
-	else if (key == 'd')
-		this->_keys.push(arc::Keys::MOVE_DOWN);
-	else if (key == 'z')
 		this->_keys.push(arc::Keys::MOVE_LEFT);
-	else if (key == 's')
+	else if (key == 'd')
 		this->_keys.push(arc::Keys::MOVE_RIGHT);
+	else if (key == 'z')
+		this->_keys.push(arc::Keys::MOVE_UP);
+	else if (key == 's')
+		this->_keys.push(arc::Keys::MOVE_DOWN);
 	else if (key == 'o')
 		this->_keys.push(arc::Keys::PREV_LIB);
 	else if (key == 'p')
@@ -85,5 +85,5 @@ void LibNcurses::setKeys()
 
 void LibNcurses::drawSprite(const arc::Item &sprite)
 {
-	mvwprintw(this->_window, sprite.x, sprite.y, "%c", sprite.spriteChar);
+	mvwprintw(this->_window, sprite.y, sprite.x, "%c", sprite.spriteChar);
 }
