@@ -32,14 +32,18 @@ OBJS	=	$(SRCS:.cpp=.o)
 
 OBJS_T	=	$(SRCS_T:.cpp=.o)
 
+ifndef VERBOSE
+	MAKEFLAGS	+=	--no-print-directory
+endif
+
 all:		core graphicals
 
 core:		$(CORE)
 
 graphicals:
-		$(MAKE) --no-print-directory -C lib/libcaca/
+		$(MAKE) -C lib/libcaca/
 		@mv lib/libcaca/*.so ./
-		$(MAKE) --no-print-directory -C lib/sfml/
+		$(MAKE) -C lib/sfml/
 		@mv lib/sfml/*.so ./
 		$(MAKE) --no-print-directory -C lib/ncurses
 		@mv lib/ncurses/*.so ./
@@ -57,8 +61,8 @@ clean:
 		$(RM) $(OBJS)
 		$(RM) $(OBJS_T)
 		$(RM) $(MAINOBJ)
-		@$(MAKE) --no-print-directory fclean -C lib/libcaca/
-		@$(MAKE) --no-print-directory fclean -C lib/sfml/
+		@$(MAKE) fclean -C lib/libcaca/
+		@$(MAKE) fclean -C lib/sfml/
 
 fclean:		clean
 		$(RM) $(CORE)
