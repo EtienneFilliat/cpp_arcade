@@ -7,6 +7,7 @@
 
 #include <unistd.h>
 #include <iostream>
+#include <algorithm>
 #include "Core.hpp"
 #include "DynamicLib.hpp"
 #include "IGame.hpp"
@@ -16,7 +17,6 @@ arc::Core::Core()
 	_displayList.push_back("./lib_arcade_ncurses.so");
 	_displayList.push_back("./lib_arcade_libcaca.so");
 	_displayList.push_back("./lib_arcade_sfml.so");
-	_it = _displayList.begin();
 }
 
 arc::Core::~Core()
@@ -29,29 +29,41 @@ int arc::Core::displayUsage()
 	return 0;
 }
 
-void arc::Core::setFirstGraphics(char *libName)
+void arc::Core::setFirstGraphics(const std::string &libName)
 {
-	std::string graphics = libName;
-
-	_displayLib.open(graphics);
+	_displayName = libName;
+	_displayLib.open(_displayName);
 	_displayLib.instantiate();
 	_display = _displayLib.load();
-	_it = _displayList.begin();
-	while (*_it != graphics)
-		_it++;
 }
 
-void arc::Core::switchGraphics(const std::string &cmd)
+void arc::Core::switchToNextGraphics()
 {
+	auto it = std::find(_displayList.begin(),
+				_displayList.end(), _displayName);
+
 	_display->~IDisplay();
-	_it = (cmd == "next") ? _it + 1 : _it - 1;
-	if (_it == _displayList.end())
-		_it = _displayList.begin();
-	else if (_it < _displayList.begin()) {
-		_it = _displayList.end();
-		_it--;
-	}
-	_displayLib.open(*_it);
+	it = std::next(it, 1);
+	if (it == _displayList.end())
+		it = _displayList.begin();
+	_displayName = *it;
+	_displayLib.open(_displayName);
+	_displayLib.instantiate();
+	_display.release();
+	_display = _displayLib.load();
+}
+
+void arc::Core::switchToPrevGraphics()
+{
+	auto it = std::find(_displayList.begin(),
+				_displayList.end(), _displayName);
+
+	_display->~IDisplay();
+	if (it == _displayList.begin())
+		it = _displayList.end();
+	it = std::prev(it, 1);
+	_displayName = *it;
+	_displayLib.open(_displayName);
 	_displayLib.instantiate();
 	_display.release();
 	_display = _displayLib.load();
@@ -95,9 +107,9 @@ bool arc::Core::computeKeys(arc::Item &item, arc::KeysList &keys)
 		else if (keys.front() == arc::Keys::MOVE_RIGHT)
 			item.x += 2;
 		else if (keys.front() == arc::Keys::NEXT_LIB)
-			switchGraphics("next");
+			switchToNextGraphics();
 		else if (keys.front() == arc::Keys::PREV_LIB)
-			switchGraphics("prev");
+			switchToPrevGraphics();
 		else if (keys.front() == arc::Keys::QUIT)
 			return false;
 		keys.pop();
