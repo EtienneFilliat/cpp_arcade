@@ -19,7 +19,6 @@ public:
 	virtual void refresh() = 0;
 	virtual void clear() = 0;
 	virtual void drawSprite(const Item &) = 0;
-	virtual void closeWindow() = 0;
 };
 }
 

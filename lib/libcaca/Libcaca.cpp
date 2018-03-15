@@ -31,11 +31,6 @@ Libcaca::~Libcaca()
 	caca_free_display(this->_window);
 }
 
-void Libcaca::closeWindow()
-{
-	this->~Libcaca();
-}
-
 arc::KeysList Libcaca::getKeys()
 {
 	arc::KeysList keys_cpy;

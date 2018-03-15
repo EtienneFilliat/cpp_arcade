@@ -43,7 +43,7 @@ void arc::Core::setFirstGraphics(char *libName)
 
 void arc::Core::switchGraphics(const std::string &cmd)
 {
-	_display->closeWindow();
+	_display->~IDisplay();
 	_it = (cmd == "next") ? _it + 1 : _it - 1;
 	if (_it == _displayList.end())
 		_it = _displayList.begin();
