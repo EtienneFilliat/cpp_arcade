@@ -25,6 +25,8 @@ $(NAME):
 
 fclean:
 	$(RM) $(NAME)
+
+fsym:
 	$(RM) ../../$(NAME)
 
 re:	fclean all

@@ -16,7 +16,8 @@ CXXFLAGS	=	-W -Wall -Wextra -Werror	\
 
 NAME		=	lib_arcade_sfml.so
 
-SRC		=	LibSfml.cpp
+SRC		=	LibSfml.cpp	\
+			../../src/Exception.cpp
 
 LDFLAGS		=	-lsfml-graphics -lsfml-window -lsfml-system
 
@@ -27,7 +28,9 @@ $(NAME):		$(OBJS)
 
 fclean:
 		$(RM) $(NAME)
-		$(RM) ../../$(NAME)
+
+fsym:
+	$(RM) ../../$(NAME)
 
 re:		fclean all
 

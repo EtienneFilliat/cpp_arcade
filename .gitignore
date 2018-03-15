@@ -6,3 +6,4 @@ arcade
 .idea/*
 *.swp
 ~*
+*.so
