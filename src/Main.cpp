@@ -20,6 +20,7 @@ int main(int ac, char **av)
 	}
 	catch (std::exception &err) {
 		std::cerr << err.what() << std::endl;
+		return 84;
 	}
 	return 0;
 }
