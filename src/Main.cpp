@@ -15,8 +15,7 @@ int main(int ac, char **av)
 	if (ac != 2)
 		return core.displayUsage();
 	try {
-		core.initGraphics("lib");
-		core.setFirstGraphics(av[1]);
+		core.initCore(av[1]);
 		core.launchGame();
 	}
 	catch (std::exception &err) {

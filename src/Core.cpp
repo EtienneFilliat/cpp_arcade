@@ -19,6 +19,14 @@ arc::Core::Core()
 arc::Core::~Core()
 {}
 
+void arc::Core::initCore(const std::string &firstGraphics,
+				const std::string &displayDir)
+{
+	initGraphics(displayDir);
+	setFirstGraphics(firstGraphics);
+	showGraphicsAvailable();
+}
+
 void arc::Core::initGraphics(const std::string &directory)
 {
 	DIR *dir;
@@ -60,6 +68,14 @@ int arc::Core::displayUsage()
 	std::cout << "USAGE:" << std::endl;
 	std::cout << "\t./arcade libname" << std::endl;
 	return 0;
+}
+
+void arc::Core::showGraphicsAvailable()
+{
+	std::cout << "GRAPHIC LIBRARIES AVAILABLE:" << std::endl;
+	for (auto it = _displayList.begin(); it != _displayList.end(); it++) {
+		std::cout << "\t" << *it << std::endl;
+	}
 }
 
 void arc::Core::setFirstGraphics(const std::string &fullPathName)

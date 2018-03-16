@@ -19,10 +19,12 @@ namespace arc {
 		Core();
 		~Core();
 		int displayUsage();
-		void initCore();
+		void initCore(const std::string &firstGraphics,
+				const std::string &displayDir = "lib");
 		void initGraphics(const std::string &directory);
 		void searchDisplayLib(const std::string &fullPathName);
 		void setFirstGraphics(const std::string &fullPathName);
+		void showGraphicsAvailable();
 		void launchGame();
 		void gameLoop(Item &item);
 		void switchToNextGraphics();
