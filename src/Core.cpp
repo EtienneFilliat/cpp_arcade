@@ -66,7 +66,9 @@ void arc::Core::searchDisplayLib(const std::string &fullPathName)
 int arc::Core::displayUsage()
 {
 	std::cout << "USAGE:" << std::endl;
-	std::cout << "\t./arcade libname" << std::endl;
+	std::cout << "\t./arcade \'graphics_library.so\'" << std::endl;
+	std::cout << std::endl << "All graphics libraries available are";
+	std::cout << " in the \'lib/\' directory"<< std::endl;
 	return 0;
 }
 
