@@ -75,7 +75,7 @@ void arc::LibSfml::drawSprite(const arc::Item &item)
 			throw arc::Exception("Cannot load sprite", "LibSFML");
 		sprite->setTexture(*texture);
 		sprite->setPosition(x, y);
-		_window.draw(*sprite);
+		_window->draw(*sprite);
 		sp->sprite = std::move(sprite);
 		sp->texture = std::move(texture);
 		_map.emplace(item.name, std::move(sp));
