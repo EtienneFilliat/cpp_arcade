@@ -27,26 +27,17 @@ namespace arc {
 		}
 		void open(const std::string &libName)
 		{
-			std::string err = "Cannot open \'";
-
 			_libName = libName;
-			err += _libName;
-			err += "\' library!";
 			if (_handle)
 				dlclose(_handle);
 			_handle = dlopen(_libName.c_str(), RTLD_LAZY);
 			if (!_handle)
-				throw Exception(err, "DynamicLib");
+				throw Exception(dlerror(), "DynamicLib");
 		}
 		void instantiate()
 		{
-			std::string err = "Missing \'create_object\'";
-
-			err +=" symbol in \'";
-			err += _libName;
-			err += "\'!";
 			if (!dlsym(_handle, "create_object"))
-				throw Exception(err, "DynamicLib");
+				throw Exception(dlerror(), "DynamicLib");
 			_create = (fptrCreate) dlsym(_handle, "create_object");
 		}
 		std::unique_ptr<T> load() { return _create(); }
