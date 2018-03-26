@@ -42,43 +42,72 @@ void LibNcurses::refresh()
 	wrefresh(this->_window);
 }
 
-arc::KeysList LibNcurses::getKeys()
+void LibNcurses::putStr(const std::string &str, int x, int y)
 {
-	arc::KeysList keys_cpy;
-	arc::KeysList empty;
-
-	this->setKeys();
-	keys_cpy = this->_keys;
-	std::swap(this->_keys, empty);
-	return (keys_cpy);
+	mvwprintw(this->_window, y, x, "%s", str);
 }
 
-void LibNcurses::setKeys()
+void LibNcurses::putItem(const arc::Item & item)
+{
+	uint32_t c;
+
+	c = static_cast<uint32_t>(item.sprites[item.currSpriteIdx].substitute);
+	mvwprintw(this->_window, item.y, item.x, "%c", c);
+}
+
+void LibNcurses::putItem(const arc::Item &item, int x, int y)
+{
+	uint32_t c;
+
+	c = static_cast<uint32_t>(item.sprites[item.currSpriteIdx].substitute);
+	mvwprintw(this->_window, y, x, "%c", c);
+}
+
+void LibNcurses::putItem(const arc::Item &item,
+	const std::vector<struct Position> &position)
+{
+	uint32_t c;
+	auto it = position.begin();
+
+	c = static_cast<uint32_t>(item.sprites[item.currSpriteIdx].substitute);
+
+	while (it != position.end()) {
+		mvwprintw(this->_window, (*it).y, (*it).x, "%c", c);
+		std::next(it);
+	}
+}
+
+arc::InteractionList LibNcurses::getInteractions(){
+	arc::InteractionList Interaction_cpy;
+	arc::InteractionList empty;
+
+	this->setInteractions();
+	Interaction_cpy = this->_interactions;
+	std::swap(this->_interactions, empty);
+	return (Interaction_cpy);
+}
+
+void LibNcurses::setInteractions()
 {
 	int key;
 
 	key = getch();
 	if (key == 'q')
-		this->_keys.push(arc::Keys::MOVE_LEFT);
+		this->_interactions.push(arc::Interaction::MOVE_LEFT);w<
 	else if (key == 'd')
-		this->_keys.push(arc::Keys::MOVE_RIGHT);
+		this->_interactions.push(arc::Interaction::MOVE_RIGHT);
 	else if (key == 'z')
-		this->_keys.push(arc::Keys::MOVE_UP);
+		this->_interactions.push(arc::Interaction::MOVE_UP);
 	else if (key == 's')
-		this->_keys.push(arc::Keys::MOVE_DOWN);
+		this->_interactions.push(arc::Interaction::MOVE_DOWN);
 	else if (key == 'o')
-		this->_keys.push(arc::Keys::PREV_LIB);
+		this->_interactions.push(arc::Interaction::LIB_PREV);
 	else if (key == 'p')
-		this->_keys.push(arc::Keys::NEXT_LIB);
+		this->_interactions.push(arc::Interaction::LIB_NEXT);
 	else if (key == 'l')
-		this->_keys.push(arc::Keys::PREV_GAME);
+		this->_interactions.push(arc::Interaction::GAME_PREV);
 	else if (key == 'm')
-		this->_keys.push(arc::Keys::NEXT_GAME);
+		this->_interactions.push(arc::Interaction::GAME_NEXT);
 	else if (key == 27)
-		this->_keys.push(arc::Keys::QUIT);
-}
-
-void LibNcurses::drawSprite(const arc::Item &sprite)
-{
-	mvwprintw(this->_window, sprite.y, sprite.x, "%c", sprite.spriteChar);
+		this->_interactions.push(arc::Interaction::QUIT);
 }

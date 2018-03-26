@@ -13,15 +13,19 @@ class Libcaca : public arc::IDisplay
 {
 public:
 	Libcaca();
-	~Libcaca() override;
-	arc::KeysList getKeys();
-	void drawSprite(const arc::Item &sprite);
-	void refresh();
-	void clear();
+	~Libcaca() final;
+	void clear() final;
+	void refresh() final;
+	void putStr(const std::string &, int x, int y) final;
+	void putItem(const arc::Item &) final;
+	void putItem(const arc::Item &, int, int) final;
+	void putItem(const arc::Item &,
+		const std::vector<struct Position> &) final;
+	arc::InteractionList getInteractions() final;
 private:
-	arc::KeysList _keys;
+	arc::InteractionList _interactions;
 	caca_display_t *_window;
 	caca_canvas_t *_canvas;
-	void setKeys();
+	void setInteractions();
 };
 #endif //PROJECT_LIBCACA_HPP

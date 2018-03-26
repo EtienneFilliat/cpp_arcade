@@ -13,27 +13,70 @@
 	#include <vector>
 
 namespace arc {
-	enum Keys {
+
+	/* Controls Interactions */
+
+	enum Interaction {
 		MOVE_UP,
 		MOVE_DOWN,
 		MOVE_LEFT,
 		MOVE_RIGHT,
-		NEXT_LIB,
-		PREV_LIB,
-		NEXT_GAME,
-		PREV_GAME,
+		ACTION_1,
+		LIB_NEXT,
+		LIB_PREV,
+		GAME_NEXT,
+		GAME_PREV,
 		QUIT,
 	};
-	using KeysList = std::queue<Keys>;
+
+	using InteractionList = std::queue<Interaction>;
+
+	/* Position */
+
+	struct Position {
+		int x;
+		int y;
+		Interaction interact;
+	};
+
+	/* Colors */
+
+	enum Color {
+		BLUE,
+		RED,
+		GREEN,
+		YELLOW,
+		CYAN,
+		MAGENTA,
+		WHITE,
+		BLACK,
+		UNDEFINED,
+		DFT_COLOR_RET_ERROR,
+	};
+
+	/* Sprites & Items */
+
+	struct Sprite {
+		int x;
+		int y;
+		int rotation;
+		char substitute;
+		std::string name;
+		std::string path;
+		Color color;
+	};
+
+	using SpriteList = std::vector<Sprite>;
 
 	struct Item {
 		std::string name;
-		std::string spritePath;
-		uint8_t spriteChar;
+		std::string spritesPath;
+		SpriteList sprites;
+		int currSpriteIdx;
 		int x;
 		int y;
-
 	};
+
 	using ItemList = std::vector<Item>;
 }
 

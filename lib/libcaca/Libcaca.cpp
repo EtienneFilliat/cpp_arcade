@@ -31,22 +31,6 @@ Libcaca::~Libcaca()
 	caca_free_display(this->_window);
 }
 
-arc::KeysList Libcaca::getKeys()
-{
-	arc::KeysList keys_cpy;
-	arc::KeysList empty;
-
-	this->setKeys();
-	keys_cpy = this->_keys;
-	std::swap(this->_keys, empty);
-	return (keys_cpy);
-}
-
-void Libcaca::drawSprite(const arc::Item &sprite)
-{
-	caca_put_char(this->_canvas, sprite.x, sprite.y, sprite.spriteChar);
-}
-
 void Libcaca::clear()
 {
 	caca_clear_canvas(this->_canvas);
@@ -57,27 +41,71 @@ void Libcaca::refresh()
 	caca_refresh_display(this->_window);
 }
 
-void Libcaca::setKeys()
+void Libcaca::putStr(const std::string &str, int x, int y)
 {
-	caca_event_t event;
+	caca_put_str(this->_canvas, x, y, str.c_str());
+}
+
+void Libcaca::putItem(const arc::Item & item)
+{
+	uint32_t c;
+
+	c = static_cast<uint32_t>(item.sprites[item.currSpriteIdx].substitute);
+	caca_put_char(this->_canvas, item.x, item.y, c);
+}
+
+void Libcaca::putItem(const arc::Item &item, int x, int y)
+{
+	uint32_t c;
+
+	c = static_cast<uint32_t>(item.sprites[item.currSpriteIdx].substitute);
+	caca_put_char(this->_canvas, x, y, c);
+}
+
+void Libcaca::putItem(const arc::Item &item,
+	const std::vector<struct Position> &position)
+{
+	uint32_t c;
+	auto it = position.begin();
+
+	c = static_cast<uint32_t>(item.sprites[item.currSpriteIdx].substitute);
+
+	while (it != position.end()) {
+		caca_put_char(this->_canvas, (*it).x, (*it).y, c);
+		std::next(it);
+	}
+}
+
+arc::InteractionList Libcaca::getInteractions(){
+	arc::InteractionList Interaction_cpy;
+	arc::InteractionList empty;
+
+	this->setInteractions();
+	Interaction_cpy = this->_interactions;
+	std::swap(this->_interactions, empty);
+	return (Interaction_cpy);
+}
+
+void Libcaca::setInteractions(){
+	caca_event_t event = nullptr;
 
 	caca_get_event(this->_window, CACA_EVENT_KEY_PRESS, &event, 0);
 	if (event.data.key.ch == 'z')
-		this->_keys.push(arc::Keys::MOVE_UP);
+		this->_interactions.push(arc::Interaction::MOVE_UP);
 	else if (event.data.key.ch == 's')
-		this->_keys.push(arc::Keys::MOVE_DOWN);
+		this->_interactions.push(arc::Interaction::MOVE_DOWN);
 	else if (event.data.key.ch == 'q')
-		this->_keys.push(arc::Keys::MOVE_LEFT);
+		this->_interactions.push(arc::Interaction::MOVE_LEFT);
 	else if (event.data.key.ch == 'd')
-		this->_keys.push(arc::Keys::MOVE_RIGHT);
+		this->_interactions.push(arc::Interaction::MOVE_RIGHT);
 	else if (event.data.key.ch == 'o')
-		this->_keys.push(arc::Keys::PREV_LIB);
+		this->_interactions.push(arc::Interaction::LIB_PREV);
 	else if (event.data.key.ch == 'p')
-		this->_keys.push(arc::Keys::NEXT_LIB);
+		this->_interactions.push(arc::Interaction::LIB_NEXT);
 	else if (event.data.key.ch == 'l')
-		this->_keys.push(arc::Keys::PREV_GAME);
+		this->_interactions.push(arc::Interaction::GAME_PREV);
 	else if (event.data.key.ch == 'm')
-		this->_keys.push(arc::Keys::NEXT_GAME);
+		this->_interactions.push(arc::Interaction::GAME_NEXT);
 	else if (event.data.key.ch == 27)
-		this->_keys.push(arc::Keys::QUIT);
+		this->_interactions.push(arc::Interaction::QUIT);
 }
