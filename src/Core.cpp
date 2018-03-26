@@ -8,33 +8,99 @@
 #include <unistd.h>
 #include <iostream>
 #include <algorithm>
+#include <dirent.h>
 #include "Core.hpp"
 #include "DynamicLib.hpp"
 #include "IGame.hpp"
 
 arc::Core::Core()
-{
-	_displayList.push_back("./lib_arcade_ncurses.so");
-	_displayList.push_back("./lib_arcade_libcaca.so");
-	_displayList.push_back("./lib_arcade_sfml.so");
-}
+{}
 
 arc::Core::~Core()
 {}
 
+void arc::Core::initCore(const std::string &firstGraphics,
+				const std::string &displayDir)
+{
+	initGraphics(displayDir);
+	setFirstGraphics(firstGraphics);
+	showGraphicsAvailable();
+}
+
+void arc::Core::initGraphics(const std::string &directory)
+{
+	DIR *dir;
+	struct dirent *ent;
+	std::string name;
+
+	dir = opendir(directory.c_str());
+	if (dir == nullptr)
+		throw Exception("No \'" + directory +
+				"\' folder found!", "Core");
+	ent = readdir(dir);
+	while (ent != nullptr) {
+		name = ent->d_name;
+		if (ent->d_type == DT_DIR && name != "." && name != "..")
+			initGraphics(directory + "/" + name);
+		else if (ent->d_type == DT_REG)
+			searchDisplayLib(directory + "/" + name);
+		ent = readdir(dir);
+	}
+	closedir(dir);
+}
+
+void arc::Core::searchDisplayLib(const std::string &fullPathName)
+{
+
+	auto n = fullPathName.find(".so");
+	size_t len = fullPathName.length();
+
+	if (len >= 3)
+		len -= 3;
+	if (n != std::string::npos) {
+		if (n == len)
+			_displayList.push_back(fullPathName);
+	}
+}
+
 int arc::Core::displayUsage()
 {
 	std::cout << "USAGE:" << std::endl;
-	std::cout << "\t./arcade libname" << std::endl;
+	std::cout << "\t./arcade \'graphics_library.so\'" << std::endl;
+	std::cout << std::endl << "All graphics libraries available are";
+	std::cout << " in the \'lib/\' directory"<< std::endl;
 	return 0;
 }
 
-void arc::Core::setFirstGraphics(const std::string &libName)
+void arc::Core::showGraphicsAvailable()
 {
-	_displayName = libName;
-	_displayLib.open(_displayName);
+	std::cout << "GRAPHIC LIBRARIES AVAILABLE:" << std::endl;
+	for (auto it = _displayList.begin(); it != _displayList.end(); it++) {
+		std::cout << "\t" << *it << std::endl;
+	}
+}
+
+void arc::Core::setFirstGraphics(const std::string &fullPathName)
+{
+	bool alreadyInList = false;
+	std::string libName = fullPathName;
+	auto isADir = fullPathName.find_last_of("/");
+
+	_displayLib.open(fullPathName);
 	_displayLib.instantiate();
 	_display = _displayLib.load();
+	if (isADir != std::string::npos)
+		libName = fullPathName.substr(isADir + 1);
+	for (auto it = _displayList.begin(); it != _displayList.end(); it++) {
+		if ((*it).substr((*it).find_last_of("/") + 1) == libName) {
+			alreadyInList = true;
+			_displayName = *it;
+		}
+	}
+	if (!alreadyInList) {
+		_displayList.push_back(fullPathName);
+		_displayName = fullPathName;
+	}
 }
 
 void arc::Core::switchToNextGraphics()
@@ -42,6 +108,9 @@ void arc::Core::switchToNextGraphics()
 	auto it = std::find(_displayList.begin(),
 				_displayList.end(), _displayName);
 
+	if (it == std::end(_displayList))
+		throw Exception("Display library \'" + _displayName +
+				"\' not found in library list!", "Core");
 	_display->~IDisplay();
 	it = std::next(it, 1);
 	if (it == _displayList.end())
@@ -58,6 +127,9 @@ void arc::Core::switchToPrevGraphics()
 	auto it = std::find(_displayList.begin(),
 				_displayList.end(), _displayName);
 
+	if (it == std::end(_displayList))
+		throw Exception("Display library \'" + _displayName +
+				"\' not found in library list!", "Core");
 	_display->~IDisplay();
 	if (it == _displayList.begin())
 		it = _displayList.end();
