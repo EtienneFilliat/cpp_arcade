@@ -27,12 +27,15 @@ namespace arc {
 		void searchDisplayLib(const std::string &fullPathName);
 		void searchGameLib(const std::string &fullPathName);
 		void setFirstGraphics(const std::string &fullPathName);
+		void setFirstGame();
 		void showGraphicsAvailable();
 		void showGamesAvailable();
 		void launchGame();
 		void gameLoop(Item &item);
 		void switchToNextGraphics();
 		void switchToPrevGraphics();
+		void switchToNextGame();
+		void switchToPrevGame();
 		bool computeKeys(arc::Item &item, KeysList &keys);
 	private:
 		DynamicLib<IGame> _gameLib;

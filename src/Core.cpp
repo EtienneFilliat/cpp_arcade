@@ -31,7 +31,7 @@ void arc::Core::initCore(const std::string &firstGraphics,
 		throw Exception("No game library found in \'./games\'!",
 					"Core");
 	showGamesAvailable();
-	_gameName = _gameList.front();
+	setFirstGame();
 }
 
 void arc::Core::initGraphics(const std::string &directory)
@@ -155,6 +155,14 @@ void arc::Core::setFirstGraphics(const std::string &fullPathName)
 	}
 }
 
+void arc::Core::setFirstGame()
+{
+	_gameName = _gameList.front();
+	_gameLib.open(_gameName);
+	_gameLib.instantiate();
+	_game = _gameLib.load();
+}
+
 void arc::Core::switchToNextGraphics()
 {
 	auto it = std::find(_displayList.begin(),
@@ -191,6 +199,44 @@ void arc::Core::switchToPrevGraphics()
 	_displayLib.instantiate();
 	_display.release();
 	_display = _displayLib.load();
+}
+
+void arc::Core::switchToNextGame()
+{
+	auto it = std::find(_gameList.begin(),
+				_gameList.end(), _gameName);
+
+	if (it == std::end(_gameList))
+		throw Exception("Game library \'" + _gameName +
+				"\' not found in library list!", "Core");
+	_game->~IGame();
+	it = std::next(it, 1);
+	if (it == _gameList.end())
+		it = _gameList.begin();
+	_gameName = *it;
+	_gameLib.open(_gameName);
+	_gameLib.instantiate();
+	_game.release();
+	_game = _gameLib.load();
+}
+
+void arc::Core::switchToPrevGame()
+{
+	auto it = std::find(_gameList.begin(),
+				_gameList.end(), _gameName);
+
+	if (it == std::end(_gameList))
+		throw Exception("Game library \'" + _gameName +
+				"\' not found in library list!", "Core");
+	_game->~IGame();
+	if (it == _gameList.begin())
+		it = _gameList.end();
+	it = std::prev(it, 1);
+	_gameName = *it;
+	_gameLib.open(_gameName);
+	_gameLib.instantiate();
+	_game.release();
+	_game = _gameLib.load();
 }
 
 void arc::Core::launchGame()
