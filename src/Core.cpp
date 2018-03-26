@@ -20,11 +20,18 @@ arc::Core::~Core()
 {}
 
 void arc::Core::initCore(const std::string &firstGraphics,
-				const std::string &displayDir)
+				const std::string &displayDir,
+				const std::string &gameDir)
 {
 	initGraphics(displayDir);
+	initGames(gameDir);
 	setFirstGraphics(firstGraphics);
 	showGraphicsAvailable();
+	if (_gameList.empty())
+		throw Exception("No game library found in \'./games\'!",
+					"Core");
+	showGamesAvailable();
+	_gameName = _gameList.front();
 }
 
 void arc::Core::initGraphics(const std::string &directory)
@@ -49,6 +56,28 @@ void arc::Core::initGraphics(const std::string &directory)
 	closedir(dir);
 }
 
+void arc::Core::initGames(const std::string &directory)
+{
+	DIR *dir;
+	struct dirent *ent;
+	std::string name;
+
+	dir = opendir(directory.c_str());
+	if (dir == nullptr)
+		throw Exception("No \'" + directory +
+				"\' folder found!", "Core");
+	ent = readdir(dir);
+	while (ent != nullptr) {
+		name = ent->d_name;
+		if (ent->d_type == DT_DIR && name != "." && name != "..")
+			initGraphics(directory + "/" + name);
+		else if (ent->d_type == DT_REG)
+			searchGameLib(directory + "/" + name);
+		ent = readdir(dir);
+	}
+	closedir(dir);
+}
+
 void arc::Core::searchDisplayLib(const std::string &fullPathName)
 {
 
@@ -60,6 +89,20 @@ void arc::Core::searchDisplayLib(const std::string &fullPathName)
 	if (n != std::string::npos) {
 		if (n == len)
 			_displayList.push_back(fullPathName);
+	}
+}
+
+void arc::Core::searchGameLib(const std::string &fullPathName)
+{
+
+	auto n = fullPathName.find(".so");
+	size_t len = fullPathName.length();
+
+	if (len >= 3)
+		len -= 3;
+	if (n != std::string::npos) {
+		if (n == len)
+			_gameList.push_back(fullPathName);
 	}
 }
 
@@ -76,6 +119,15 @@ void arc::Core::showGraphicsAvailable()
 {
 	std::cout << "GRAPHIC LIBRARIES AVAILABLE:" << std::endl;
 	for (auto it = _displayList.begin(); it != _displayList.end(); it++) {
+		std::cout << "\t" << *it << std::endl;
+	}
+	std::cout << std::endl;
+}
+
+void arc::Core::showGamesAvailable()
+{
+	std::cout << "GAME LIBRARIES AVAILABLE:" << std::endl;
+	for (auto it = _gameList.begin(); it != _gameList.end(); it++) {
 		std::cout << "\t" << *it << std::endl;
 	}
 }
