@@ -9,15 +9,13 @@ CXX		=	g++
 
 RM		=	rm -rf
 
-CXXFLAGS	=	-W -Wall -Wextra -I ../../include/ #-shared -fPIC
+CXXFLAGS	=	-W -Wall -Wextra -I ../../include/ -shared -fPIC
 
 SRC		=	main.cpp		\
 			Pacman.cpp		\
 			../../src/Exception.cpp	\
 
-#NAME		=	lib_arcade_pacman.so
-
-NAME		=	pacman
+NAME		=	lib_arcade_pacman.so
 
 all:	$(NAME)
 

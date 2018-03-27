@@ -256,6 +256,7 @@ void arc::Core::launchGame()
 	item.spritesPath = "";
 	item.x = 0;
 	item.y = 0;
+	item.currSpriteIdx = 0;
 	gameLoop(item);
 }
 

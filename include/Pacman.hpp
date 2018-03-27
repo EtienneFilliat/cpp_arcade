@@ -11,14 +11,23 @@
 	#include "Exception.hpp"
 
 namespace arc {
-class Pacman {
+
+class Pacman : public arc::IGame {
 	public:
 		Pacman();
 		~Pacman();
-		// void getItems() noexcept;
+		ItemList &getItems() noexcept final;
+		//Item &getItemFromName(const std::string &) final;
+		const Specs &getSpecs() const noexcept final;
+		//void proccessIteraction(Interaction &) noexcept final;
+		//void envUpdate() noexcept final;
+		//const std::vector<struct Position> &getBulletPos() final;
 	private:
+		Item createItem(const char, int, int);
 		void setItems() noexcept;
 		std::vector<std::string> _map;
+		ItemList _mapItems;
+		Specs _spec;
 
 };
 }

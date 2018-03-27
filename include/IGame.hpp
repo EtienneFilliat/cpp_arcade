@@ -13,10 +13,8 @@
 	#include "IDisplay.hpp"
 
 namespace arc {
-	class IGame;
-};
 
-class arc::IGame {
+class IGame {
 public:
 	struct Specs {
 		int x;
@@ -26,13 +24,14 @@ public:
 	};
 
 	virtual ~IGame() = default;
-	virtual void dump() const noexcept = 0;
+	// virtual void dump() const noexcept = 0;
 	virtual ItemList &getItems() noexcept = 0;
-	virtual Item &getItemFromName(const std::string &) = 0;
+	//virtual Item &getItemFromName(const std::string &) = 0;
 	virtual const Specs &getSpecs() const noexcept = 0;
-	virtual void proccessIteraction(Interaction &) noexcept = 0;
-	virtual void envUpdate() noexcept = 0;
-	virtual const std::vector<struct Position> &getBulletPos() = 0;
+	//virtual void proccessIteraction(Interaction &) noexcept = 0;
+	//virtual void envUpdate() noexcept = 0;
+	//virtual const std::vector<struct Position> &getBulletPos() = 0;
+};
 };
 
 #endif /* !IGAME_HPP_ */
