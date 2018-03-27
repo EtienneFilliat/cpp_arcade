@@ -18,16 +18,21 @@ namespace arc {
 
 class arc::IGame {
 public:
-	struct GridInfo {
+	struct Specs {
 		int x;
 		int y;
-		int pixelStep;
+		uint pixelStep;
+		uint fps;
 	};
 
 	virtual ~IGame() = default;
-	virtual arc::ItemList &getItemList() = 0;
-	virtual GridInfo &getGridInfo() = 0;
-	virtual void ComputeKey(arc::Keys &) = 0;
+	virtual void dump() const noexcept = 0;
+	virtual ItemList &getItems() noexcept = 0;
+	virtual Item &getItemFromName(const std::string &) = 0;
+	virtual const Specs &getSpecs() const noexcept = 0;
+	virtual void proccessIteraction(Interaction &) noexcept = 0;
+	virtual void envUpdate() noexcept = 0;
+	virtual const std::vector<struct Position> &getBulletPos() = 0;
 };
 
 #endif /* !IGAME_HPP_ */
