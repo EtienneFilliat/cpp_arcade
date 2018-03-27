@@ -40,7 +40,7 @@ class arc::LibSfml : public arc::IDisplay {
 			std::string, std::unique_ptr<spriteStruct>>;
 		void setInteractions();
 		arc::InteractionList _interactions;
-		sf::RenderWindow _window;
+		std::unique_ptr<sf::RenderWindow> _window;
 		spriteMap _map;
 		uint _step;
 };

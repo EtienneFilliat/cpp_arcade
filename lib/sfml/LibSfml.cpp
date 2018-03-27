@@ -18,23 +18,25 @@ extern "C" std::unique_ptr<arc::IDisplay> create_object()
 
 arc::LibSfml::LibSfml()
 {
-	_window.create(sf::VideoMode(400, 400), "Cpp_Arcade");
 	_step = 1;
+	_window.reset(new sf::RenderWindow(sf::VideoMode(400, 400),
+			"Cpp_Arcade"));
+	if (!_window.get())
+		throw arc::Exception("Cannot create window", "LibSFML");
 }
 
 arc::LibSfml::~LibSfml()
 {
-	_window.close();
 }
 
 void arc::LibSfml::refresh()
 {
-	_window.display();
+	_window->display();
 }
 
 void arc::LibSfml::clear()
 {
-	_window.clear();
+	_window->clear();
 }
 
 void arc::LibSfml::putStr(const std::string &str, int x, int y)
@@ -60,14 +62,13 @@ void arc::LibSfml::putItem(const arc::Item &item)
 	if (search == this->_map.end()) {
 		sprite->setTexture(*texture);
 		sprite->setPosition(x / this->_step, y / this->_step);
-		this->_window.draw(*sprite);
 		sp->sprite = std::move(sprite);
 		sp->texture = std::move(texture);
 		this->_map.emplace(item.name, std::move(sp));
 	} else {
 		search->second->sprite->setTexture(*texture);
 		search->second->sprite->setPosition(x, y);
-		this->_window.draw(*search->second->sprite);
+		this->_window->draw(*search->second->sprite);
 	}
 }
 
@@ -84,14 +85,13 @@ void arc::LibSfml::putItem(const arc::Item &item, int x, int y)
 	if (search == this->_map.end()) {
 		sprite->setTexture(*texture);
 		sprite->setPosition(x / this->_step, y / this->_step);
-		this->_window.draw(*sprite);
 		sp->sprite = std::move(sprite);
 		sp->texture = std::move(texture);
 		this->_map.emplace(item.name, std::move(sp));
 	} else {
 		search->second->sprite->setTexture(*texture);
 		search->second->sprite->setPosition(x, y);
-		this->_window.draw(*search->second->sprite);
+		this->_window->draw(*search->second->sprite);
 	}
 }
 
@@ -115,7 +115,7 @@ void arc::LibSfml::setStep(uint step)
 }
 
 void arc::LibSfml::setInteractions(){
-	if (_window.isOpen()) {
+	if (this->_window->isOpen()) {
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Z))
 			this->_interactions.push(arc::Interaction::MOVE_UP);
 		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
