@@ -15,8 +15,11 @@ class Pacman {
 	public:
 		Pacman();
 		~Pacman();
+		// void getItems() noexcept;
 	private:
+		void setItems() noexcept;
 		std::vector<std::string> _map;
+
 };
 }
 
