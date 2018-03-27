@@ -34,9 +34,9 @@ namespace arc {
 		void gameLoop(Item &item);
 		void switchToNextGraphics();
 		void switchToPrevGraphics();
+		bool computeKeys(arc::Item &item, InteractionList &);
 		void switchToNextGame();
 		void switchToPrevGame();
-		bool computeKeys(arc::Item &item, KeysList &keys);
 	private:
 		DynamicLib<IGame> _gameLib;
 		DynamicLib<IDisplay> _displayLib;

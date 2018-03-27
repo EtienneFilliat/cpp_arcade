@@ -242,10 +242,18 @@ void arc::Core::switchToPrevGame()
 void arc::Core::launchGame()
 {
 	arc::Item item;
+	arc::Sprite sprite;
 
+	sprite.path = "lib/sfml/Lunatic.png";
+	sprite.name = "lapin";
+	sprite.substitute = '#';
+	sprite.x = 0;
+	sprite.y = 0;
+	sprite.color = arc::Color::WHITE;
+	sprite.rotation = 0;
 	item.name = "lapin";
-	item.spritePath = "lib/sfml/Lunatic.png";
-	item.spriteChar = '#';
+	item.sprites.push_back(sprite);
+	item.spritesPath = "";
 	item.x = 0;
 	item.y = 0;
 	gameLoop(item);
@@ -253,34 +261,34 @@ void arc::Core::launchGame()
 
 void arc::Core::gameLoop(arc::Item &item)
 {
-	arc::KeysList keys;
+	arc::InteractionList keys;
 
-	keys = _display->getKeys();
+	keys = _display->getInteractions();
 	while (computeKeys(item, keys)) {
 		usleep(30000);
 		_display->clear();
-		_display->drawSprite(item);
+		_display->putItem(item);
 		_display->refresh();
-		keys = _display->getKeys();
+		keys = _display->getInteractions();
 	}
 }
 
-bool arc::Core::computeKeys(arc::Item &item, arc::KeysList &keys)
+bool arc::Core::computeKeys(arc::Item &item, arc::InteractionList &keys)
 {
 	while (!keys.empty()) {
-		if (keys.front() == arc::Keys::MOVE_UP)
+		if (keys.front() == arc::Interaction::MOVE_UP)
 			item.y -= 2;
-		else if (keys.front() == arc::Keys::MOVE_DOWN)
+		else if (keys.front() == arc::Interaction::MOVE_DOWN)
 			item.y += 2;
-		else if (keys.front() == arc::Keys::MOVE_LEFT)
+		else if (keys.front() == arc::Interaction::MOVE_LEFT)
 			item.x -= 2;
-		else if (keys.front() == arc::Keys::MOVE_RIGHT)
+		else if (keys.front() == arc::Interaction::MOVE_RIGHT)
 			item.x += 2;
-		else if (keys.front() == arc::Keys::NEXT_LIB)
+		else if (keys.front() == arc::Interaction::LIB_NEXT)
 			switchToNextGraphics();
-		else if (keys.front() == arc::Keys::PREV_LIB)
+		else if (keys.front() == arc::Interaction::LIB_PREV)
 			switchToPrevGraphics();
-		else if (keys.front() == arc::Keys::QUIT)
+		else if (keys.front() == arc::Interaction::QUIT)
 			return false;
 		keys.pop();
 	}

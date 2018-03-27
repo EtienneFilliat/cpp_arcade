@@ -18,6 +18,7 @@ extern "C" std::unique_ptr<arc::IDisplay> create_object()
 
 arc::LibSfml::LibSfml()
 {
+	_step = 1;
 	_window.reset(new sf::RenderWindow(sf::VideoMode(400, 400),
 			"Cpp_Arcade"));
 	if (!_window.get())
@@ -26,29 +27,6 @@ arc::LibSfml::LibSfml()
 
 arc::LibSfml::~LibSfml()
 {
-}
-
-void arc::LibSfml::setKeys() {
-	if (_window->isOpen()) {
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Z))
-			_key.push(arc::Keys::MOVE_UP);
-		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
-			_key.push(arc::Keys::MOVE_DOWN);
-		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q))
-			_key.push(arc::Keys::MOVE_LEFT);
-		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
-			_key.push(arc::Keys::MOVE_RIGHT);
-		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::O))
-			_key.push(arc::Keys::PREV_LIB);
-		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::P))
-			_key.push(arc::Keys::NEXT_LIB);
-		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::L))
-			_key.push(arc::Keys::PREV_GAME);
-		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::M))
-			_key.push(arc::Keys::NEXT_GAME);
-		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
-			_key.push(arc::Keys::QUIT);
-	}
 }
 
 void arc::LibSfml::refresh()
@@ -61,37 +39,111 @@ void arc::LibSfml::clear()
 	_window->clear();
 }
 
-void arc::LibSfml::drawSprite(const arc::Item &item)
+void arc::LibSfml::putStr(const std::string &str, int x, int y)
+{
+	//@TODO: il faut le faire mdr
+	(void) str;
+	(void) x;
+	(void) y;
+}
+
+void arc::LibSfml::putItem(const arc::Item &item)
 {
 	auto sprite = std::unique_ptr<sf::Sprite>(new sf::Sprite);
 	auto texture = std::unique_ptr<sf::Texture>(new sf::Texture);
 	auto sp = std::unique_ptr<spriteStruct>(new spriteStruct);
-	auto search = _map.find(item.name);
-	auto x = item.x * 5;
-	auto y = item.y * 5;
+	auto search = this->_map.find(item.name);
+	int x = item.x * 5;
+	int y = item.y * 5;
+	std::string spritePath = item.sprites[item.currSpriteIdx].path;
 
-	if (search == _map.end()) {
-		if (!texture->loadFromFile(item.spritePath))
-			throw arc::Exception("Cannot load sprite", "LibSFML");
+	if (!texture->loadFromFile(spritePath))
+		throw arc::Exception("Cannot load sprite", "LibSFML");
+	if (search == this->_map.end()) {
 		sprite->setTexture(*texture);
-		sprite->setPosition(x, y);
-		_window->draw(*sprite);
+		sprite->setPosition(x / this->_step, y / this->_step);
 		sp->sprite = std::move(sprite);
 		sp->texture = std::move(texture);
-		_map.emplace(item.name, std::move(sp));
+		this->_map.emplace(item.name, std::move(sp));
 	} else {
+		search->second->sprite->setTexture(*texture);
 		search->second->sprite->setPosition(x, y);
-		_window->draw(*search->second->sprite);
+		this->_window->draw(*search->second->sprite);
 	}
 }
 
-arc::KeysList arc::LibSfml::getKeys()
+void arc::LibSfml::putItem(const arc::Item &item, int x, int y)
 {
-	arc::KeysList tmp;
-	arc::KeysList empty;
+	auto sprite = std::unique_ptr<sf::Sprite>(new sf::Sprite);
+	auto texture = std::unique_ptr<sf::Texture>(new sf::Texture);
+	auto sp = std::unique_ptr<spriteStruct>(new spriteStruct);
+	auto search = this->_map.find(item.name);
+	std::string spritePath = item.sprites[item.currSpriteIdx].path;
 
-	setKeys();
-	tmp = _key;
-	std::swap(_key, empty);
+	if (!texture->loadFromFile(spritePath))
+		throw arc::Exception("Cannot load sprite", "LibSFML");
+	if (search == this->_map.end()) {
+		sprite->setTexture(*texture);
+		sprite->setPosition(x / this->_step, y / this->_step);
+		sp->sprite = std::move(sprite);
+		sp->texture = std::move(texture);
+		this->_map.emplace(item.name, std::move(sp));
+	} else {
+		search->second->sprite->setTexture(*texture);
+		search->second->sprite->setPosition(x, y);
+		this->_window->draw(*search->second->sprite);
+	}
+}
+
+void arc::LibSfml::putItem(const arc::Item &item,
+	const std::vector<struct Position> &position)
+{
+	auto it = position.begin();
+	
+	while (it != position.end()) {
+		this->putItem(item,
+			(*it).x / this->_step,
+			(*it).y / this->_step);
+		std::next(it);
+	}
+}
+
+void arc::LibSfml::setStep(uint step)
+{
+	if (step > 0)
+		this->_step = step;
+}
+
+void arc::LibSfml::setInteractions(){
+	if (this->_window->isOpen()) {
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Z))
+			this->_interactions.push(arc::Interaction::MOVE_UP);
+		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
+			this->_interactions.push(arc::Interaction::MOVE_DOWN);
+		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q))
+			this->_interactions.push(arc::Interaction::MOVE_LEFT);
+		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
+			this->_interactions.push(arc::Interaction::MOVE_RIGHT);
+		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::O))
+			this->_interactions.push(arc::Interaction::LIB_PREV);
+		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::P))
+			this->_interactions.push(arc::Interaction::LIB_NEXT);
+		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::L))
+			this->_interactions.push(arc::Interaction::GAME_PREV);
+		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::M))
+			this->_interactions.push(arc::Interaction::GAME_NEXT);
+		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
+			this->_interactions.push(arc::Interaction::QUIT);
+	}
+}
+
+arc::InteractionList arc::LibSfml::getInteractions()
+{
+	arc::InteractionList tmp;
+	arc::InteractionList empty;
+
+	setInteractions();
+	tmp = this->_interactions;
+	std::swap(this->_interactions, empty);
 	return tmp;
 }

@@ -14,16 +14,22 @@
 	#include "IDisplay.hpp"
 
 namespace arc {
+	class LibSfml;
+}
 
-
-class LibSfml : public arc::IDisplay {
+class arc::LibSfml : public arc::IDisplay {
 	public:
 		LibSfml();
-		~LibSfml();
-		arc::KeysList getKeys();
-		void refresh();
-		void clear();
-		void drawSprite(const Item &);
+		~LibSfml() final;
+		void clear() final;
+		void refresh() final;
+		void putStr(const std::string &, int x, int y) final;
+		void putItem(const arc::Item &) final;
+		void putItem(const arc::Item &, int, int) final;
+		void putItem(const arc::Item &,
+			const std::vector<struct Position> &) final;
+		void setStep(uint) final;
+		arc::InteractionList getInteractions() final;
 
 	private:
 		struct spriteStruct {
@@ -32,11 +38,11 @@ class LibSfml : public arc::IDisplay {
 		};
 		using spriteMap = std::unordered_map<
 			std::string, std::unique_ptr<spriteStruct>>;
-		void setKeys();
-		arc::KeysList _key;
+		void setInteractions();
+		arc::InteractionList _interactions;
 		std::unique_ptr<sf::RenderWindow> _window;
 		spriteMap _map;
+		uint _step;
 };
-}
 
 #endif /* !LIBSFML_HPP_ */
