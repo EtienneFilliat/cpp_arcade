@@ -9,7 +9,12 @@
 	#define PROJECT_LIBNCURSES_HPP
 	#include <ncurses.h>
 	#include "IDisplay.hpp"
-class LibNcurses : public arc::IDisplay
+
+namespace arc {
+	class LibNcurses;
+}
+
+class arc::LibNcurses : public arc::IDisplay
 {
 public:
 	LibNcurses();
@@ -20,11 +25,13 @@ public:
 	void putItem(const arc::Item &) final;
 	void putItem(const arc::Item &, int, int) final;
 	void putItem(const arc::Item &,
-		const std::vector<struct Position> &) final;
+		const std::vector<struct arc::Position> &) final;
+	void setStep(uint) final;
 	arc::InteractionList getInteractions() final;
 private:
 	arc::InteractionList _interactions;
 	WINDOW *_window;
+	uint _step;
 	void setInteractions();
 };
 #endif //PROJECT_LIBNCURSES_HPP

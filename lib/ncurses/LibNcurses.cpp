@@ -12,12 +12,12 @@
 
 extern "C" std::unique_ptr<arc::IDisplay> create_object()
 {
-	std::unique_ptr<arc::IDisplay> ptr(new LibNcurses);
+	std::unique_ptr<arc::IDisplay> ptr(new arc::LibNcurses);
 	return std::move(ptr);
 }
 
-LibNcurses::LibNcurses()
-	: _window(nullptr)
+arc::LibNcurses::LibNcurses()
+	: _window(nullptr), _step(1)
 {
 	this->_window = initscr();
 	if (this->_window == nullptr)
@@ -27,43 +27,46 @@ LibNcurses::LibNcurses()
 	curs_set(0);
 }
 
-LibNcurses::~LibNcurses()
+arc::LibNcurses::~LibNcurses()
 {
 	endwin();
 }
 
-void LibNcurses::clear()
+void arc::LibNcurses::clear()
 {
 	wclear(this->_window);
 }
 
-void LibNcurses::refresh()
+void arc::LibNcurses::refresh()
 {
 	wrefresh(this->_window);
 }
 
-void LibNcurses::putStr(const std::string &str, int x, int y)
+void arc::LibNcurses::putStr(const std::string &str, int x, int y)
 {
 	mvwprintw(this->_window, y, x, "%s", str);
 }
 
-void LibNcurses::putItem(const arc::Item & item)
+void arc::LibNcurses::putItem(const arc::Item & item)
 {
 	uint32_t c;
 
 	c = static_cast<uint32_t>(item.sprites[item.currSpriteIdx].substitute);
-	mvwprintw(this->_window, item.y, item.x, "%c", c);
+	mvwprintw(this->_window,
+		item.y / this->_step,
+		item.x / this->_step,
+		"%c", c);
 }
 
-void LibNcurses::putItem(const arc::Item &item, int x, int y)
+void arc::LibNcurses::putItem(const arc::Item &item, int x, int y)
 {
 	uint32_t c;
 
 	c = static_cast<uint32_t>(item.sprites[item.currSpriteIdx].substitute);
-	mvwprintw(this->_window, y, x, "%c", c);
+	mvwprintw(this->_window, y / this->_step, x / this->_step, "%c", c);
 }
 
-void LibNcurses::putItem(const arc::Item &item,
+void arc::LibNcurses::putItem(const arc::Item &item,
 	const std::vector<struct Position> &position)
 {
 	uint32_t c;
@@ -72,12 +75,21 @@ void LibNcurses::putItem(const arc::Item &item,
 	c = static_cast<uint32_t>(item.sprites[item.currSpriteIdx].substitute);
 
 	while (it != position.end()) {
-		mvwprintw(this->_window, (*it).y, (*it).x, "%c", c);
+		mvwprintw(this->_window,
+			(*it).y / this->_step,
+			(*it).x / this->_step,
+			"%c", c);
 		std::next(it);
 	}
 }
 
-arc::InteractionList LibNcurses::getInteractions(){
+void arc::LibNcurses::setStep(uint step)
+{
+	if (step > 0)
+		this->_step = step;
+}
+
+arc::InteractionList arc::LibNcurses::getInteractions(){
 	arc::InteractionList Interaction_cpy;
 	arc::InteractionList empty;
 
@@ -87,13 +99,13 @@ arc::InteractionList LibNcurses::getInteractions(){
 	return (Interaction_cpy);
 }
 
-void LibNcurses::setInteractions()
+void arc::LibNcurses::setInteractions()
 {
 	int key;
 
 	key = getch();
 	if (key == 'q')
-		this->_interactions.push(arc::Interaction::MOVE_LEFT);w<
+		this->_interactions.push(arc::Interaction::MOVE_LEFT);
 	else if (key == 'd')
 		this->_interactions.push(arc::Interaction::MOVE_RIGHT);
 	else if (key == 'z')

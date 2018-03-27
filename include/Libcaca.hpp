@@ -9,7 +9,10 @@
 	#define PROJECT_LIBCACA_HPP
 	#include <caca.h>
 	#include "IDisplay.hpp"
-class Libcaca : public arc::IDisplay
+namespace arc {
+	class Libcaca;
+}
+class arc::Libcaca : public arc::IDisplay
 {
 public:
 	Libcaca();
@@ -20,12 +23,14 @@ public:
 	void putItem(const arc::Item &) final;
 	void putItem(const arc::Item &, int, int) final;
 	void putItem(const arc::Item &,
-		const std::vector<struct Position> &) final;
+		const std::vector<struct arc::Position> &) final;
+	void setStep(uint) final;
 	arc::InteractionList getInteractions() final;
 private:
 	arc::InteractionList _interactions;
 	caca_display_t *_window;
 	caca_canvas_t *_canvas;
+	uint _step;
 	void setInteractions();
 };
 #endif //PROJECT_LIBCACA_HPP

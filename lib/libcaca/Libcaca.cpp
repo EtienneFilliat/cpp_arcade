@@ -12,57 +12,61 @@
 
 extern "C" std::unique_ptr<arc::IDisplay> create_object()
 {
-	std::unique_ptr<arc::IDisplay> ptr(new Libcaca);
+	std::unique_ptr<arc::IDisplay> ptr(new arc::Libcaca);
 	return std::move(ptr);
 }
 
-Libcaca::Libcaca()
+arc::Libcaca::Libcaca()
 {
 	this->_window = caca_create_display(nullptr);
 	if (!this->_window)
 		throw arc::Exception("Cannot create window", "LibCaca");
 	this->_canvas = caca_get_canvas(this->_window);
 	caca_set_color_ansi(this->_canvas, CACA_WHITE, CACA_BLACK);
+	this->_step = 1;
 }
 
-Libcaca::~Libcaca()
+arc::Libcaca::~Libcaca()
 {
 	caca_free_canvas(this->_canvas);
 	caca_free_display(this->_window);
 }
 
-void Libcaca::clear()
+void arc::Libcaca::clear()
 {
 	caca_clear_canvas(this->_canvas);
 }
 
-void Libcaca::refresh()
+void arc::Libcaca::refresh()
 {
 	caca_refresh_display(this->_window);
 }
 
-void Libcaca::putStr(const std::string &str, int x, int y)
+void arc::Libcaca::putStr(const std::string &str, int x, int y)
 {
 	caca_put_str(this->_canvas, x, y, str.c_str());
 }
 
-void Libcaca::putItem(const arc::Item & item)
+void arc::Libcaca::putItem(const arc::Item & item)
 {
 	uint32_t c;
 
 	c = static_cast<uint32_t>(item.sprites[item.currSpriteIdx].substitute);
-	caca_put_char(this->_canvas, item.x, item.y, c);
+	caca_put_char(this->_canvas,
+		item.x / this->_step,
+		item.y / this->_step,
+		c);
 }
 
-void Libcaca::putItem(const arc::Item &item, int x, int y)
+void arc::Libcaca::putItem(const arc::Item &item, int x, int y)
 {
 	uint32_t c;
 
 	c = static_cast<uint32_t>(item.sprites[item.currSpriteIdx].substitute);
-	caca_put_char(this->_canvas, x, y, c);
+	caca_put_char(this->_canvas, x / this->_step, y / this->_step, c);
 }
 
-void Libcaca::putItem(const arc::Item &item,
+void arc::Libcaca::putItem(const arc::Item &item,
 	const std::vector<struct Position> &position)
 {
 	uint32_t c;
@@ -71,12 +75,15 @@ void Libcaca::putItem(const arc::Item &item,
 	c = static_cast<uint32_t>(item.sprites[item.currSpriteIdx].substitute);
 
 	while (it != position.end()) {
-		caca_put_char(this->_canvas, (*it).x, (*it).y, c);
+		caca_put_char(this->_canvas,
+			(*it).x / this->_step,
+			(*it).y / this->_step,
+			c);
 		std::next(it);
 	}
 }
 
-arc::InteractionList Libcaca::getInteractions(){
+arc::InteractionList arc::Libcaca::getInteractions(){
 	arc::InteractionList Interaction_cpy;
 	arc::InteractionList empty;
 
@@ -86,8 +93,14 @@ arc::InteractionList Libcaca::getInteractions(){
 	return (Interaction_cpy);
 }
 
-void Libcaca::setInteractions(){
-	caca_event_t event = nullptr;
+void arc::Libcaca::setStep(uint step)
+{
+	if (step > 0)
+		this->_step = step;
+}
+
+void arc::Libcaca::setInteractions(){
+	caca_event_t event;
 
 	caca_get_event(this->_window, CACA_EVENT_KEY_PRESS, &event, 0);
 	if (event.data.key.ch == 'z')
