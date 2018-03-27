@@ -70,7 +70,7 @@ void arc::Core::initGames(const std::string &directory)
 	while (ent != nullptr) {
 		name = ent->d_name;
 		if (ent->d_type == DT_DIR && name != "." && name != "..")
-			initGraphics(directory + "/" + name);
+			initGames(directory + "/" + name);
 		else if (ent->d_type == DT_REG)
 			searchGameLib(directory + "/" + name);
 		ent = readdir(dir);
@@ -239,35 +239,17 @@ void arc::Core::switchToPrevGame()
 	_game = _gameLib.load();
 }
 
-void arc::Core::launchGame()
-{
-	arc::Item item;
-	arc::Sprite sprite;
-
-	sprite.path = "lib/sfml/Lunatic.png";
-	sprite.name = "lapin";
-	sprite.substitute = '#';
-	sprite.x = 0;
-	sprite.y = 0;
-	sprite.color = arc::Color::WHITE;
-	sprite.rotation = 0;
-	item.name = "lapin";
-	item.sprites.push_back(sprite);
-	item.spritesPath = "";
-	item.x = 0;
-	item.y = 0;
-	gameLoop(item);
-}
-
-void arc::Core::gameLoop(arc::Item &item)
+void arc::Core::gameLoop()
 {
 	arc::InteractionList keys;
-
+	arc::ItemList items = _game->getItems();
 	keys = _display->getInteractions();
-	while (computeKeys(item, keys)) {
+	while (1) {
 		usleep(30000);
 		_display->clear();
-		_display->putItem(item);
+		for (auto it = items.begin(); it < items.end(); it++) {
+			_display->putItem(*it);
+		}
 		_display->refresh();
 		keys = _display->getInteractions();
 	}
