@@ -19,7 +19,8 @@ class Pacman : public arc::IGame {
 		ItemList &getItems() noexcept final;
 		//Item &getItemFromName(const std::string &) final;
 		const Specs &getSpecs() const noexcept final;
-		//void proccessIteraction(Interaction &) noexcept final;
+		bool computeKeys(arc::InteractionList &keys);
+		void processInteraction(Interaction &) noexcept final;
 		//void envUpdate() noexcept final;
 		//const std::vector<struct Position> &getBulletPos() final;
 	private:

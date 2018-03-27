@@ -89,3 +89,7 @@ const arc::IGame::Specs &arc::Pacman::getSpecs() const noexcept
 {
 	return (_spec);
 }
+
+void arc::Pacman::processInteraction(Interaction &key) noexcept
+{
+}
