@@ -16,7 +16,7 @@ int main(int ac, char **av)
 		return core.displayUsage();
 	try {
 		core.initCore(av[1]);
-		core.launchGame();
+		core.gameLoop();
 	}
 	catch (std::exception &err) {
 		std::cerr << err.what() << std::endl;

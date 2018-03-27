@@ -7,7 +7,14 @@
 
 #include <iostream>
 #include <fstream>
+#include <memory>
 #include "Pacman.hpp"
+
+extern "C" std::unique_ptr<arc::IGame> create_object()
+{
+	std::unique_ptr<arc::IGame> ptr(new arc::Pacman);
+	return std::move(ptr);
+}
 
 arc::Pacman::Pacman()
 {
@@ -17,7 +24,7 @@ arc::Pacman::Pacman()
 	_spec.y = 0;
 	_spec.fps = 0;
 	_spec.pixelStep = 32;
-	std::ifstream F ("pacman_map.txt", std::ifstream::in);
+	std::ifstream F ("./games/pacman/pacman_map.txt", std::ifstream::in);
 	if (!F)
 		throw arc::Exception("Cannot initialise file stream",
 					"Pacman");
@@ -59,15 +66,16 @@ arc::Item arc::Pacman::createItem(const char type, int posx, int posy)
 	sprite.path = "games/pacman/sprites/blue_wall.png";
 	sprite.name = "bluewall";
 	sprite.substitute = '#';
-	item.name = "Bwall";
+	item.name = "Wall" + std::to_string(posx) + '_' + std::to_string(posy);
+	std::cout << item.name << std::endl;
 	sprite.color = arc::Color::BLUE;
 	sprite.x = 0;
 	sprite.y = 0;
 	sprite.rotation = 0;
 	item.sprites.push_back(sprite);
 	item.spritesPath = "";
-	item.x = posx;
-	item.y = posy;
+	item.x = posy;
+	item.y = posx;
 	item.currSpriteIdx = 0;
 	return (item);
 }

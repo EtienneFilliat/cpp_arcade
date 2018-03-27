@@ -11,8 +11,7 @@ RM		=	rm -rf
 
 CXXFLAGS	=	-W -Wall -Wextra -I ../../include/ -shared -fPIC
 
-SRC		=	main.cpp		\
-			Pacman.cpp		\
+SRC		=	Pacman.cpp		\
 			../../src/Exception.cpp	\
 
 NAME		=	lib_arcade_pacman.so
