@@ -241,10 +241,10 @@ void arc::Core::switchToPrevGame()
 
 void arc::Core::gameLoop()
 {
-	arc::InteractionList keys;
+	arc::InteractionList keys = _display->getInteractions();
 	arc::ItemList items = _game->getItems();
-	keys = _display->getInteractions();
-	while (1) {
+
+	while (computeKeys(keys)) {
 		usleep(30000);
 		_display->clear();
 		for (auto it = items.begin(); it < items.end(); it++) {
@@ -255,23 +255,27 @@ void arc::Core::gameLoop()
 	}
 }
 
-bool arc::Core::computeKeys(arc::Item &item, arc::InteractionList &keys)
+bool arc::Core::computeKeys(arc::InteractionList &keys)
 {
 	while (!keys.empty()) {
-		if (keys.front() == arc::Interaction::MOVE_UP)
-			item.y -= 2;
-		else if (keys.front() == arc::Interaction::MOVE_DOWN)
-			item.y += 2;
-		else if (keys.front() == arc::Interaction::MOVE_LEFT)
-			item.x -= 2;
-		else if (keys.front() == arc::Interaction::MOVE_RIGHT)
-			item.x += 2;
-		else if (keys.front() == arc::Interaction::LIB_NEXT)
-			switchToNextGraphics();
-		else if (keys.front() == arc::Interaction::LIB_PREV)
-			switchToPrevGraphics();
-		else if (keys.front() == arc::Interaction::QUIT)
-			return false;
+		switch (keys.front()) {
+			case arc::Interaction::LIB_NEXT:
+				switchToNextGraphics();
+				break;
+			case arc::Interaction::LIB_PREV:
+				switchToPrevGraphics();
+				break;
+			case arc::Interaction::GAME_NEXT:
+				switchToNextGame();
+				break;
+			case arc::Interaction::GAME_PREV:
+				switchToPrevGame();
+				break;
+			case arc::Interaction::QUIT:
+				return false;
+			default:
+				_game->processInteraction(keys.front());
+		}
 		keys.pop();
 	}
 	return true;
