@@ -8,6 +8,7 @@
 #include <iostream>
 #include <fstream>
 #include <memory>
+#include <cmath>
 #include "Pacman.hpp"
 
 extern "C" std::unique_ptr<arc::IGame> create_object()
@@ -132,42 +133,48 @@ void arc::Pacman::envUpdate() noexcept
 void arc::Pacman::autorun() noexcept
 {
 	arc::Item &item = getItemFromName("pacman");
-	int x = item.x;
-	int y = item.y;
+	float x = item.x;
+	float y = item.y;
 	char c;
 
 	movePos(_direction, x, y);
-	c = findInMap(x, y);
+	c = findInMap(x, y, _direction);
 	if (c == ' ' || c == 'P') {
-		item.x = x;
-		item.y = y;
+		if (item.x > x )
+			item.x -= 0.1;
+		if (item.x < x)
+			item.x += 0.1;
+		if (item.y > y)
+			item.y -= 0.1;
+		if (item.y < y)
+			item.y += 0.1;
 	}
 }
 
 void arc::Pacman::processInteraction(Interaction &key) noexcept
 {
 	arc::Item &item = getItemFromName("pacman");
-	int x = item.x;
-	int y = item.y;
+	float x = item.x;
+	float y = item.y;
 	char c;
 
 	movePos(key, x, y);
-	c = findInMap(x, y);
+	c = findInMap(x, y, key);
 	if (c == ' ' || c == 'P')
 		_direction = key;
 }
 
-void arc::Pacman::movePos(Interaction &key, int &x, int &y) noexcept
+void arc::Pacman::movePos(Interaction &key, float &x, float &y) noexcept
 {
 	switch (key) {
 		case arc::Interaction::MOVE_LEFT:
-			x -= 1;
+			x -= 0.1;
 			break;
 		case arc::Interaction::MOVE_RIGHT:
 			x += 1;
 			break;
 		case arc::Interaction::MOVE_UP:
-			y -= 1;
+			y -= 0.1;
 			break;
 		case arc::Interaction::MOVE_DOWN:
 			y += 1;
@@ -186,16 +193,20 @@ arc::Item &arc::Pacman::getItemFromName(const std::string &name)
 	return *_mapItems.begin();
 }
 
-char arc::Pacman::findInMap(const int posx, const int posy) noexcept
+char arc::Pacman::findInMap(const float posx, const float posy,
+				const Interaction key) noexcept
 {
 	int x_axis = 0;
 	int y_axis = 0;
+	int iposx = std::floor(posy);
+	int iposy = std::floor(posx);
+
 
 	for (std::vector<std::string>::iterator x = _map.begin();
 		x < _map.end(); x++)
 	{
 		for (std::string::iterator y = x->begin(); y < x->end(); y++) {
-			if (x_axis == posy && y_axis == posx) {
+			if (x_axis == iposx && y_axis == iposy) {
 				return *y;
 			}
 			y_axis++;
