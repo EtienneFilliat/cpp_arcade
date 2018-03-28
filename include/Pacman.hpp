@@ -18,9 +18,8 @@ class Pacman : public arc::IGame {
 		~Pacman();
 		ItemList &getItems() noexcept final;
 		const Specs &getSpecs() const noexcept final;
-		//bool computeKeys(arc::InteractionList &keys);
 		void processInteraction(Interaction &) noexcept final;
-		//void envUpdate() noexcept final;
+		void envUpdate() noexcept final;
 	private:
 		Item &getItemFromName(const std::string &);
 		void createItem(const char, const int, const int) noexcept;
@@ -28,9 +27,12 @@ class Pacman : public arc::IGame {
 		Item createWall(const int, const int) noexcept;
 		Item createPacman(const int, const int) noexcept;
 		char findInMap(const int, const int) noexcept;
+		void autorun() noexcept;
+		void movePos(Interaction &, int &, int &) noexcept;
 		std::vector<std::string> _map;
 		ItemList _mapItems;
 		Specs _spec;
+		Interaction _direction;
 
 };
 }

@@ -29,7 +29,7 @@ public:
 	//virtual Item &getItemFromName(const std::string &) = 0;
 	virtual const Specs &getSpecs() const noexcept = 0;
 	virtual void processInteraction(Interaction &) noexcept = 0;
-	//virtual void envUpdate() noexcept = 0;
+	virtual void envUpdate() noexcept = 0;
 	//virtual const std::vector<struct Position> &getBulletPos() = 0;
 };
 };
