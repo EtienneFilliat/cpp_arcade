@@ -137,17 +137,10 @@ void arc::Pacman::autorun() noexcept
 	float y = item.y;
 	char c;
 
-	movePos(_direction, x, y);
+	checkColision(_direction, x, y);
 	c = findInMap(x, y, _direction);
 	if (c == ' ' || c == 'P') {
-		if (item.x > x )
-			item.x -= 0.1;
-		if (item.x < x)
-			item.x += 0.1;
-		if (item.y > y)
-			item.y -= 0.1;
-		if (item.y < y)
-			item.y += 0.1;
+		movePos(_direction, item.x, item.y);
 	}
 }
 
@@ -158,13 +151,13 @@ void arc::Pacman::processInteraction(Interaction &key) noexcept
 	float y = item.y;
 	char c;
 
-	movePos(key, x, y);
+	checkColision(key, x, y);
 	c = findInMap(x, y, key);
 	if (c == ' ' || c == 'P')
 		_direction = key;
 }
 
-void arc::Pacman::movePos(Interaction &key, float &x, float &y) noexcept
+void arc::Pacman::checkColision(Interaction &key, float &x, float &y) noexcept
 {
 	switch (key) {
 		case arc::Interaction::MOVE_LEFT:
@@ -178,6 +171,26 @@ void arc::Pacman::movePos(Interaction &key, float &x, float &y) noexcept
 			break;
 		case arc::Interaction::MOVE_DOWN:
 			y += 1;
+			break;
+		default:
+			return;
+	}
+}
+
+void arc::Pacman::movePos(Interaction &key, float &x, float &y) noexcept
+{
+	switch (key) {
+		case arc::Interaction::MOVE_LEFT:
+			x -= 0.2;
+			break;
+		case arc::Interaction::MOVE_RIGHT:
+			x += 0.2;
+			break;
+		case arc::Interaction::MOVE_UP:
+			y -= 0.2;
+			break;
+		case arc::Interaction::MOVE_DOWN:
+			y += 0.2;
 			break;
 		default:
 			return;
