@@ -70,7 +70,7 @@ void arc::Core::initGames(const std::string &directory)
 	while (ent != nullptr) {
 		name = ent->d_name;
 		if (ent->d_type == DT_DIR && name != "." && name != "..")
-			initGraphics(directory + "/" + name);
+			initGames(directory + "/" + name);
 		else if (ent->d_type == DT_REG)
 			searchGameLib(directory + "/" + name);
 		ent = readdir(dir);
@@ -239,57 +239,44 @@ void arc::Core::switchToPrevGame()
 	_game = _gameLib.load();
 }
 
-void arc::Core::launchGame()
+void arc::Core::gameLoop()
 {
-	arc::Item item;
-	arc::Sprite sprite;
+	arc::InteractionList keys = _display->getInteractions();
+	arc::ItemList items = _game->getItems();
 
-	sprite.path = "lib/sfml/Lunatic.png";
-	sprite.name = "lapin";
-	sprite.substitute = '#';
-	sprite.x = 0;
-	sprite.y = 0;
-	sprite.color = arc::Color::WHITE;
-	sprite.rotation = 0;
-	item.name = "lapin";
-	item.sprites.push_back(sprite);
-	item.spritesPath = "";
-	item.x = 0;
-	item.y = 0;
-	gameLoop(item);
-}
-
-void arc::Core::gameLoop(arc::Item &item)
-{
-	arc::InteractionList keys;
-
-	keys = _display->getInteractions();
-	while (computeKeys(item, keys)) {
+	while (computeKeys(keys)) {
 		usleep(30000);
 		_display->clear();
-		_display->putItem(item);
+		for (auto it = items.begin(); it < items.end(); it++) {
+			_display->putItem(*it);
+		}
 		_display->refresh();
 		keys = _display->getInteractions();
+		items = _game->getItems();
 	}
 }
 
-bool arc::Core::computeKeys(arc::Item &item, arc::InteractionList &keys)
+bool arc::Core::computeKeys(arc::InteractionList &keys)
 {
 	while (!keys.empty()) {
-		if (keys.front() == arc::Interaction::MOVE_UP)
-			item.y -= 2;
-		else if (keys.front() == arc::Interaction::MOVE_DOWN)
-			item.y += 2;
-		else if (keys.front() == arc::Interaction::MOVE_LEFT)
-			item.x -= 2;
-		else if (keys.front() == arc::Interaction::MOVE_RIGHT)
-			item.x += 2;
-		else if (keys.front() == arc::Interaction::LIB_NEXT)
-			switchToNextGraphics();
-		else if (keys.front() == arc::Interaction::LIB_PREV)
-			switchToPrevGraphics();
-		else if (keys.front() == arc::Interaction::QUIT)
-			return false;
+		switch (keys.front()) {
+			case arc::Interaction::LIB_NEXT:
+				switchToNextGraphics();
+				break;
+			case arc::Interaction::LIB_PREV:
+				switchToPrevGraphics();
+				break;
+			case arc::Interaction::GAME_NEXT:
+				switchToNextGame();
+				break;
+			case arc::Interaction::GAME_PREV:
+				switchToPrevGame();
+				break;
+			case arc::Interaction::QUIT:
+				return false;
+			default:
+				_game->processInteraction(keys.front());
+		}
 		keys.pop();
 	}
 	return true;

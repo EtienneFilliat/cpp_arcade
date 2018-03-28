@@ -30,11 +30,10 @@ namespace arc {
 		void setFirstGame();
 		void showGraphicsAvailable();
 		void showGamesAvailable();
-		void launchGame();
-		void gameLoop(Item &item);
+		void gameLoop();
 		void switchToNextGraphics();
 		void switchToPrevGraphics();
-		bool computeKeys(arc::Item &item, InteractionList &);
+		bool computeKeys(InteractionList &);
 		void switchToNextGame();
 		void switchToPrevGame();
 	private:

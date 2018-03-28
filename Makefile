@@ -36,7 +36,7 @@ ifndef VERBOSE
 	MAKEFLAGS	+=	--no-print-directory
 endif
 
-all:		core graphicals
+all:		core graphicals games
 
 core:		$(CORE)
 
@@ -47,6 +47,10 @@ graphicals:
 		@ln -sf lib/sfml/*.so ./
 		@$(MAKE) --no-print-directory -C lib/ncurses
 		@ln -sf lib/ncurses/*.so ./
+
+games:
+		@$(MAKE) -C games/pacman/
+		@ln -sf games/pacman/*.so ./
 
 $(CORE):	$(OBJS) $(MAINOBJ)
 		$(CXX) $(OBJS) $(MAINOBJ) -ldl -o $(CORE)
@@ -64,6 +68,7 @@ clean:
 		@$(MAKE) fclean fsym -C lib/libcaca/
 		@$(MAKE) fclean fsym -C lib/sfml/
 		@$(MAKE) fclean fsym -C lib/ncurses/
+		@$(MAKE) fclean fsym -C games/pacman/
 
 fclean:		clean
 		$(RM) $(CORE)
@@ -71,7 +76,7 @@ fclean:		clean
 
 re:		fclean all
 
-.PHONY:		all test clean fclean re
+.PHONY:		all test clean fclean re core graphicals games
 
 
 
