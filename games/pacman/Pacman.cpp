@@ -24,6 +24,7 @@ arc::Pacman::Pacman()
 	_spec.y = 0;
 	_spec.fps = 0;
 	_spec.pixelStep = 32;
+	_direction = arc::Interaction::MOVE_RIGHT;
 	std::ifstream F ("./games/pacman/pacman_map.txt", std::ifstream::in);
 	if (!F)
 		throw arc::Exception("Cannot initialise file stream",
@@ -123,6 +124,26 @@ const arc::IGame::Specs &arc::Pacman::getSpecs() const noexcept
 	return (_spec);
 }
 
+void arc::Pacman::envUpdate() noexcept
+{
+	autorun();
+}
+
+void arc::Pacman::autorun() noexcept
+{
+	arc::Item &item = getItemFromName("pacman");
+	int x = item.x;
+	int y = item.y;
+	char c;
+
+	movePos(_direction, x, y);
+	c = findInMap(x, y);
+	if (c == ' ' || c == 'P') {
+		item.x = x;
+		item.y = y;
+	}
+}
+
 void arc::Pacman::processInteraction(Interaction &key) noexcept
 {
 	arc::Item &item = getItemFromName("pacman");
@@ -130,21 +151,29 @@ void arc::Pacman::processInteraction(Interaction &key) noexcept
 	int y = item.y;
 	char c;
 
-	switch (key) {
-		case arc::Interaction::MOVE_LEFT: x -= 1;
-			break;
-		case arc::Interaction::MOVE_RIGHT: x += 1;
-			break;
-		case arc::Interaction::MOVE_UP: y -= 1;
-			break;
-		case arc::Interaction::MOVE_DOWN: y += 1;
-			break;
-		default: return;
-	}
+	movePos(key, x, y);
 	c = findInMap(x, y);
-	if (c == ' ' || c == 'P') {
-		item.x = x;
-		item.y = y;
+	if (c == ' ' || c == 'P')
+		_direction = key;
+}
+
+void arc::Pacman::movePos(Interaction &key, int &x, int &y) noexcept
+{
+	switch (key) {
+		case arc::Interaction::MOVE_LEFT:
+			x -= 1;
+			break;
+		case arc::Interaction::MOVE_RIGHT:
+			x += 1;
+			break;
+		case arc::Interaction::MOVE_UP:
+			y -= 1;
+			break;
+		case arc::Interaction::MOVE_DOWN:
+			y += 1;
+			break;
+		default:
+			return;
 	}
 }
 
