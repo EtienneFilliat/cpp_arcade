@@ -252,6 +252,7 @@ void arc::Core::gameLoop()
 		}
 		_display->refresh();
 		keys = _display->getInteractions();
+		items = _game->getItems();
 	}
 }
 

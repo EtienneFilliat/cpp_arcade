@@ -57,9 +57,11 @@ void arc::Pacman::setItems() noexcept
 void arc::Pacman::createItem(const char type, const int posx,
 				const int posy) noexcept
 {
+	auto it = _mapItems.begin();
+
 	switch (type) {
 		case '#':
-			_mapItems.push_back(createWall(posx, posy));
+			_mapItems.insert(it, createWall(posx, posy));
 			break;
 		case 'P':
 			_mapItems.push_back(createPacman(posx, posy));
@@ -78,7 +80,6 @@ arc::Item arc::Pacman::createWall(const int x, const int y) noexcept
 	sprite.name = "bluewall";
 	sprite.substitute = '#';
 	item.name = "Wall" + std::to_string(x) + '_' + std::to_string(y);
-	std::cout << item.name << std::endl;
 	sprite.color = arc::Color::BLUE;
 	sprite.x = 0;
 	sprite.y = 0;
@@ -100,7 +101,6 @@ arc::Item arc::Pacman::createPacman(const int x, const int y) noexcept
 	sprite.name = "pacman";
 	sprite.substitute = 'C';
 	item.name = "pacman";
-	std::cout << item.name << std::endl;
 	sprite.color = arc::Color::YELLOW;
 	sprite.x = 0;
 	sprite.y = 0;
@@ -125,4 +125,84 @@ const arc::IGame::Specs &arc::Pacman::getSpecs() const noexcept
 
 void arc::Pacman::processInteraction(Interaction &key) noexcept
 {
+	arc::Item &item = getItemFromName("pacman");
+
+	switch (key) {
+		case arc::Interaction::MOVE_LEFT:
+			moveLeft(item);
+			break;
+		case arc::Interaction::MOVE_RIGHT:
+			moveRight(item);
+			break;
+		case arc::Interaction::MOVE_UP:
+			moveUp(item);
+			break;
+		case arc::Interaction::MOVE_DOWN:
+			moveDown(item);
+			break;
+		default:
+			return;
+	}
+}
+
+arc::Item &arc::Pacman::getItemFromName(const std::string &name)
+{
+	for (auto it = _mapItems.begin(); it < _mapItems.end(); it++) {
+		if (it->name == name)
+			return *it;
+	}
+	return *_mapItems.begin();
+}
+
+void arc::Pacman::moveLeft(arc::Item &item) noexcept
+{
+	char c = findInMap(item.x - 1, item.y);
+
+	if (c == ' ' || c == 'P')
+		item.x -= 1;
+
+}
+
+void arc::Pacman::moveRight(arc::Item &item) noexcept
+{
+	char c = findInMap(item.x + 1, item.y);
+
+	if (c == ' ' || c == 'P')
+		item.x += 1;
+}
+
+void arc::Pacman::moveUp(arc::Item &item) noexcept
+{
+	char c = findInMap(item.x, item.y - 1);
+
+	if (c == ' ' || c == 'P')
+		item.y -= 1;
+}
+
+void arc::Pacman::moveDown(arc::Item &item) noexcept
+{
+	char c = findInMap(item.x, item.y + 1);
+
+	if (c == ' ' || c == 'P')
+		item.y += 1;
+}
+
+char arc::Pacman::findInMap(const int posx, const int posy) noexcept
+{
+	int x_axis = 0;
+	int y_axis = 0;
+
+	for (std::vector<std::string>::iterator x = _map.begin();
+		x < _map.end(); x++)
+	{
+		for (std::string::iterator y = x->begin(); y < x->end(); y++) {
+			if (x_axis == posy && y_axis == posx) {
+				return *y;
+			}
+			y_axis++;
+		}
+		y_axis = 0;
+		x_axis++;
+	}
+	return 0;
 }
