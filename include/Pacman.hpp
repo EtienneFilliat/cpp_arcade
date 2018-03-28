@@ -22,10 +22,11 @@ class Pacman : public arc::IGame {
 		bool computeKeys(arc::InteractionList &keys);
 		void processInteraction(Interaction &) noexcept final;
 		//void envUpdate() noexcept final;
-		//const std::vector<struct Position> &getBulletPos() final;
 	private:
-		Item createItem(const char, int, int);
+		void createItem(const char, const int, const int) noexcept;
 		void setItems() noexcept;
+		Item createWall(const int, const int) noexcept;
+		Item createPacman(const int, const int) noexcept;
 		std::vector<std::string> _map;
 		ItemList _mapItems;
 		Specs _spec;

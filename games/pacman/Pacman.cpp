@@ -46,10 +46,7 @@ void arc::Pacman::setItems() noexcept
 	for (std::vector<std::string>::iterator x = _map.begin();
 		x < _map.end(); x++) {
 		for (std::string::iterator y = x->begin(); y < x->end(); y++) {
-			if (*y == '#') {
-				item = createItem(*y, x_axis, y_axis);
-				_mapItems.push_back(item);
-			}
+			createItem(*y, x_axis, y_axis);
 			y_axis++;
 		}
 		y_axis = 0;
@@ -57,16 +54,30 @@ void arc::Pacman::setItems() noexcept
 	}
 }
 
-arc::Item arc::Pacman::createItem(const char type, int posx, int posy)
+void arc::Pacman::createItem(const char type, const int posx,
+				const int posy) noexcept
+{
+	switch (type) {
+		case '#':
+			_mapItems.push_back(createWall(posx, posy));
+			break;
+		case 'P':
+			_mapItems.push_back(createPacman(posx, posy));
+			break;
+		default:
+			return;
+	}
+}
+
+arc::Item arc::Pacman::createWall(const int x, const int y) noexcept
 {
 	arc::Item item;
 	arc::Sprite sprite;
 
-	(void) type;
 	sprite.path = "games/pacman/sprites/blue_wall.png";
 	sprite.name = "bluewall";
 	sprite.substitute = '#';
-	item.name = "Wall" + std::to_string(posx) + '_' + std::to_string(posy);
+	item.name = "Wall" + std::to_string(x) + '_' + std::to_string(y);
 	std::cout << item.name << std::endl;
 	sprite.color = arc::Color::BLUE;
 	sprite.x = 0;
@@ -74,8 +85,30 @@ arc::Item arc::Pacman::createItem(const char type, int posx, int posy)
 	sprite.rotation = 0;
 	item.sprites.push_back(sprite);
 	item.spritesPath = "";
-	item.x = posy;
-	item.y = posx;
+	item.x = y;
+	item.y = x;
+	item.currSpriteIdx = 0;
+	return (item);
+}
+
+arc::Item arc::Pacman::createPacman(const int x, const int y) noexcept
+{
+	arc::Item item;
+	arc::Sprite sprite;
+
+	sprite.path = "games/pacman/sprites/pacman.png";
+	sprite.name = "pacman";
+	sprite.substitute = 'C';
+	item.name = "pacman";
+	std::cout << item.name << std::endl;
+	sprite.color = arc::Color::YELLOW;
+	sprite.x = 0;
+	sprite.y = 0;
+	sprite.rotation = 0;
+	item.sprites.push_back(sprite);
+	item.spritesPath = "";
+	item.x = y;
+	item.y = x;
 	item.currSpriteIdx = 0;
 	return (item);
 }
