@@ -126,22 +126,25 @@ const arc::IGame::Specs &arc::Pacman::getSpecs() const noexcept
 void arc::Pacman::processInteraction(Interaction &key) noexcept
 {
 	arc::Item &item = getItemFromName("pacman");
+	int x = item.x;
+	int y = item.y;
+	char c;
 
 	switch (key) {
-		case arc::Interaction::MOVE_LEFT:
-			moveLeft(item);
+		case arc::Interaction::MOVE_LEFT: x -= 1;
 			break;
-		case arc::Interaction::MOVE_RIGHT:
-			moveRight(item);
+		case arc::Interaction::MOVE_RIGHT: x += 1;
 			break;
-		case arc::Interaction::MOVE_UP:
-			moveUp(item);
+		case arc::Interaction::MOVE_UP: y -= 1;
 			break;
-		case arc::Interaction::MOVE_DOWN:
-			moveDown(item);
+		case arc::Interaction::MOVE_DOWN: y += 1;
 			break;
-		default:
-			return;
+		default: return;
+	}
+	c = findInMap(x, y);
+	if (c == ' ' || c == 'P') {
+		item.x = x;
+		item.y = y;
 	}
 }
 
@@ -152,39 +155,6 @@ arc::Item &arc::Pacman::getItemFromName(const std::string &name)
 			return *it;
 	}
 	return *_mapItems.begin();
-}
-
-void arc::Pacman::moveLeft(arc::Item &item) noexcept
-{
-	char c = findInMap(item.x - 1, item.y);
-
-	if (c == ' ' || c == 'P')
-		item.x -= 1;
-
-}
-
-void arc::Pacman::moveRight(arc::Item &item) noexcept
-{
-	char c = findInMap(item.x + 1, item.y);
-
-	if (c == ' ' || c == 'P')
-		item.x += 1;
-}
-
-void arc::Pacman::moveUp(arc::Item &item) noexcept
-{
-	char c = findInMap(item.x, item.y - 1);
-
-	if (c == ' ' || c == 'P')
-		item.y -= 1;
-}
-
-void arc::Pacman::moveDown(arc::Item &item) noexcept
-{
-	char c = findInMap(item.x, item.y + 1);
-
-	if (c == ' ' || c == 'P')
-		item.y += 1;
 }
 
 char arc::Pacman::findInMap(const int posx, const int posy) noexcept
