@@ -135,11 +135,16 @@ void arc::Pacman::autorun() noexcept
 	arc::Item &item = getItemFromName("pacman");
 	float x = item.x;
 	float y = item.y;
-	char c;
+	char c1;
+	char c2;
 
-	checkColision(_direction, x, y);
-	c = findInMap(x, y, _direction);
-	if (c == ' ' || c == 'P') {
+	checkCollision1(_direction, x, y);
+	c1 = findInMap(x, y, _direction);
+	x = item.x;
+	y = item.y;
+	checkCollision2(_direction, x, y);
+	c2 = findInMap(x, y, _direction);
+	if ((c1 == ' ' || c1 == 'P') && (c2 == ' ' || c2 == 'P')) {
 		movePos(_direction, item.x, item.y);
 	}
 }
@@ -149,15 +154,21 @@ void arc::Pacman::processInteraction(Interaction &key) noexcept
 	arc::Item &item = getItemFromName("pacman");
 	float x = item.x;
 	float y = item.y;
-	char c;
+	char c1;
+	char c2;
 
-	checkColision(key, x, y);
-	c = findInMap(x, y, key);
-	if (c == ' ' || c == 'P')
+	checkCollision1(key, x, y);
+	c1 = findInMap(x, y, key);
+	x = item.x;
+	y = item.y;
+	checkCollision2(key, x, y);
+	c2 = findInMap(x, y, key);
+	if ((c1 == ' ' || c1 == 'P') && (c2 == ' ' || c2 == 'P')) {
 		_direction = key;
+	}
 }
 
-void arc::Pacman::checkColision(Interaction &key, float &x, float &y) noexcept
+void arc::Pacman::checkCollision1(Interaction &key, float &x, float &y) noexcept
 {
 	switch (key) {
 		case arc::Interaction::MOVE_LEFT:
@@ -177,20 +188,44 @@ void arc::Pacman::checkColision(Interaction &key, float &x, float &y) noexcept
 	}
 }
 
+void arc::Pacman::checkCollision2(Interaction &key, float &x, float &y) noexcept
+{
+	switch (key) {
+		case arc::Interaction::MOVE_LEFT:
+			x -= 0.1;
+			y += 0.9;
+			break;
+		case arc::Interaction::MOVE_RIGHT:
+			x += 1;
+			y += 0.9;
+			break;
+		case arc::Interaction::MOVE_UP:
+			x += 0.9;
+			y -= 0.1;
+			break;
+		case arc::Interaction::MOVE_DOWN:
+			x += 0.9;
+			y += 1;
+			break;
+		default:
+			return;
+	}
+}
+
 void arc::Pacman::movePos(Interaction &key, float &x, float &y) noexcept
 {
 	switch (key) {
 		case arc::Interaction::MOVE_LEFT:
-			x -= 0.2;
+			x -= 0.1;
 			break;
 		case arc::Interaction::MOVE_RIGHT:
-			x += 0.2;
+			x += 0.1;
 			break;
 		case arc::Interaction::MOVE_UP:
-			y -= 0.2;
+			y -= 0.1;
 			break;
 		case arc::Interaction::MOVE_DOWN:
-			y += 0.2;
+			y += 0.1;
 			break;
 		default:
 			return;
@@ -219,7 +254,7 @@ char arc::Pacman::findInMap(const float posx, const float posy,
 		x < _map.end(); x++)
 	{
 		for (std::string::iterator y = x->begin(); y < x->end(); y++) {
-			if (x_axis == iposx && y_axis == iposy) {
+			if (x_axis >= iposx && y_axis >= iposy) {
 				return *y;
 			}
 			y_axis++;
