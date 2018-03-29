@@ -73,8 +73,8 @@ namespace arc {
 		std::string spritesPath;
 		SpriteList sprites;
 		int currSpriteIdx;
-		int x;
-		int y;
+		float x;
+		float y;
 	};
 
 	using ItemList = std::vector<Item>;

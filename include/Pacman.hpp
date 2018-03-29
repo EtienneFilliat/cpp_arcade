@@ -26,9 +26,12 @@ class Pacman : public arc::IGame {
 		void setItems() noexcept;
 		Item createWall(const int, const int) noexcept;
 		Item createPacman(const int, const int) noexcept;
-		char findInMap(const int, const int) noexcept;
+		char findInMap(const float, const float,
+				const Interaction) noexcept;
 		void autorun() noexcept;
-		void movePos(Interaction &, int &, int &) noexcept;
+		void checkCollision1(Interaction &, float &, float &) noexcept;
+		void checkCollision2(Interaction &, float &, float &) noexcept;
+		void movePos(Interaction &, float &, float &) noexcept;
 		std::vector<std::string> _map;
 		ItemList _mapItems;
 		Specs _spec;
