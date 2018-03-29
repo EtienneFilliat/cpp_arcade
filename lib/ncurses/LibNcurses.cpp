@@ -7,6 +7,7 @@
 
 #include <iostream>
 #include <memory>
+#include <unistd.h>
 #include "LibNcurses.hpp"
 #include "Exception.hpp"
 
@@ -34,7 +35,7 @@ arc::LibNcurses::~LibNcurses()
 
 void arc::LibNcurses::clear()
 {
-	wclear(this->_window);
+	werase(this->_window);
 }
 
 void arc::LibNcurses::refresh()
@@ -93,6 +94,7 @@ arc::InteractionList arc::LibNcurses::getInteractions(){
 	arc::InteractionList Interaction_cpy;
 	arc::InteractionList empty;
 
+	usleep(40000);
 	this->setInteractions();
 	Interaction_cpy = this->_interactions;
 	std::swap(this->_interactions, empty);

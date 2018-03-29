@@ -62,12 +62,14 @@ void arc::LibSfml::putItem(const arc::Item &item)
 	if (search == this->_map.end()) {
 		sprite->setTexture(*texture);
 		sprite->setPosition(x / this->_step, y / this->_step);
+		sprite->setOrigin(16, 16);
 		sp->sprite = std::move(sprite);
 		sp->texture = std::move(texture);
 		this->_map.emplace(item.name, std::move(sp));
 	} else {
 		search->second->sprite->setTexture(*texture);
 		search->second->sprite->setPosition(x, y);
+		search->second->sprite->setRotation(item.sprites.begin()->rotation);
 		this->_window->draw(*search->second->sprite);
 	}
 }
@@ -85,12 +87,14 @@ void arc::LibSfml::putItem(const arc::Item &item, int x, int y)
 	if (search == this->_map.end()) {
 		sprite->setTexture(*texture);
 		sprite->setPosition(x / this->_step, y / this->_step);
+		sprite->setOrigin(16, 16);
 		sp->sprite = std::move(sprite);
 		sp->texture = std::move(texture);
 		this->_map.emplace(item.name, std::move(sp));
 	} else {
 		search->second->sprite->setTexture(*texture);
 		search->second->sprite->setPosition(x, y);
+		search->second->sprite->setRotation(item.sprites.begin()->rotation);
 		this->_window->draw(*search->second->sprite);
 	}
 }

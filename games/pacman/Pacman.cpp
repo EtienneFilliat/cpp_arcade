@@ -157,42 +157,39 @@ void arc::Pacman::envUpdate() noexcept
 void arc::Pacman::autorun() noexcept
 {
 	arc::Item &item = getItemFromName("pacman");
-	float x = item.x;
-	float y = item.y;
-	char c1;
-	char c2;
 
-	checkCollision1(_direction, x, y);
-	c1 = findInMap(x, y, _direction);
-	x = item.x;
-	y = item.y;
-	checkCollision2(_direction, x, y);
-	c2 = findInMap(x, y, _direction);
-	if ((c1 == ' ' || c1 == 'P' || c1 == '.')
-		&& (c2 == ' ' || c2 == 'P' || c2 == '.'))
-		{
-			movePos(_direction, item.x, item.y);
-	}
+	if (isAWall(_direction, item.x, item.y))
+		movePos(_direction, item);
 }
 
 void arc::Pacman::processInteraction(Interaction &key) noexcept
 {
 	arc::Item &item = getItemFromName("pacman");
-	float x = item.x;
-	float y = item.y;
-	char c1;
-	char c2;
+
+	if (isAWall(key, item.x, item.y))
+		_direction = key;
+}
+
+bool arc::Pacman::isAWall(Interaction &key, const float &itemX,
+				const float &itemY) noexcept
+{
+	char check1;
+	char check2;
+	float x = itemX;
+	float y = itemY;
 
 	checkCollision1(key, x, y);
-	c1 = findInMap(x, y, key);
-	x = item.x;
-	y = item.y;
+	check1 = findInMap(x, y, key);
+	x = itemX;
+	y = itemY;
 	checkCollision2(key, x, y);
-	c2 = findInMap(x, y, key);
-	if ((c1 == ' ' || c1 == 'P' || c1 == '.')
-		&& (c2 == ' ' || c2 == 'P' || c2 == '.')) {
-		_direction = key;
-	}
+	check2 = findInMap(x, y, key);
+	if (check1 != ' ' && check1 != 'P')
+		return false;
+	else if (check2 != ' ' && check2 != 'P')
+		return false;
+	else
+		return true;
 }
 
 void arc::Pacman::checkCollision1(Interaction &key, float &x, float &y) noexcept
@@ -239,20 +236,24 @@ void arc::Pacman::checkCollision2(Interaction &key, float &x, float &y) noexcept
 	}
 }
 
-void arc::Pacman::movePos(Interaction &key, float &x, float &y) noexcept
+void arc::Pacman::movePos(Interaction &key, Item &item) noexcept
 {
 	switch (key) {
 		case arc::Interaction::MOVE_LEFT:
-			x -= 0.1;
+			item.x -= 0.1;
+			item.sprites.begin()->rotation = 180;
 			break;
 		case arc::Interaction::MOVE_RIGHT:
-			x += 0.1;
+			item.x += 0.1;
+			item.sprites.begin()->rotation = 0;
 			break;
 		case arc::Interaction::MOVE_UP:
-			y -= 0.1;
+			item.y -= 0.1;
+			item.sprites.begin()->rotation = -90;
 			break;
 		case arc::Interaction::MOVE_DOWN:
-			y += 0.1;
+			item.y += 0.1;
+			item.sprites.begin()->rotation = 90;
 			break;
 		default:
 			return;
