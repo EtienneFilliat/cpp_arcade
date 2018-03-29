@@ -22,9 +22,11 @@ class Pacman : public arc::IGame {
 		void envUpdate() noexcept final;
 	private:
 		Item &getItemFromName(const std::string &);
+		void removeItem(const std::string &);
 		void createItem(const char, const int, const int) noexcept;
 		void setItems() noexcept;
 		Item createWall(const int, const int) noexcept;
+		Item createPacgum(const int, const int) noexcept;
 		Item createFirstPacman(const int, const int) noexcept;
 		void createSecondPacman(Item &item) noexcept;
 		char findInMap(const float, const float,
@@ -35,6 +37,7 @@ class Pacman : public arc::IGame {
 		void checkCollision1(Interaction &, float &, float &) noexcept;
 		void checkCollision2(Interaction &, float &, float &) noexcept;
 		void movePos(Interaction &, Item &item) noexcept;
+		void removePacgum(const Item &item);
 		std::vector<std::string> _map;
 		ItemList _mapItems;
 		Specs _spec;
