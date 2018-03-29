@@ -32,5 +32,7 @@ private:
 	caca_canvas_t *_canvas;
 	uint _step;
 	void setInteractions();
+	caca_color getColor(const arc::Color &);
 };
+
 #endif //PROJECT_LIBCACA_HPP

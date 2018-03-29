@@ -51,11 +51,17 @@ void arc::Libcaca::putItem(const arc::Item & item)
 {
 	uint32_t c;
 
+	caca_set_color_ansi(this->_canvas,
+				getColor(item.sprites[item.currSpriteIdx].
+				color),
+				getColor(item.sprites[item.currSpriteIdx].
+				background));
 	c = static_cast<uint32_t>(item.sprites[item.currSpriteIdx].substitute);
 	caca_put_char(this->_canvas,
 		item.x / this->_step,
 		item.y / this->_step,
 		c);
+	caca_set_color_ansi(this->_canvas, CACA_WHITE, CACA_BLACK);
 }
 
 void arc::Libcaca::putItem(const arc::Item &item, int x, int y)
@@ -80,6 +86,30 @@ void arc::Libcaca::putItem(const arc::Item &item,
 			(*it).y / this->_step,
 			c);
 		std::next(it);
+	}
+}
+
+caca_color arc::Libcaca::getColor(const Color &color)
+{
+	switch (color) {
+		case Color::BLACK:
+			return CACA_BLACK;
+		case Color::RED:
+			return CACA_RED;
+		case Color::GREEN:
+			return CACA_GREEN;
+		case Color::BLUE:
+			return CACA_BLUE;
+		case Color::YELLOW:
+			return CACA_YELLOW;
+		case Color::CYAN:
+			return CACA_CYAN;
+		case Color::MAGENTA:
+			return CACA_MAGENTA;
+		case Color::WHITE:
+			return CACA_WHITE;
+		default:
+			return CACA_BLACK;
 	}
 }
 
