@@ -125,8 +125,9 @@ arc::Item arc::Pacman::createPacgum(const int x, const int y) noexcept
 
 	sprite.path = "games/pacman/sprites/pacgum.png";
 	sprite.name = "pacgum";
-	sprite.substitute = '¤';
-	item.name = "pacgum";
+	sprite.substitute = '-';
+	item.name = "pacgum" + std::to_string(x) + '_'
+			+ std::to_string(y);
 	sprite.color = arc::Color::CYAN;
 	sprite.x = 0;
 	sprite.y = 0;
@@ -158,8 +159,21 @@ void arc::Pacman::autorun() noexcept
 {
 	arc::Item &item = getItemFromName("pacman");
 
-	if (isAWall(_direction, item.x, item.y))
+	if (isAWall(_direction, item.x, item.y)) {
 		movePos(_direction, item);
+		removePacgum(item);
+	}
+}
+
+void arc::Pacman::removePacgum(const Item &item)
+{
+	std::string pacG = "pacgum";
+	int x = std::floor(item.x);
+	int y = std::floor(item.y);
+
+	pacG += std::to_string(y) + '_' +
+		std::to_string(x);
+	removeItem(pacG);
 }
 
 void arc::Pacman::processInteraction(Interaction &key) noexcept
@@ -184,9 +198,9 @@ bool arc::Pacman::isAWall(Interaction &key, const float &itemX,
 	y = itemY;
 	checkCollision2(key, x, y);
 	check2 = findInMap(x, y, key);
-	if (check1 != ' ' && check1 != 'P')
+	if (check1 != ' ' && check1 != 'P' && check1 != '.')
 		return false;
-	else if (check2 != ' ' && check2 != 'P')
+	else if (check2 != ' ' && check2 != 'P' && check2 != '.')
 		return false;
 	else
 		return true;
@@ -267,6 +281,17 @@ arc::Item &arc::Pacman::getItemFromName(const std::string &name)
 			return *it;
 	}
 	return *_mapItems.begin();
+}
+
+void arc::Pacman::removeItem(const std::string &name)
+{
+
+	for (auto it = _mapItems.begin(); it < _mapItems.end(); it++) {
+		if (it->name == name) {
+			_mapItems.erase(it);
+			return;
+		}
+	}
 }
 
 char arc::Pacman::findInMap(const float posx, const float posy,
