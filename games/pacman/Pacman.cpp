@@ -115,7 +115,7 @@ arc::Item arc::Pacman::createPacman(const int x, const int y) noexcept
 	return (item);
 }
 
-arc::ItemList &arc::Pacman::getItems() noexcept
+const arc::ItemList &arc::Pacman::getItems() const noexcept
 {
 	return (_mapItems);
 }

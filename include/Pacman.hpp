@@ -16,7 +16,7 @@ class Pacman : public arc::IGame {
 	public:
 		Pacman();
 		~Pacman();
-		ItemList &getItems() noexcept final;
+		const ItemList &getItems() const noexcept final;
 		const Specs &getSpecs() const noexcept final;
 		void processInteraction(Interaction &) noexcept final;
 		void envUpdate() noexcept final;
