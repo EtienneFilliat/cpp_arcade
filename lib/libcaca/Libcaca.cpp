@@ -87,6 +87,7 @@ arc::InteractionList arc::Libcaca::getInteractions(){
 	arc::InteractionList Interaction_cpy;
 	arc::InteractionList empty;
 
+	usleep(40000);
 	this->setInteractions();
 	Interaction_cpy = this->_interactions;
 	std::swap(this->_interactions, empty);
