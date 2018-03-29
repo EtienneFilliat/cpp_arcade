@@ -26,6 +26,7 @@ arc::Pacman::Pacman()
 	_spec.fps = 0;
 	_spec.pixelStep = 32;
 	_direction = arc::Interaction::MOVE_RIGHT;
+	_eating = 0;
 	std::ifstream F ("./games/pacman/pacman_map.txt", std::ifstream::in);
 	if (!F)
 		throw arc::Exception("Cannot initialise file stream",
@@ -66,7 +67,7 @@ void arc::Pacman::createItem(const char type, const int posx,
 			_mapItems.insert(it, createWall(posx, posy));
 			break;
 		case 'P':
-			_mapItems.push_back(createPacman(posx, posy));
+			_mapItems.push_back(createFirstPacman(posx, posy));
 			break;
 		default:
 			return;
@@ -94,25 +95,41 @@ arc::Item arc::Pacman::createWall(const int x, const int y) noexcept
 	return (item);
 }
 
-arc::Item arc::Pacman::createPacman(const int x, const int y) noexcept
+arc::Item arc::Pacman::createFirstPacman(const int x, const int y) noexcept
 {
 	arc::Item item;
-	arc::Sprite sprite;
+	arc::Sprite sprite1;
 
-	sprite.path = "games/pacman/sprites/pacman.png";
-	sprite.name = "pacman";
-	sprite.substitute = 'C';
+	sprite1.path = "games/pacman/sprites/pacman1.png";
+	sprite1.name = "pacman";
+	sprite1.substitute = 'C';
+
 	item.name = "pacman";
-	sprite.color = arc::Color::YELLOW;
-	sprite.x = 0;
-	sprite.y = 0;
-	sprite.rotation = 0;
-	item.sprites.push_back(sprite);
+	sprite1.color = arc::Color::YELLOW;
+	sprite1.x = 0;
+	sprite1.y = 0;
+	sprite1.rotation = 0;
+	item.sprites.push_back(sprite1);
+	this->createSecondPacman(item);
 	item.spritesPath = "";
 	item.x = y;
 	item.y = x;
 	item.currSpriteIdx = 0;
 	return (item);
+}
+
+void arc::Pacman::createSecondPacman(Item &item) noexcept
+{
+	arc::Sprite sprite2;
+
+	sprite2.path = "games/pacman/sprites/pacman2.png";
+	sprite2.name = "pacman";
+	sprite2.substitute = 'c';
+	sprite2.color = arc::Color::YELLOW;
+	sprite2.x = 0;
+	sprite2.y = 0;
+	sprite2.rotation = 0;
+	item.sprites.push_back(sprite2);
 }
 
 const arc::ItemList &arc::Pacman::getItems() const noexcept
@@ -134,6 +151,13 @@ void arc::Pacman::autorun() noexcept
 {
 	arc::Item &item = getItemFromName("pacman");
 
+	_eating += 0.15;
+	if (_eating > 2) {
+		item.currSpriteIdx = 0;
+		_eating = 0;
+	}
+	else if (_eating > 1)
+		item.currSpriteIdx = 1;
 	if (isAWall(_direction, item.x, item.y))
 		movePos(_direction, item);
 }
@@ -217,19 +241,19 @@ void arc::Pacman::movePos(Interaction &key, Item &item) noexcept
 	switch (key) {
 		case arc::Interaction::MOVE_LEFT:
 			item.x -= 0.1;
-			item.sprites.begin()->rotation = 180;
+			item.sprites[item.currSpriteIdx].rotation = 180;
 			break;
 		case arc::Interaction::MOVE_RIGHT:
 			item.x += 0.1;
-			item.sprites.begin()->rotation = 0;
+			item.sprites[item.currSpriteIdx].rotation = 0;
 			break;
 		case arc::Interaction::MOVE_UP:
 			item.y -= 0.1;
-			item.sprites.begin()->rotation = -90;
+			item.sprites[item.currSpriteIdx].rotation = -90;
 			break;
 		case arc::Interaction::MOVE_DOWN:
 			item.y += 0.1;
-			item.sprites.begin()->rotation = 90;
+			item.sprites[item.currSpriteIdx].rotation = 90;
 			break;
 		default:
 			return;

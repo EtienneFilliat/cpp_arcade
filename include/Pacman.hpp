@@ -25,7 +25,8 @@ class Pacman : public arc::IGame {
 		void createItem(const char, const int, const int) noexcept;
 		void setItems() noexcept;
 		Item createWall(const int, const int) noexcept;
-		Item createPacman(const int, const int) noexcept;
+		Item createFirstPacman(const int, const int) noexcept;
+		void createSecondPacman(Item &item) noexcept;
 		char findInMap(const float, const float,
 				const Interaction) noexcept;
 		void autorun() noexcept;
@@ -38,6 +39,7 @@ class Pacman : public arc::IGame {
 		ItemList _mapItems;
 		Specs _spec;
 		Interaction _direction;
+		float _eating;
 
 };
 }
