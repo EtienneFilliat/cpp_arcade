@@ -245,7 +245,6 @@ void arc::Core::gameLoop()
 	arc::ItemList items = _game->getItems();
 
 	while (computeKeys(keys)) {
-		usleep(10000);
 		_display->clear();
 		for (auto it = items.begin(); it < items.end(); it++) {
 			_display->putItem(*it);
@@ -254,6 +253,7 @@ void arc::Core::gameLoop()
 		keys = _display->getInteractions();
 		_game->envUpdate();
 		items = _game->getItems();
+		usleep(1000);
 	}
 }
 
