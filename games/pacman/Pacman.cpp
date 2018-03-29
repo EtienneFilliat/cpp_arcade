@@ -68,6 +68,9 @@ void arc::Pacman::createItem(const char type, const int posx,
 		case 'P':
 			_mapItems.push_back(createPacman(posx, posy));
 			break;
+		case '.':
+			_mapItems.insert(it, createPacgum(posx, posy));
+			break;
 		default:
 			return;
 	}
@@ -115,6 +118,27 @@ arc::Item arc::Pacman::createPacman(const int x, const int y) noexcept
 	return (item);
 }
 
+arc::Item arc::Pacman::createPacgum(const int x, const int y) noexcept
+{
+	arc::Item item;
+	arc::Sprite sprite;
+
+	sprite.path = "games/pacman/sprites/pacgum.png";
+	sprite.name = "pacgum";
+	sprite.substitute = '¤';
+	item.name = "pacgum";
+	sprite.color = arc::Color::CYAN;
+	sprite.x = 0;
+	sprite.y = 0;
+	sprite.rotation = 0;
+	item.sprites.push_back(sprite);
+	item.spritesPath = "";
+	item.x = y;
+	item.y = x;
+	item.currSpriteIdx = 0;
+	return (item);
+}
+
 const arc::ItemList &arc::Pacman::getItems() const noexcept
 {
 	return (_mapItems);
@@ -144,8 +168,10 @@ void arc::Pacman::autorun() noexcept
 	y = item.y;
 	checkCollision2(_direction, x, y);
 	c2 = findInMap(x, y, _direction);
-	if ((c1 == ' ' || c1 == 'P') && (c2 == ' ' || c2 == 'P')) {
-		movePos(_direction, item.x, item.y);
+	if ((c1 == ' ' || c1 == 'P' || c1 == '.')
+		&& (c2 == ' ' || c2 == 'P' || c2 == '.'))
+		{
+			movePos(_direction, item.x, item.y);
 	}
 }
 
@@ -163,7 +189,8 @@ void arc::Pacman::processInteraction(Interaction &key) noexcept
 	y = item.y;
 	checkCollision2(key, x, y);
 	c2 = findInMap(x, y, key);
-	if ((c1 == ' ' || c1 == 'P') && (c2 == ' ' || c2 == 'P')) {
+	if ((c1 == ' ' || c1 == 'P' || c1 == '.')
+		&& (c2 == ' ' || c2 == 'P' || c2 == '.')) {
 		_direction = key;
 	}
 }

@@ -26,6 +26,7 @@ class Pacman : public arc::IGame {
 		void setItems() noexcept;
 		Item createWall(const int, const int) noexcept;
 		Item createPacman(const int, const int) noexcept;
+		Item createPacgum(const int, const int) noexcept;
 		char findInMap(const float, const float,
 				const Interaction) noexcept;
 		void autorun() noexcept;
