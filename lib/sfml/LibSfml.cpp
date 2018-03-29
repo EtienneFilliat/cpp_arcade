@@ -53,8 +53,8 @@ void arc::LibSfml::putItem(const arc::Item &item)
 	auto texture = std::unique_ptr<sf::Texture>(new sf::Texture);
 	auto sp = std::unique_ptr<spriteStruct>(new spriteStruct);
 	auto search = this->_map.find(item.name);
-	int x = item.x * 32;
-	int y = item.y * 32;
+	int x = item.x * 32 + 16;
+	int y = item.y * 32 + 16;
 	std::string spritePath = item.sprites[item.currSpriteIdx].path;
 
 	if (!texture->loadFromFile(spritePath))
@@ -69,7 +69,8 @@ void arc::LibSfml::putItem(const arc::Item &item)
 	} else {
 		search->second->sprite->setTexture(*texture);
 		search->second->sprite->setPosition(x, y);
-		search->second->sprite->setRotation(item.sprites.begin()->rotation);
+		search->second->sprite->setRotation(
+			item.sprites[item.currSpriteIdx].rotation);
 		this->_window->draw(*search->second->sprite);
 	}
 }
@@ -94,7 +95,8 @@ void arc::LibSfml::putItem(const arc::Item &item, int x, int y)
 	} else {
 		search->second->sprite->setTexture(*texture);
 		search->second->sprite->setPosition(x, y);
-		search->second->sprite->setRotation(item.sprites.begin()->rotation);
+		search->second->sprite->setRotation(
+			item.sprites[item.currSpriteIdx].rotation);
 		this->_window->draw(*search->second->sprite);
 	}
 }
