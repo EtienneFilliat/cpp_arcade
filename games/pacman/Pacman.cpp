@@ -87,6 +87,7 @@ arc::Item arc::Pacman::createWall(const int x, const int y) noexcept
 	sprite.substitute = '#';
 	item.name = "Wall" + std::to_string(x) + '_' + std::to_string(y);
 	sprite.color = arc::Color::BLUE;
+	sprite.background = arc::Color::BLUE;
 	sprite.x = 0;
 	sprite.y = 0;
 	sprite.rotation = 0;
@@ -109,6 +110,7 @@ arc::Item arc::Pacman::createFirstPacman(const int x, const int y) noexcept
 
 	item.name = "pacman";
 	sprite1.color = arc::Color::YELLOW;
+	sprite1.background = arc::Color::BLACK;
 	sprite1.x = 0;
 	sprite1.y = 0;
 	sprite1.rotation = 0;
@@ -132,6 +134,7 @@ arc::Item arc::Pacman::createPacgum(const int x, const int y) noexcept
 	item.name = "pacgum" + std::to_string(x) + '_'
 			+ std::to_string(y);
 	sprite.color = arc::Color::CYAN;
+	sprite.background = arc::Color::BLACK;
 	sprite.x = 0;
 	sprite.y = 0;
 	sprite.rotation = 0;
@@ -151,6 +154,7 @@ void arc::Pacman::createSecondPacman(Item &item) noexcept
 	sprite2.name = "pacman";
 	sprite2.substitute = 'c';
 	sprite2.color = arc::Color::YELLOW;
+	sprite2.background = arc::Color::BLACK;
 	sprite2.x = 0;
 	sprite2.y = 0;
 	sprite2.rotation = 0;
