@@ -135,7 +135,7 @@ void arc::Pacman::autorun() noexcept
 	arc::Item &item = getItemFromName("pacman");
 
 	if (isAWall(_direction, item.x, item.y))
-		movePos(_direction, item.x, item.y);
+		movePos(_direction, item);
 }
 
 void arc::Pacman::processInteraction(Interaction &key) noexcept
@@ -212,20 +212,24 @@ void arc::Pacman::checkCollision2(Interaction &key, float &x, float &y) noexcept
 	}
 }
 
-void arc::Pacman::movePos(Interaction &key, float &x, float &y) noexcept
+void arc::Pacman::movePos(Interaction &key, Item &item) noexcept
 {
 	switch (key) {
 		case arc::Interaction::MOVE_LEFT:
-			x -= 0.1;
+			item.x -= 0.1;
+			item.sprites.begin()->rotation = 180;
 			break;
 		case arc::Interaction::MOVE_RIGHT:
-			x += 0.1;
+			item.x += 0.1;
+			item.sprites.begin()->rotation = 0;
 			break;
 		case arc::Interaction::MOVE_UP:
-			y -= 0.1;
+			item.y -= 0.1;
+			item.sprites.begin()->rotation = -90;
 			break;
 		case arc::Interaction::MOVE_DOWN:
-			y += 0.1;
+			item.y += 0.1;
+			item.sprites.begin()->rotation = 90;
 			break;
 		default:
 			return;

@@ -33,7 +33,7 @@ class Pacman : public arc::IGame {
 				const float &itemY) noexcept;
 		void checkCollision1(Interaction &, float &, float &) noexcept;
 		void checkCollision2(Interaction &, float &, float &) noexcept;
-		void movePos(Interaction &, float &, float &) noexcept;
+		void movePos(Interaction &, Item &item) noexcept;
 		std::vector<std::string> _map;
 		ItemList _mapItems;
 		Specs _spec;
