@@ -18,7 +18,7 @@ class Pacman : public arc::IGame {
 		~Pacman();
 		const ItemList &getItems() const noexcept final;
 		const Specs &getSpecs() const noexcept final;
-		void processInteraction(Interaction &) noexcept final;
+		bool processInteraction(Interaction &) noexcept final;
 		void envUpdate() noexcept final;
 	private:
 		Item &getItemFromName(const std::string &);

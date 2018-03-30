@@ -41,6 +41,7 @@ void arc::LibNcurses::clear()
 void arc::LibNcurses::refresh()
 {
 	wrefresh(this->_window);
+	usleep(40000);
 }
 
 void arc::LibNcurses::putStr(const std::string &str, int x, int y)
@@ -94,7 +95,6 @@ arc::InteractionList arc::LibNcurses::getInteractions(){
 	arc::InteractionList Interaction_cpy;
 	arc::InteractionList empty;
 
-	usleep(40000);
 	this->setInteractions();
 	Interaction_cpy = this->_interactions;
 	std::swap(this->_interactions, empty);
