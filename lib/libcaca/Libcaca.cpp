@@ -40,6 +40,7 @@ void arc::Libcaca::clear()
 void arc::Libcaca::refresh()
 {
 	caca_refresh_display(this->_window);
+	usleep(40000);
 }
 
 void arc::Libcaca::putStr(const std::string &str, int x, int y)
@@ -117,7 +118,6 @@ arc::InteractionList arc::Libcaca::getInteractions(){
 	arc::InteractionList Interaction_cpy;
 	arc::InteractionList empty;
 
-	usleep(40000);
 	this->setInteractions();
 	Interaction_cpy = this->_interactions;
 	std::swap(this->_interactions, empty);

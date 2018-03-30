@@ -34,6 +34,7 @@ namespace arc {
 		void switchToNextGraphics();
 		void switchToPrevGraphics();
 		bool computeKeys(InteractionList &);
+		void tryToProcessInteraction(arc::InteractionList &keys);
 		void switchToNextGame();
 		void switchToPrevGame();
 	private:
@@ -45,6 +46,7 @@ namespace arc {
 		std::vector<std::string> _gameList;
 		std::string _displayName;
 		std::string _gameName;
+		int _tryInteraction;
 	};
 }
 

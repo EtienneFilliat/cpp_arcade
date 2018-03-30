@@ -215,12 +215,15 @@ void arc::Pacman::removePacgum(const Item &item) noexcept
 	removeItem(pacG);
 }
 
-void arc::Pacman::processInteraction(Interaction &key) noexcept
+bool arc::Pacman::processInteraction(Interaction &key) noexcept
 {
 	arc::Item &item = getItemFromName("pacman");
 
-	if (isAWall(key, item.x, item.y))
+	if (isAWall(key, item.x, item.y)) {
 		_direction = key;
+		return true;
+	}
+	return false;
 }
 
 bool arc::Pacman::isAWall(Interaction &key, const float &itemX,
