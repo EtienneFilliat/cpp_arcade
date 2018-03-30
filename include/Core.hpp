@@ -8,6 +8,7 @@
 #ifndef CORE_HPP_
 	#define CORE_HPP_
 	#include <memory>
+	#include <chrono>
 	#include "IGame.hpp"
 	#include "IDisplay.hpp"
 	#include "DynamicLib.hpp"
@@ -34,9 +35,11 @@ namespace arc {
 		void switchToNextGraphics();
 		void switchToPrevGraphics();
 		bool computeKeys(InteractionList &);
+		void tryToProcessInteraction(arc::InteractionList &keys);
 		void switchToNextGame();
 		void switchToPrevGame();
 	private:
+		void waitCycle() const noexcept;
 		DynamicLib<IGame> _gameLib;
 		DynamicLib<IDisplay> _displayLib;
 		std::unique_ptr<IGame> _game;
@@ -45,6 +48,8 @@ namespace arc {
 		std::vector<std::string> _gameList;
 		std::string _displayName;
 		std::string _gameName;
+		std::chrono::high_resolution_clock::time_point _startLoop;
+		int _tryInteraction;
 	};
 }
 
