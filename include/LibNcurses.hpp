@@ -33,5 +33,7 @@ private:
 	WINDOW *_window;
 	uint _step;
 	void setInteractions();
+	void initColorPairs();
+	void setColor(const Color &color);
 };
 #endif //PROJECT_LIBNCURSES_HPP
