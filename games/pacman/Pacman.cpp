@@ -199,7 +199,7 @@ void arc::Pacman::teleport(Item &item) noexcept
 	char pos = findInMap(item.x, item.y);
 
 	if (pos == 'G')
-		item.x = 25;
+		item.x = 26;
 	if (pos == 'D')
 		item.x = 1;
 }

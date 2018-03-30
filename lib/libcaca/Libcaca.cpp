@@ -7,6 +7,7 @@
 
 #include <iostream>
 #include <memory>
+#include <thread>
 #include "Libcaca.hpp"
 #include "Exception.hpp"
 
@@ -39,8 +40,10 @@ void arc::Libcaca::clear()
 
 void arc::Libcaca::refresh()
 {
+	millisec wait(40);
 	caca_refresh_display(this->_window);
-	usleep(40000);
+
+	std::this_thread::sleep_for(wait);
 }
 
 void arc::Libcaca::putStr(const std::string &str, int x, int y)

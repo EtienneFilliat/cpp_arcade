@@ -11,6 +11,7 @@
 	#include <queue>
 	#include <string>
 	#include <vector>
+	#include <chrono>
 
 namespace arc {
 
@@ -79,6 +80,8 @@ namespace arc {
 	};
 
 	using ItemList = std::vector<Item>;
+	using millisec = std::chrono::duration<double, std::milli>;
+
 }
 
 #endif /* !ARC_HPP_ */

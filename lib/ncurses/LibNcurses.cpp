@@ -7,6 +7,7 @@
 
 #include <iostream>
 #include <memory>
+#include <thread>
 #include <unistd.h>
 #include "LibNcurses.hpp"
 #include "Exception.hpp"
@@ -40,8 +41,10 @@ void arc::LibNcurses::clear()
 
 void arc::LibNcurses::refresh()
 {
+	millisec wait(40);
+
 	wrefresh(this->_window);
-	usleep(40000);
+	std::this_thread::sleep_for(wait);
 }
 
 void arc::LibNcurses::putStr(const std::string &str, int x, int y)
