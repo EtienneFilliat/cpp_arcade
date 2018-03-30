@@ -87,6 +87,7 @@ arc::Item arc::Pacman::createWall(const int x, const int y) noexcept
 	sprite.substitute = '#';
 	item.name = "Wall" + std::to_string(x) + '_' + std::to_string(y);
 	sprite.color = arc::Color::BLUE;
+	sprite.background = arc::Color::BLUE;
 	sprite.x = 0;
 	sprite.y = 0;
 	sprite.rotation = 0;
@@ -109,6 +110,7 @@ arc::Item arc::Pacman::createFirstPacman(const int x, const int y) noexcept
 
 	item.name = "pacman";
 	sprite1.color = arc::Color::YELLOW;
+	sprite1.background = arc::Color::BLACK;
 	sprite1.x = 0;
 	sprite1.y = 0;
 	sprite1.rotation = 0;
@@ -132,6 +134,7 @@ arc::Item arc::Pacman::createPacgum(const int x, const int y) noexcept
 	item.name = "pacgum" + std::to_string(x) + '_'
 			+ std::to_string(y);
 	sprite.color = arc::Color::CYAN;
+	sprite.background = arc::Color::BLACK;
 	sprite.x = 0;
 	sprite.y = 0;
 	sprite.rotation = 0;
@@ -151,6 +154,7 @@ void arc::Pacman::createSecondPacman(Item &item) noexcept
 	sprite2.name = "pacman";
 	sprite2.substitute = 'c';
 	sprite2.color = arc::Color::YELLOW;
+	sprite2.background = arc::Color::BLACK;
 	sprite2.x = 0;
 	sprite2.y = 0;
 	sprite2.rotation = 0;
@@ -186,10 +190,21 @@ void arc::Pacman::autorun() noexcept
 	if (isAWall(_direction, item.x, item.y)) {
 		movePos(_direction, item);
 		removePacgum(item);
+		teleport(item);
 	}
 }
 
-void arc::Pacman::removePacgum(const Item &item)
+void arc::Pacman::teleport(Item &item) noexcept
+{
+	char pos = findInMap(item.x, item.y);
+
+	if (pos == 'G')
+		item.x = 25;
+	if (pos == 'D')
+		item.x = 1;
+}
+
+void arc::Pacman::removePacgum(const Item &item) noexcept
 {
 	std::string pacG = "pacgum";
 	int x = std::floor(item.x);
@@ -217,14 +232,15 @@ bool arc::Pacman::isAWall(Interaction &key, const float &itemX,
 	float y = itemY;
 
 	checkCollision1(key, x, y);
-	check1 = findInMap(x, y, key);
+	check1 = findInMap(x, y);
 	x = itemX;
 	y = itemY;
 	checkCollision2(key, x, y);
-	check2 = findInMap(x, y, key);
-	if (check1 != ' ' && check1 != 'P' && check1 != '.')
+	check2 = findInMap(x, y);
+	if (check1 != ' ' && check1 != 'P' && check1 != '.' && check1 != 'G' && 	check1 != 'D')
 		return false;
-	else if (check2 != ' ' && check2 != 'P' && check2 != '.')
+	else if (check2 != ' ' && check2 != 'P' && check2 != '.' &&
+			check1 != 'G' && check1 != 'D')
 		return false;
 	else
 		return true;
@@ -318,8 +334,7 @@ void arc::Pacman::removeItem(const std::string &name)
 	}
 }
 
-char arc::Pacman::findInMap(const float posx, const float posy,
-				const Interaction key) noexcept
+char arc::Pacman::findInMap(const float posx, const float posy) noexcept
 {
 	int x_axis = 0;
 	int y_axis = 0;

@@ -29,15 +29,15 @@ class Pacman : public arc::IGame {
 		Item createPacgum(const int, const int) noexcept;
 		Item createFirstPacman(const int, const int) noexcept;
 		void createSecondPacman(Item &item) noexcept;
-		char findInMap(const float, const float,
-				const Interaction) noexcept;
+		char findInMap(const float, const float) noexcept;
 		void autorun() noexcept;
 		bool isAWall(Interaction &key, const float &itemX,
 				const float &itemY) noexcept;
 		void checkCollision1(Interaction &, float &, float &) noexcept;
 		void checkCollision2(Interaction &, float &, float &) noexcept;
 		void movePos(Interaction &, Item &item) noexcept;
-		void removePacgum(const Item &item);
+		void removePacgum(const Item &item) noexcept;
+		void teleport(Item &item) noexcept;
 		std::vector<std::string> _map;
 		ItemList _mapItems;
 		Specs _spec;
