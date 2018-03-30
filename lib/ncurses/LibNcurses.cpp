@@ -41,7 +41,10 @@ void arc::LibNcurses::clear()
 
 void arc::LibNcurses::refresh()
 {
+	millisec wait(40);
+
 	wrefresh(this->_window);
+	std::this_thread::sleep_for(wait);
 }
 
 void arc::LibNcurses::putStr(const std::string &str, int x, int y)
@@ -94,9 +97,7 @@ void arc::LibNcurses::setStep(uint step)
 arc::InteractionList arc::LibNcurses::getInteractions(){
 	arc::InteractionList Interaction_cpy;
 	arc::InteractionList empty;
-	millisec wait(40);
 
-	std::this_thread::sleep_for(wait);
 	this->setInteractions();
 	Interaction_cpy = this->_interactions;
 	std::swap(this->_interactions, empty);

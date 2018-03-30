@@ -15,6 +15,7 @@
 #include "IGame.hpp"
 
 arc::Core::Core()
+	: _tryInteraction(0)
 {}
 
 arc::Core::~Core()
@@ -248,11 +249,13 @@ void arc::Core::gameLoop()
 	while (computeKeys(keys)) {
 		_startLoop = std::chrono::high_resolution_clock::now();
 		_display->clear();
-		for (auto it = items.begin(); it < items.end(); it++) {
+		for (auto it = items.begin(); it < items.end(); it++)
 			_display->putItem(*it);
-		}
 		_display->refresh();
-		keys = _display->getInteractions();
+		if (keys.empty())
+			keys = _display->getInteractions();
+		else
+			keys.pop();
 		_game->envUpdate();
 		items = _game->getItems();
 		waitCycle();
@@ -265,15 +268,13 @@ void arc::Core::waitCycle() const noexcept
 	millisec diff = endLoop - _startLoop;
 	millisec wait(0.1 - diff.count());
 
-	float wait_i = std::chrono::duration_cast<std::chrono::milliseconds> (wait).count();
-	std::cout << "Waited for: " << wait_i << std::endl;
 	std::this_thread::sleep_for(wait);
 
 }
 
 bool arc::Core::computeKeys(arc::InteractionList &keys)
 {
-	while (!keys.empty()) {
+	if (!keys.empty()) {
 		switch (keys.front()) {
 			case arc::Interaction::LIB_NEXT:
 				switchToNextGraphics();
@@ -290,9 +291,21 @@ bool arc::Core::computeKeys(arc::InteractionList &keys)
 			case arc::Interaction::QUIT:
 				return false;
 			default:
-				_game->processInteraction(keys.front());
+				tryToProcessInteraction(keys);
 		}
-		keys.pop();
 	}
 	return true;
+}
+
+void arc::Core::tryToProcessInteraction(arc::InteractionList &keys)
+{
+	if (!_game->processInteraction(keys.front())) {
+		if (_tryInteraction < 6)
+			keys.push(keys.front());
+		else
+			_tryInteraction = 0;
+	}
+	else
+		_tryInteraction = 0;
+	_tryInteraction++;
 }

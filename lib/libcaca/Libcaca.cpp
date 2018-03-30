@@ -40,7 +40,10 @@ void arc::Libcaca::clear()
 
 void arc::Libcaca::refresh()
 {
+	millisec wait(40);
 	caca_refresh_display(this->_window);
+
+	std::this_thread::sleep_for(wait);
 }
 
 void arc::Libcaca::putStr(const std::string &str, int x, int y)
@@ -117,9 +120,7 @@ caca_color arc::Libcaca::getColor(const Color &color)
 arc::InteractionList arc::Libcaca::getInteractions(){
 	arc::InteractionList Interaction_cpy;
 	arc::InteractionList empty;
-	millisec wait(40);
 
-	std::this_thread::sleep_for(wait);
 	this->setInteractions();
 	Interaction_cpy = this->_interactions;
 	std::swap(this->_interactions, empty);

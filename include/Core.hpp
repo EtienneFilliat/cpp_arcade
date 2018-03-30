@@ -35,6 +35,7 @@ namespace arc {
 		void switchToNextGraphics();
 		void switchToPrevGraphics();
 		bool computeKeys(InteractionList &);
+		void tryToProcessInteraction(arc::InteractionList &keys);
 		void switchToNextGame();
 		void switchToPrevGame();
 	private:
@@ -48,6 +49,7 @@ namespace arc {
 		std::string _displayName;
 		std::string _gameName;
 		std::chrono::high_resolution_clock::time_point _startLoop;
+		int _tryInteraction;
 	};
 }
 
