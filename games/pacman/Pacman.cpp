@@ -190,10 +190,23 @@ void arc::Pacman::autorun() noexcept
 	if (isAWall(_direction, item.x, item.y)) {
 		movePos(_direction, item);
 		removePacgum(item);
+		teleport(item);
 	}
 }
 
-void arc::Pacman::removePacgum(const Item &item)
+void arc::Pacman::teleport(Item &item) noexcept
+{
+	char pos = findInMap(item.x, item.y);
+
+	if (pos == 'G')
+		item.x = 25;
+	if (pos == 'D')
+		item.x = 1;
+	std::cout << item.x << std::endl;
+	std::cout << item.y << std::endl;
+}
+
+void arc::Pacman::removePacgum(const Item &item) noexcept
 {
 	std::string pacG = "pacgum";
 	int x = std::floor(item.x);
@@ -221,14 +234,15 @@ bool arc::Pacman::isAWall(Interaction &key, const float &itemX,
 	float y = itemY;
 
 	checkCollision1(key, x, y);
-	check1 = findInMap(x, y, key);
+	check1 = findInMap(x, y);
 	x = itemX;
 	y = itemY;
 	checkCollision2(key, x, y);
-	check2 = findInMap(x, y, key);
-	if (check1 != ' ' && check1 != 'P' && check1 != '.')
+	check2 = findInMap(x, y);
+	if (check1 != ' ' && check1 != 'P' && check1 != '.' && check1 != 'G' && 	check1 != 'D')
 		return false;
-	else if (check2 != ' ' && check2 != 'P' && check2 != '.')
+	else if (check2 != ' ' && check2 != 'P' && check2 != '.' &&
+			check1 != 'G' && check1 != 'D')
 		return false;
 	else
 		return true;
@@ -322,8 +336,7 @@ void arc::Pacman::removeItem(const std::string &name)
 	}
 }
 
-char arc::Pacman::findInMap(const float posx, const float posy,
-				const Interaction key) noexcept
+char arc::Pacman::findInMap(const float posx, const float posy) noexcept
 {
 	int x_axis = 0;
 	int y_axis = 0;
