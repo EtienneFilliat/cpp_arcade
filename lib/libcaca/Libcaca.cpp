@@ -7,6 +7,7 @@
 
 #include <iostream>
 #include <memory>
+#include <thread>
 #include "Libcaca.hpp"
 #include "Exception.hpp"
 
@@ -116,8 +117,9 @@ caca_color arc::Libcaca::getColor(const Color &color)
 arc::InteractionList arc::Libcaca::getInteractions(){
 	arc::InteractionList Interaction_cpy;
 	arc::InteractionList empty;
+	millisec wait(40);
 
-	usleep(40000);
+	std::this_thread::sleep_for(wait);
 	this->setInteractions();
 	Interaction_cpy = this->_interactions;
 	std::swap(this->_interactions, empty);

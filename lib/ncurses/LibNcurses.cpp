@@ -7,6 +7,7 @@
 
 #include <iostream>
 #include <memory>
+#include <thread>
 #include <unistd.h>
 #include "LibNcurses.hpp"
 #include "Exception.hpp"
@@ -93,8 +94,9 @@ void arc::LibNcurses::setStep(uint step)
 arc::InteractionList arc::LibNcurses::getInteractions(){
 	arc::InteractionList Interaction_cpy;
 	arc::InteractionList empty;
+	millisec wait(40);
 
-	usleep(40000);
+	std::this_thread::sleep_for(wait);
 	this->setInteractions();
 	Interaction_cpy = this->_interactions;
 	std::swap(this->_interactions, empty);
