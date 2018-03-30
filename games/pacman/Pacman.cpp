@@ -202,8 +202,6 @@ void arc::Pacman::teleport(Item &item) noexcept
 		item.x = 25;
 	if (pos == 'D')
 		item.x = 1;
-	std::cout << item.x << std::endl;
-	std::cout << item.y << std::endl;
 }
 
 void arc::Pacman::removePacgum(const Item &item) noexcept
