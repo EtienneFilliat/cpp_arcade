@@ -22,11 +22,38 @@ arc::LibNcurses::LibNcurses()
 	: _window(nullptr), _step(1)
 {
 	this->_window = initscr();
+	start_color();
 	if (this->_window == nullptr)
 		throw arc::Exception("Cannot init window", "LibNCurses");
 	noecho();
 	nodelay(this->_window, true);
 	curs_set(0);
+	this->initColorPairs();
+}
+
+void arc::LibNcurses::initColorPairs()
+{
+	init_pair(0, COLOR_BLACK, COLOR_BLACK);
+	init_pair(1, COLOR_BLUE, COLOR_BLUE);
+	init_pair(2, COLOR_YELLOW, COLOR_BLACK);
+	init_pair(3, COLOR_CYAN, COLOR_BLACK);
+}
+
+void arc::LibNcurses::setColor(const Color &color)
+{
+	switch (color) {
+		case Color::BLUE:
+			attron(COLOR_PAIR(1));
+			break;
+		case Color::YELLOW:
+			attron(COLOR_PAIR(2));
+			break;
+		case Color::CYAN:
+			attron(COLOR_PAIR(3));
+			break;
+		default:
+			attron(COLOR_PAIR(0));
+	}
 }
 
 arc::LibNcurses::~LibNcurses()
@@ -56,11 +83,13 @@ void arc::LibNcurses::putItem(const arc::Item & item)
 {
 	uint32_t c;
 
+	setColor(item.sprites[item.currSpriteIdx].color);
 	c = static_cast<uint32_t>(item.sprites[item.currSpriteIdx].substitute);
 	mvwprintw(this->_window,
 		item.y / this->_step,
 		item.x / this->_step,
 		"%c", c);
+	attron(COLOR_PAIR(0));
 }
 
 void arc::LibNcurses::putItem(const arc::Item &item, int x, int y)
