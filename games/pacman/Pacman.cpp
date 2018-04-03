@@ -72,6 +72,8 @@ void arc::Pacman::createItem(const char type, const int posx,
 		case '.':
 			_mapItems.insert(it, createPacgum(posx, posy));
 			break;
+		case 'H':
+			_mapItems.push_back(createGhost(posx, posy));
 		default:
 			return;
 	}
@@ -107,7 +109,6 @@ arc::Item arc::Pacman::createFirstPacman(const int x, const int y) noexcept
 	sprite1.path = "games/pacman/sprites/pacman1.png";
 	sprite1.name = "pacman";
 	sprite1.substitute = 'C';
-
 	item.name = "pacman";
 	sprite1.color = arc::Color::YELLOW;
 	sprite1.background = arc::Color::BLACK;
@@ -159,6 +160,28 @@ void arc::Pacman::createSecondPacman(Item &item) noexcept
 	sprite2.y = 0;
 	sprite2.rotation = 0;
 	item.sprites.push_back(sprite2);
+}
+
+arc::Item arc::Pacman::createGhost(const int x, const int y) noexcept
+{
+	arc::Item item;
+	arc::Sprite sprite;
+
+	sprite.path = "games/pacman/sprites/pacman_debug.png";
+	sprite.name = "ghost";
+	sprite.substitute = '@';
+	item.name = "ghosts";
+	sprite.color = arc::Color::RED;
+	sprite.background = arc::Color::BLACK;
+	sprite.x = 0;
+	sprite.y = 0;
+	sprite.rotation = 0;
+	item.sprites.push_back(sprite);
+	item.spritesPath = "";
+	item.x = y;
+	item.y = x;
+	item.currSpriteIdx = 0;
+	return (item);
 }
 
 const arc::ItemList &arc::Pacman::getItems() const noexcept
