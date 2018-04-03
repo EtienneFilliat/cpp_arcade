@@ -39,11 +39,13 @@ class Pacman : public arc::IGame {
 		void movePos(Interaction &, Item &item) noexcept;
 		void removePacgum(const Item &item) noexcept;
 		void teleport(Item &item) noexcept;
+		void moveGhosts() noexcept;
 		std::vector<std::string> _map;
 		ItemList _mapItems;
 		Specs _spec;
 		Interaction _direction;
 		float _eating;
+		int _ghNbr;
 
 };
 }

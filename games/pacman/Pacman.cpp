@@ -9,6 +9,7 @@
 #include <fstream>
 #include <memory>
 #include <cmath>
+#include <cstdlib>
 #include "Pacman.hpp"
 
 extern "C" std::unique_ptr<arc::IGame> create_object()
@@ -27,6 +28,7 @@ arc::Pacman::Pacman()
 	_spec.pixelStep = 32;
 	_direction = arc::Interaction::MOVE_RIGHT;
 	_eating = 0;
+	_ghNbr = 1;
 	std::ifstream F ("./games/pacman/pacman_map.txt", std::ifstream::in);
 	if (!F)
 		throw arc::Exception("Cannot initialise file stream",
@@ -170,7 +172,8 @@ arc::Item arc::Pacman::createGhost(const int x, const int y) noexcept
 	sprite.path = "games/pacman/sprites/pacman_debug.png";
 	sprite.name = "ghost";
 	sprite.substitute = '@';
-	item.name = "ghosts";
+	item.name = "ghost" + std::to_string(_ghNbr);
+	_ghNbr++;
 	sprite.color = arc::Color::RED;
 	sprite.background = arc::Color::BLACK;
 	sprite.x = 0;
@@ -197,6 +200,12 @@ const arc::IGame::Specs &arc::Pacman::getSpecs() const noexcept
 void arc::Pacman::envUpdate() noexcept
 {
 	autorun();
+	moveGhosts();
+}
+
+void arc::Pacman::moveGhosts() noexcept
+{
+
 }
 
 void arc::Pacman::autorun() noexcept
