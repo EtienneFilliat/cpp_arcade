@@ -35,5 +35,6 @@ private:
 	void setInteractions();
 	void initColorPairs();
 	void setColor(const Color &color);
+	void UnSetColor(const Color &color);
 };
 #endif //PROJECT_LIBNCURSES_HPP

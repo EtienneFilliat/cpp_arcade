@@ -27,6 +27,7 @@ arc::Pacman::Pacman()
 	_spec.pixelStep = 32;
 	_direction = arc::Interaction::MOVE_RIGHT;
 	_eating = 0;
+	_score = 0;
 	std::ifstream F ("./games/pacman/pacman_map.txt", std::ifstream::in);
 	if (!F)
 		throw arc::Exception("Cannot initialise file stream",
@@ -212,7 +213,8 @@ void arc::Pacman::removePacgum(const Item &item) noexcept
 
 	pacG += std::to_string(y) + '_' +
 		std::to_string(x);
-	removeItem(pacG);
+	if (removeItem(pacG))
+		_score += 10;
 }
 
 bool arc::Pacman::processInteraction(Interaction &key) noexcept
@@ -326,15 +328,16 @@ arc::Item &arc::Pacman::getItemFromName(const std::string &name)
 	return *_mapItems.begin();
 }
 
-void arc::Pacman::removeItem(const std::string &name)
+bool arc::Pacman::removeItem(const std::string &name)
 {
 
 	for (auto it = _mapItems.begin(); it < _mapItems.end(); it++) {
 		if (it->name == name) {
 			_mapItems.erase(it);
-			return;
+			return true;
 		}
 	}
+	return false;
 }
 
 char arc::Pacman::findInMap(const float posx, const float posy) noexcept
@@ -358,4 +361,9 @@ char arc::Pacman::findInMap(const float posx, const float posy) noexcept
 		x_axis++;
 	}
 	return 0;
+}
+
+size_t arc::Pacman::getScore() noexcept
+{
+	return _score;
 }

@@ -56,6 +56,24 @@ void arc::LibNcurses::setColor(const Color &color)
 	}
 }
 
+void arc::LibNcurses::UnSetColor(const Color &color)
+{
+	switch (color) {
+		case Color::BLUE:
+			attroff(COLOR_PAIR(1));
+			break;
+		case Color::YELLOW:
+			attroff(COLOR_PAIR(2));
+			break;
+		case Color::CYAN:
+			attroff(COLOR_PAIR(3));
+			break;
+		default:
+			attroff(COLOR_PAIR(0));
+	}
+}
+
+
 arc::LibNcurses::~LibNcurses()
 {
 	endwin();
@@ -76,7 +94,7 @@ void arc::LibNcurses::refresh()
 
 void arc::LibNcurses::putStr(const std::string &str, int x, int y)
 {
-	mvwprintw(this->_window, y, x, "%s", str);
+	mvwprintw(this->_window, y, x, "%s", str.c_str());
 }
 
 void arc::LibNcurses::putItem(const arc::Item & item)
@@ -89,7 +107,7 @@ void arc::LibNcurses::putItem(const arc::Item & item)
 		item.y / this->_step,
 		item.x / this->_step,
 		"%c", c);
-	attron(COLOR_PAIR(0));
+	UnSetColor(item.sprites[item.currSpriteIdx].color);
 }
 
 void arc::LibNcurses::putItem(const arc::Item &item, int x, int y)
