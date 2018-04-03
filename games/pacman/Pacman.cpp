@@ -207,8 +207,8 @@ void arc::Pacman::teleport(Item &item) noexcept
 void arc::Pacman::removePacgum(const Item &item) noexcept
 {
 	std::string pacG = "pacgum";
-	int x = std::floor(item.x);
-	int y = std::floor(item.y);
+	int x = std::floor(item.x + 0.5);
+	int y = std::floor(item.y + 0.5);
 
 	pacG += std::to_string(y) + '_' +
 		std::to_string(x);
