@@ -210,13 +210,53 @@ void arc::Pacman::moveGhosts(const int i) noexcept
 	std::string name = "ghost" + std::to_string(i);
 	arc::Item &item = getItemFromName(name);
 	auto search = _ghostDirection.find(name);
-	// check intesection
 
-	// if not CONTINUE
+	checkIntersec(item, search->second);
 	if (isAWall(search->second, item.x, item.y)) {
 		movePos(search->second, item);
+		teleport(item);
+		return;
 	}
+}
 
+void arc::Pacman::checkIntersec(arc::Item &item,
+				arc::Interaction &dir) noexcept
+{
+	arc::Interaction key = arc::Interaction::MOVE_LEFT;
+	std::vector<Interaction> available;
+
+	if (isAWall(key, item.x, item.y) && dir != Interaction::MOVE_RIGHT)
+		available.push_back(key);
+	key = arc::Interaction::MOVE_RIGHT;
+	if (isAWall(key, item.x, item.y) && dir != Interaction::MOVE_LEFT)
+		available.push_back(key);
+	key = arc::Interaction::MOVE_DOWN;
+	if (isAWall(key, item.x, item.y) && dir != Interaction::MOVE_UP)
+		available.push_back(key);
+	key = arc::Interaction::MOVE_UP;
+	if (isAWall(key, item.x, item.y) && dir != Interaction::MOVE_DOWN)
+		available.push_back(key);
+	choseGhostDirection(available, dir);
+
+}
+
+void arc::Pacman::choseGhostDirection(std::vector<Interaction> &vec,
+					arc::Interaction &dir) noexcept
+{
+	int rnd;
+	int i = 0;
+
+	rnd = vec.size();
+	if (rnd > 1) {
+		rnd = rand() % rnd;
+		for (auto it = vec.begin(); it < vec.end(); it++) {
+			if (i == rnd)
+				dir = *it;
+			i++;
+		}
+	} else {
+		dir = vec.front();
+	}
 }
 
 void arc::Pacman::autorun() noexcept
@@ -283,10 +323,10 @@ bool arc::Pacman::isAWall(Interaction &key, const float &itemX,
 	y = itemY;
 	checkCollision2(key, x, y);
 	check2 = findInMap(x, y);
-	if (check1 != ' ' && check1 != 'P' && check1 != '.' && check1 != 'G' && 	check1 != 'D')
+	if (check1 != ' ' && check1 != 'P' && check1 != '.' && check1 != 'G' && 	check1 != 'D' && check1 != 'H')
 		return false;
 	else if (check2 != ' ' && check2 != 'P' && check2 != '.' &&
-			check1 != 'G' && check1 != 'D')
+			check2 != 'G' && check2 != 'D' && check2 != 'H')
 		return false;
 	else
 		return true;
