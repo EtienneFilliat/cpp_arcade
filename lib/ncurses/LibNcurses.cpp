@@ -76,7 +76,7 @@ void arc::LibNcurses::refresh()
 
 void arc::LibNcurses::putStr(const std::string &str, int x, int y)
 {
-	mvwprintw(this->_window, y, x, "%s", str);
+	mvwprintw(this->_window, y, x, "%s", str.c_str());
 }
 
 void arc::LibNcurses::putItem(const arc::Item & item)

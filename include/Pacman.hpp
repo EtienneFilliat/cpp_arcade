@@ -20,6 +20,7 @@ class Pacman : public arc::IGame {
 		const Specs &getSpecs() const noexcept final;
 		bool processInteraction(Interaction &) noexcept final;
 		void envUpdate() noexcept final;
+		int getScore() noexcept final;
 	private:
 		Item &getItemFromName(const std::string &);
 		void removeItem(const std::string &);
@@ -43,7 +44,7 @@ class Pacman : public arc::IGame {
 		Specs _spec;
 		Interaction _direction;
 		float _eating;
-
+		int _score;
 };
 }
 

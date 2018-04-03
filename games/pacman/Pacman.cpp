@@ -27,6 +27,7 @@ arc::Pacman::Pacman()
 	_spec.pixelStep = 32;
 	_direction = arc::Interaction::MOVE_RIGHT;
 	_eating = 0;
+	_score = 0;
 	std::ifstream F ("./games/pacman/pacman_map.txt", std::ifstream::in);
 	if (!F)
 		throw arc::Exception("Cannot initialise file stream",
@@ -358,4 +359,9 @@ char arc::Pacman::findInMap(const float posx, const float posy) noexcept
 		x_axis++;
 	}
 	return 0;
+}
+
+int arc::Pacman::getScore() noexcept
+{
+	return _score;
 }

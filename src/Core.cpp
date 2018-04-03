@@ -251,6 +251,7 @@ void arc::Core::gameLoop()
 		_display->clear();
 		for (auto it = items.begin(); it < items.end(); it++)
 			_display->putItem(*it);
+		_display->putStr(std::to_string(_game->getScore()));
 		_display->refresh();
 		if (keys.empty())
 			keys = _display->getInteractions();
