@@ -46,7 +46,7 @@ void arc::Pacman::setItems() noexcept
 	int x_axis = 0;
 	int y_axis = 0;
 
-	for (std::vector<std::string>::iterator x = _map.begin();
+	for (auto x = _map.begin();
 		x < _map.end(); x++) {
 		for (std::string::iterator y = x->begin(); y < x->end(); y++) {
 			createItem(*y, x_axis, y_axis);
