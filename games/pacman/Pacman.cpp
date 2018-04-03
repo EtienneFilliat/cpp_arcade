@@ -214,7 +214,7 @@ void arc::Pacman::removePacgum(const Item &item) noexcept
 	pacG += std::to_string(y) + '_' +
 		std::to_string(x);
 	if (removeItem(pacG))
-		_score++;
+		_score += 10;
 }
 
 bool arc::Pacman::processInteraction(Interaction &key) noexcept

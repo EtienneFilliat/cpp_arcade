@@ -251,7 +251,7 @@ void arc::Core::gameLoop()
 		_display->clear();
 		for (auto it = items.begin(); it < items.end(); it++)
 			_display->putItem(*it);
-		_display->putStr(std::to_string(_game->getScore()));
+		displayText();
 		_display->refresh();
 		if (keys.empty())
 			keys = _display->getInteractions();
@@ -261,6 +261,12 @@ void arc::Core::gameLoop()
 		items = _game->getItems();
 		waitCycle();
 	}
+}
+
+void arc::Core::displayText()
+{
+	_display->putStr("SCORE:", 30, 3);
+	_display->putStr(std::to_string(_game->getScore()), 30, 4);
 }
 
 void arc::Core::waitCycle() const noexcept
