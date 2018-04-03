@@ -23,7 +23,7 @@ class Pacman : public arc::IGame {
 		int getScore() noexcept final;
 	private:
 		Item &getItemFromName(const std::string &);
-		void removeItem(const std::string &);
+		bool removeItem(const std::string &);
 		void createItem(const char, const int, const int) noexcept;
 		void setItems() noexcept;
 		Item createWall(const int, const int) noexcept;
