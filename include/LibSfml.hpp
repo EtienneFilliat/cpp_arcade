@@ -24,7 +24,7 @@ class arc::LibSfml : public arc::IDisplay {
 		void clear() final;
 		void refresh() final;
 		void putStr(const std::string &, int x, int y) final;
-		void putItem(const arc::Item &) final;
+ 		void putItem(const arc::Item &) final;
 		void putItem(const arc::Item &, int, int) final;
 		void putItem(const arc::Item &,
 			const std::vector<struct Position> &) final;
@@ -43,6 +43,8 @@ class arc::LibSfml : public arc::IDisplay {
 		std::unique_ptr<sf::RenderWindow> _window;
 		spriteMap _map;
 		uint _step;
+		sf::Font _font;
+		sf::Text _text;
 };
 
 #endif /* !LIBSFML_HPP_ */

@@ -19,10 +19,16 @@ extern "C" std::unique_ptr<arc::IDisplay> create_object()
 arc::LibSfml::LibSfml()
 {
 	_step = 1;
-	_window.reset(new sf::RenderWindow(sf::VideoMode(900, 1000),
+	_window.reset(new sf::RenderWindow(sf::VideoMode(1160, 1000),
 			"Cpp_Arcade"));
 	if (!_window.get())
 		throw arc::Exception("Cannot create window", "LibSFML");
+	else if (!_font.loadFromFile("lib/sfml/FiraMono-Medium.ttf"))
+		throw Exception("Cannot load \'FiraMono-Medium.ttf\' font!",
+				"LibSFML");
+	_text.setFont(_font);
+	//_text.setColor(sf::Color::White);
+	_text.setPosition(0, 0);
 }
 
 arc::LibSfml::~LibSfml()
@@ -41,10 +47,9 @@ void arc::LibSfml::clear()
 
 void arc::LibSfml::putStr(const std::string &str, int x, int y)
 {
-	//@TODO: il faut le faire mdr
-	(void) str;
-	(void) x;
-	(void) y;
+	_text.setPosition(x * 32, y * 32);
+	_text.setString(str);
+	_window->draw(_text);
 }
 
 void arc::LibSfml::putItem(const arc::Item &item)

@@ -363,7 +363,7 @@ char arc::Pacman::findInMap(const float posx, const float posy) noexcept
 	return 0;
 }
 
-int arc::Pacman::getScore() noexcept
+size_t arc::Pacman::getScore() noexcept
 {
 	return _score;
 }
