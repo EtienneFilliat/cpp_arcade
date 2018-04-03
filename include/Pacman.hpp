@@ -9,6 +9,7 @@
 	#define PACMAN_HPP_
 	#include "IGame.hpp"
 	#include "Exception.hpp"
+	#include <unordered_map>
 
 namespace arc {
 
@@ -39,13 +40,15 @@ class Pacman : public arc::IGame {
 		void movePos(Interaction &, Item &item) noexcept;
 		void removePacgum(const Item &item) noexcept;
 		void teleport(Item &item) noexcept;
-		void moveGhosts() noexcept;
+		void moveGhosts(const int i) noexcept;
 		std::vector<std::string> _map;
 		ItemList _mapItems;
 		Specs _spec;
 		Interaction _direction;
 		float _eating;
 		int _ghNbr;
+		using GhostMap = std::unordered_map<std::string, Interaction>;
+		GhostMap _ghostDirection;
 
 };
 }

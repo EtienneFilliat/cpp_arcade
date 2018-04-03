@@ -28,7 +28,7 @@ arc::Pacman::Pacman()
 	_spec.pixelStep = 32;
 	_direction = arc::Interaction::MOVE_RIGHT;
 	_eating = 0;
-	_ghNbr = 1;
+	_ghNbr = 0;
 	std::ifstream F ("./games/pacman/pacman_map.txt", std::ifstream::in);
 	if (!F)
 		throw arc::Exception("Cannot initialise file stream",
@@ -173,6 +173,7 @@ arc::Item arc::Pacman::createGhost(const int x, const int y) noexcept
 	sprite.name = "ghost";
 	sprite.substitute = '@';
 	item.name = "ghost" + std::to_string(_ghNbr);
+	_ghostDirection[item.name] = arc::Interaction::MOVE_RIGHT;
 	_ghNbr++;
 	sprite.color = arc::Color::RED;
 	sprite.background = arc::Color::BLACK;
@@ -200,11 +201,21 @@ const arc::IGame::Specs &arc::Pacman::getSpecs() const noexcept
 void arc::Pacman::envUpdate() noexcept
 {
 	autorun();
-	moveGhosts();
+	for (int i = 0; i < _ghNbr; i++)
+		moveGhosts(i);
 }
 
-void arc::Pacman::moveGhosts() noexcept
+void arc::Pacman::moveGhosts(const int i) noexcept
 {
+	std::string name = "ghost" + std::to_string(i);
+	arc::Item &item = getItemFromName(name);
+	auto search = _ghostDirection.find(name);
+	// check intesection
+
+	// if not CONTINUE
+	if (isAWall(search->second, item.x, item.y)) {
+		movePos(search->second, item);
+	}
 
 }
 
