@@ -8,6 +8,7 @@
 #include <unistd.h>
 #include <iostream>
 #include <algorithm>
+#include <fstream>
 #include <dirent.h>
 #include <thread>
 #include "Core.hpp"
@@ -335,8 +336,9 @@ void arc::Core::tryToProcessInteraction(arc::InteractionList &keys) noexcept
 
 void arc::Core::menu()
 {
-	std::cout << "\033[2J\033[H";
-	std::cout << "\t\t\tARCADE PROJECT" << std::endl << std::endl;
+	std::ifstream s ("src/title.txt");
+
+	std::cout << "\033[2J\033[H" << std::endl << s.rdbuf() << std::endl;
 	showGraphicsAvailable();
 	std::cout << std::endl << std::endl;
 	showGamesAvailable();

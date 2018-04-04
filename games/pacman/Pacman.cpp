@@ -21,6 +21,7 @@ extern "C" std::unique_ptr<arc::IGame> create_object()
 arc::Pacman::Pacman()
 {
 	std::string S;
+	std::ifstream F ("./games/pacman/pacman_map.txt", std::ifstream::in);
 
 	_spec.x = 0;
 	_spec.y = 0;
@@ -30,7 +31,6 @@ arc::Pacman::Pacman()
 	_eating = 0;
 	_ghNbr = 0;
 	_score = 0;
-	std::ifstream F ("./games/pacman/pacman_map.txt", std::ifstream::in);
 	if (!F)
 		throw arc::Exception("Cannot initialise file stream",
 					"Pacman");
