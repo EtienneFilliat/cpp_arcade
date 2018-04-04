@@ -25,6 +25,7 @@ void arc::Core::initCore(const std::string &firstGraphics,
 				const std::string &displayDir,
 				const std::string &gameDir)
 {
+	initRandom();
 	initGraphics(displayDir);
 	initGames(gameDir);
 	setFirstGraphics(firstGraphics);
@@ -34,6 +35,11 @@ void arc::Core::initCore(const std::string &firstGraphics,
 					"Core");
 	showGamesAvailable();
 	setFirstGame();
+}
+
+void arc::Core::initRandom() const noexcept
+{
+	srand(getpid());
 }
 
 void arc::Core::initGraphics(const std::string &directory)
@@ -80,7 +86,7 @@ void arc::Core::initGames(const std::string &directory)
 	closedir(dir);
 }
 
-void arc::Core::searchDisplayLib(const std::string &fullPathName)
+void arc::Core::searchDisplayLib(const std::string &fullPathName) noexcept
 {
 
 	auto n = fullPathName.find(".so");
@@ -94,7 +100,7 @@ void arc::Core::searchDisplayLib(const std::string &fullPathName)
 	}
 }
 
-void arc::Core::searchGameLib(const std::string &fullPathName)
+void arc::Core::searchGameLib(const std::string &fullPathName) noexcept
 {
 
 	auto n = fullPathName.find(".so");
@@ -108,7 +114,7 @@ void arc::Core::searchGameLib(const std::string &fullPathName)
 	}
 }
 
-int arc::Core::displayUsage()
+int arc::Core::displayUsage() const noexcept
 {
 	std::cout << "USAGE:" << std::endl;
 	std::cout << "\t./arcade \'graphics_library.so\'" << std::endl;
@@ -117,7 +123,7 @@ int arc::Core::displayUsage()
 	return 84;
 }
 
-void arc::Core::showGraphicsAvailable()
+void arc::Core::showGraphicsAvailable() const noexcept
 {
 	std::cout << "GRAPHIC LIBRARIES AVAILABLE:" << std::endl;
 	for (auto it = _displayList.begin(); it != _displayList.end(); it++) {
@@ -126,7 +132,7 @@ void arc::Core::showGraphicsAvailable()
 	std::cout << std::endl;
 }
 
-void arc::Core::showGamesAvailable()
+void arc::Core::showGamesAvailable() const noexcept
 {
 	std::cout << "GAME LIBRARIES AVAILABLE:" << std::endl;
 	for (auto it = _gameList.begin(); it != _gameList.end(); it++) {
@@ -304,7 +310,7 @@ bool arc::Core::computeKeys(arc::InteractionList &keys)
 	return true;
 }
 
-void arc::Core::tryToProcessInteraction(arc::InteractionList &keys)
+void arc::Core::tryToProcessInteraction(arc::InteractionList &keys) noexcept
 {
 	if (!_game->processInteraction(keys.front())) {
 		if (_tryInteraction < 6)

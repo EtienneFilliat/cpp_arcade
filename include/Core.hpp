@@ -19,24 +19,27 @@ namespace arc {
 	public:
 		Core();
 		~Core();
-		int displayUsage();
+		int displayUsage() const noexcept;
 		void initCore(const std::string &firstGraphics,
 				const std::string &displayDir = "lib",
 				const std::string &gameDir = "games");
 		void gameLoop();
 	private:
+		void initRandom() const noexcept;
 		void initGraphics(const std::string &directory);
 		void initGames(const std::string &directory);
-		void searchDisplayLib(const std::string &fullPathName);
-		void searchGameLib(const std::string &fullPathName);
+		void searchDisplayLib(const std::string &fullPathName)
+					noexcept;
+		void searchGameLib(const std::string &fullPathName) noexcept;
 		void setFirstGraphics(const std::string &fullPathName);
 		void setFirstGame();
-		void showGraphicsAvailable();
-		void showGamesAvailable();
+		void showGraphicsAvailable() const noexcept;
+		void showGamesAvailable() const noexcept;
 		void switchToNextGraphics();
 		void switchToPrevGraphics();
 		bool computeKeys(InteractionList &);
-		void tryToProcessInteraction(arc::InteractionList &keys);
+		void tryToProcessInteraction(arc::InteractionList &keys)
+						noexcept;
 		void switchToNextGame();
 		void switchToPrevGame();
 		void displayText();
