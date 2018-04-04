@@ -27,6 +27,7 @@ namespace arc {
 		LIB_PREV,
 		GAME_NEXT,
 		GAME_PREV,
+		MENU,
 		QUIT,
 	};
 

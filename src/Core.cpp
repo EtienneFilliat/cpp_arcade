@@ -28,13 +28,11 @@ void arc::Core::initCore(const std::string &firstGraphics,
 	initRandom();
 	initGraphics(displayDir);
 	initGames(gameDir);
-	setFirstGraphics(firstGraphics);
-	showGraphicsAvailable();
 	if (_gameList.empty())
 		throw Exception("No game library found in \'./games\'!",
 					"Core");
-	showGamesAvailable();
-	setFirstGame();
+	menu();
+	setFirstGraphics(firstGraphics);
 }
 
 void arc::Core::initRandom() const noexcept
@@ -127,16 +125,26 @@ void arc::Core::showGraphicsAvailable() const noexcept
 {
 	std::cout << "GRAPHIC LIBRARIES AVAILABLE:" << std::endl;
 	for (auto it = _displayList.begin(); it != _displayList.end(); it++) {
-		std::cout << "\t" << *it << std::endl;
+		std::cout << "\t\t" << *it << std::endl;
 	}
-	std::cout << std::endl;
 }
 
 void arc::Core::showGamesAvailable() const noexcept
 {
-	std::cout << "GAME LIBRARIES AVAILABLE:" << std::endl;
+	size_t count = 1;
+	size_t nameIdx;
+	size_t nameLen;
+	std::string gameName;
+
+	std::cout << "GAME LIBRARIES AVAILABLE:";
 	for (auto it = _gameList.begin(); it != _gameList.end(); it++) {
-		std::cout << "\t" << *it << std::endl;
+		nameIdx = (*it).find_last_of("_") + 1;
+		nameLen = (*it).find_last_of(".") - nameIdx;
+		gameName = (*it).substr(nameIdx, nameLen);
+		std::cout << std::endl;
+		std::cout << "\t\tGame library:\t" << *it << std::endl;
+		std::cout << "\t\tGame name:\t" << gameName << std::endl;
+		std::cout << "\t\tGame number:\t" << count << std::endl;
 	}
 }
 
@@ -271,8 +279,10 @@ void arc::Core::gameLoop()
 
 void arc::Core::displayText()
 {
-	_display->putStr("SCORE:", 30, 3);
-	_display->putStr(std::to_string(_game->getScore()), 30, 4);
+	_display->putStr("PLAYER:", 30, 1);
+	_display->putStr(_userName, 30, 2);
+	_display->putStr("SCORE:", 30, 4);
+	_display->putStr(std::to_string(_game->getScore()), 30, 5);
 }
 
 void arc::Core::waitCycle() const noexcept
@@ -321,4 +331,50 @@ void arc::Core::tryToProcessInteraction(arc::InteractionList &keys) noexcept
 	else
 		_tryInteraction = 0;
 	_tryInteraction++;
+}
+
+void arc::Core::menu()
+{
+	std::cout << "\033[2J\033[H";
+	std::cout << "\t\t\tARCADE PROJECT" << std::endl << std::endl;
+	showGraphicsAvailable();
+	std::cout << std::endl << std::endl;
+	showGamesAvailable();
+	std::cout << std::endl;
+	getPlayerName();
+	std::cout << std::endl;
+	_gameName = _gameList[getGameNumber()];
+	_gameLib.open(_gameName);
+	_gameLib.instantiate();
+	_game = _gameLib.load();
+}
+
+void arc::Core::getPlayerName()
+{
+	std::cout << "Enter your name (< 12 characters): ";
+	std::getline(std::cin, _userName);
+	while (_userName.length() >= 12) {
+		std::cout << "Your name is too long!" << std::endl;
+		std::cout << "Enter a shorter name: ";
+		std::getline(std::cin, _userName);
+	}
+}
+
+size_t arc::Core::getGameNumber()
+{
+	std::string input;
+	size_t nb = 0;
+
+	std::cout << "Enter game number :";
+	std::cin >> input;
+	if (input.find_first_not_of("0123456789") == std::string::npos)
+		nb = std::stoi(input);
+	while (nb > _gameList.size() || nb == 0) {
+		std::cout << "Wrong game number!" << std::endl;
+		std::cout << "Enter another game number :";
+		std::cin >> input;
+		if (input.find_first_not_of("0123456789") == std::string::npos)
+			nb = std::stoi(input);
+	}
+	return nb - 1;
 }
