@@ -23,6 +23,8 @@ namespace arc {
 		void initCore(const std::string &firstGraphics,
 				const std::string &displayDir = "lib",
 				const std::string &gameDir = "games");
+		void gameLoop();
+	private:
 		void initGraphics(const std::string &directory);
 		void initGames(const std::string &directory);
 		void searchDisplayLib(const std::string &fullPathName);
@@ -31,14 +33,13 @@ namespace arc {
 		void setFirstGame();
 		void showGraphicsAvailable();
 		void showGamesAvailable();
-		void gameLoop();
 		void switchToNextGraphics();
 		void switchToPrevGraphics();
 		bool computeKeys(InteractionList &);
 		void tryToProcessInteraction(arc::InteractionList &keys);
 		void switchToNextGame();
 		void switchToPrevGame();
-	private:
+		void displayText();
 		void waitCycle() const noexcept;
 		DynamicLib<IGame> _gameLib;
 		DynamicLib<IDisplay> _displayLib;

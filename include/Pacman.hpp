@@ -21,9 +21,10 @@ class Pacman : public arc::IGame {
 		const Specs &getSpecs() const noexcept final;
 		bool processInteraction(Interaction &) noexcept final;
 		void envUpdate() noexcept final;
+		int getScore() noexcept final;
 	private:
 		Item &getItemFromName(const std::string &);
-		void removeItem(const std::string &);
+		bool removeItem(const std::string &);
 		void createItem(const char, const int, const int) noexcept;
 		void setItems() noexcept;
 		Item createWall(const int, const int) noexcept;
@@ -54,10 +55,10 @@ class Pacman : public arc::IGame {
 		Specs _spec;
 		Interaction _direction;
 		float _eating;
+		int _score;
 		int _ghNbr;
 		using GhostMap = std::unordered_map<std::string, Interaction>;
 		GhostMap _ghostDirection;
-
 };
 }
 
