@@ -44,6 +44,8 @@ namespace arc {
 		void switchToPrevGame();
 		void displayText();
 		void waitCycle() const noexcept;
+		void menu();
+		size_t playerInput();
 		DynamicLib<IGame> _gameLib;
 		DynamicLib<IDisplay> _displayLib;
 		std::unique_ptr<IGame> _game;
