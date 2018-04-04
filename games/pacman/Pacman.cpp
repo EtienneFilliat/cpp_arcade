@@ -200,23 +200,55 @@ const arc::IGame::Specs &arc::Pacman::getSpecs() const noexcept
 
 void arc::Pacman::envUpdate() noexcept
 {
-	autorun();
-	for (int i = 0; i < _ghNbr; i++)
-		moveGhosts(i);
+	try {
+		autorun();
+		for (int i = 0; i < _ghNbr; i++)
+			moveGhosts(i);
+	}
+	catch (std::exception &err) {
+		std::cerr << err.what() << std::endl;
+	}
 }
 
 void arc::Pacman::moveGhosts(const int i) noexcept
 {
 	std::string name = "ghost" + std::to_string(i);
 	arc::Item &item = getItemFromName(name);
+	arc::Item &pac = getItemFromName("pacman");
 	auto search = _ghostDirection.find(name);
 
 	checkIntersec(item, search->second);
 	if (isAWall(search->second, item.x, item.y)) {
 		movePos(search->second, item);
 		teleport(item);
-		return;
+		killPacman(item, pac);
 	}
+}
+
+void arc::Pacman::killPacman(arc::Item &ghost, arc::Item &pacman) noexcept
+{
+	if ((std::floor(ghost.x) == std::floor(pacman.x))
+		&& (std::floor(ghost.y) == std::floor(pacman.y)))
+		reset();
+}
+
+void arc::Pacman::reset()
+{
+	std::string S;
+
+	_map.clear();
+	_mapItems.clear();
+	_ghostDirection.clear();
+	_eating = 0;
+	_ghNbr = 0;
+	_direction = arc::Interaction::MOVE_RIGHT;
+	std::ifstream F ("./games/pacman/pacman_map.txt", std::ifstream::in);
+	if (!F)
+		throw arc::Exception("Cannot initialise file stream",
+					"Pacman");
+	while (getline(F, S))
+		_map.push_back(S);
+	setItems();
 }
 
 void arc::Pacman::checkIntersec(arc::Item &item,
@@ -259,7 +291,7 @@ void arc::Pacman::choseGhostDirection(std::vector<Interaction> &vec,
 	}
 }
 
-void arc::Pacman::autorun() noexcept
+void arc::Pacman::autorun()
 {
 	arc::Item &item = getItemFromName("pacman");
 
@@ -402,10 +434,13 @@ void arc::Pacman::movePos(Interaction &key, Item &item) noexcept
 
 arc::Item &arc::Pacman::getItemFromName(const std::string &name)
 {
+	std::string err;
 	for (auto it = _mapItems.begin(); it < _mapItems.end(); it++) {
 		if (it->name == name)
 			return *it;
 	}
+	err += "Item name: " + name + " don't exist";
+	throw arc::Exception(err, "Pacman");
 	return *_mapItems.begin();
 }
 

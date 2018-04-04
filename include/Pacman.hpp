@@ -32,7 +32,7 @@ class Pacman : public arc::IGame {
 		void createSecondPacman(Item &item) noexcept;
 		Item createGhost(const int, const int) noexcept;
 		char findInMap(const float, const float) noexcept;
-		void autorun() noexcept;
+		void autorun();
 		bool isAWall(Interaction &key, const float &itemX,
 				const float &itemY) noexcept;
 		void checkCollision1(Interaction &, float &, float &) noexcept;
@@ -45,6 +45,8 @@ class Pacman : public arc::IGame {
 					arc::Interaction &dir) noexcept;
 		void choseGhostDirection(std::vector<Interaction> &vec,
 						arc::Interaction &dir) noexcept;
+		void killPacman(arc::Item &ghost, arc::Item &pacman) noexcept;
+		void reset();
 		std::vector<std::string> _map;
 		ItemList _mapItems;
 		Specs _spec;
