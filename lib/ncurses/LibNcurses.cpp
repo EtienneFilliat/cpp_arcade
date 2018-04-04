@@ -34,22 +34,34 @@ arc::LibNcurses::LibNcurses()
 void arc::LibNcurses::initColorPairs()
 {
 	init_pair(0, COLOR_BLACK, COLOR_BLACK);
-	init_pair(1, COLOR_BLUE, COLOR_BLUE);
-	init_pair(2, COLOR_YELLOW, COLOR_BLACK);
-	init_pair(3, COLOR_CYAN, COLOR_BLACK);
+	init_pair(1, COLOR_RED, COLOR_BLACK);
+	init_pair(2, COLOR_BLUE, COLOR_BLUE);
+	init_pair(3, COLOR_GREEN, COLOR_BLACK);
+	init_pair(4, COLOR_YELLOW, COLOR_BLACK);
+	init_pair(5, COLOR_CYAN, COLOR_BLACK);
+	init_pair(6, COLOR_MAGENTA, COLOR_BLACK);
 }
 
 void arc::LibNcurses::setColor(const Color &color)
 {
 	switch (color) {
-		case Color::BLUE:
+		case Color::RED:
 			attron(COLOR_PAIR(1));
 			break;
-		case Color::YELLOW:
+		case Color::BLUE:
 			attron(COLOR_PAIR(2));
 			break;
-		case Color::CYAN:
+		case Color::GREEN:
 			attron(COLOR_PAIR(3));
+			break;
+		case Color::YELLOW:
+			attron(COLOR_PAIR(4));
+			break;
+		case Color::CYAN:
+			attron(COLOR_PAIR(5));
+			break;
+		case Color::MAGENTA:
+			attron(COLOR_PAIR(6));
 			break;
 		default:
 			attron(COLOR_PAIR(0));
@@ -59,14 +71,23 @@ void arc::LibNcurses::setColor(const Color &color)
 void arc::LibNcurses::UnSetColor(const Color &color)
 {
 	switch (color) {
-		case Color::BLUE:
+		case Color::RED:
 			attroff(COLOR_PAIR(1));
 			break;
-		case Color::YELLOW:
+		case Color::BLUE:
 			attroff(COLOR_PAIR(2));
 			break;
-		case Color::CYAN:
+		case Color::GREEN:
 			attroff(COLOR_PAIR(3));
+			break;
+		case Color::YELLOW:
+			attroff(COLOR_PAIR(4));
+			break;
+		case Color::CYAN:
+			attroff(COLOR_PAIR(5));
+			break;
+		case Color::MAGENTA:
+			attroff(COLOR_PAIR(6));
 			break;
 		default:
 			attroff(COLOR_PAIR(0));
