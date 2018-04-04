@@ -193,19 +193,21 @@ void arc::Pacman::createSecondPacman(Item &item) noexcept
 arc::Item arc::Pacman::createGhost(const int x, const int y) noexcept
 {
 	arc::Item item;
-	arc::Sprite sprite;
+	arc::Sprite sprite1;
 
-	chooseGhostColor(sprite);
-	sprite.name = "ghost";
-	sprite.substitute = '@';
+	chooseGhostColor(sprite1, 1);
+	sprite1.name = "ghost";
+	sprite1.substitute = '@';
 	item.name = "ghost" + std::to_string(_ghNbr);
 	_ghostDirection[item.name] = arc::Interaction::MOVE_RIGHT;
+	_ghostmov[item.name] = 0;
+	sprite1.background = arc::Color::BLACK;
+	sprite1.x = 0;
+	sprite1.y = 0;
+	sprite1.rotation = 0;
+	item.sprites.push_back(sprite1);
+	createSecondGhost(item);
 	_ghNbr++;
-	sprite.background = arc::Color::BLACK;
-	sprite.x = 0;
-	sprite.y = 0;
-	sprite.rotation = 0;
-	item.sprites.push_back(sprite);
 	item.spritesPath = "";
 	item.x = y;
 	item.y = x;
@@ -213,27 +215,45 @@ arc::Item arc::Pacman::createGhost(const int x, const int y) noexcept
 	return (item);
 }
 
-void arc::Pacman::chooseGhostColor(arc::Sprite &sprite) noexcept
+void arc::Pacman::createSecondGhost(arc::Item &item) noexcept
+{
+	arc::Sprite sprite2;
+
+	chooseGhostColor(sprite2, 2);
+	sprite2.name = "ghost" + std::to_string(_ghNbr) + "_2";
+	sprite2.substitute = 'a';
+	sprite2.background = arc::Color::BLACK;
+	sprite2.x = 0;
+	sprite2.y = 0;
+	sprite2.rotation = 0;
+	item.sprites.push_back(sprite2);
+}
+
+void arc::Pacman::chooseGhostColor(arc::Sprite &sprite, const int i) noexcept
 {
 	int nbr;
 
 	nbr = _ghNbr % 4;
 	switch (nbr) {
 		case 1:
-			sprite.path = "games/pacman/sprites/green_ghost1.png";
+			sprite.path = "games/pacman/sprites/green_ghost"
+					+ std::to_string(i) + ".png";
 			sprite.color = arc::Color::GREEN;
 			break;
 		case 2:
-			sprite.path = "games/pacman/sprites/purple_ghost1.png";
+			sprite.path = "games/pacman/sprites/purple_ghost"
+					+ std::to_string(i) + ".png";
 			sprite.color = arc::Color::MAGENTA;
 			break;
 		case 3:
-			sprite.path = "games/pacman/sprites/red_ghost1.png";
-			sprite.color = arc::Color::RED;
+			sprite.path = "games/pacman/sprites/blue_ghost"
+					+ std::to_string(i) + ".png";
+			sprite.color = arc::Color::CYAN;
 			break;
 		default:
-			sprite.path = "games/pacman/sprites/blue_ghost1.png";
-			sprite.color = arc::Color::CYAN;
+			sprite.path = "games/pacman/sprites/red_ghost"
+					+ std::to_string(i) + ".png";
+			sprite.color = arc::Color::RED;
 
 	}
 }
@@ -266,7 +286,15 @@ void arc::Pacman::moveGhosts(const int i) noexcept
 	arc::Item &item = getItemFromName(name);
 	arc::Item &pac = getItemFromName("pacman");
 	auto search = _ghostDirection.find(name);
+	auto state = _ghostmov.find(name);
 
+	state->second += 0.15;
+	if (state->second > 2) {
+		item.currSpriteIdx = 0;
+		state->second = 0;
+	}
+	else if (state->second > 1)
+		item.currSpriteIdx = 1;
 	checkIntersec(item, search->second);
 	if (isAWall(search->second, item.x, item.y)) {
 		movePosGhost(search->second, item);
@@ -291,6 +319,7 @@ void arc::Pacman::reset()
 	_ghostDirection.clear();
 	_eating = 0;
 	_ghNbr = 0;
+	_score = 0;
 	_direction = arc::Interaction::MOVE_RIGHT;
 	std::ifstream F ("./games/pacman/pacman_map.txt", std::ifstream::in);
 	if (!F)
