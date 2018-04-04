@@ -30,7 +30,7 @@ public:
 	virtual const Specs &getSpecs() const noexcept = 0;
 	virtual bool processInteraction(Interaction &) noexcept = 0;
 	virtual void envUpdate() noexcept = 0;
-	virtual size_t getScore() noexcept = 0;
+	virtual int getScore() noexcept = 0;
 	//virtual const std::vector<struct Position> &getBulletPos() = 0;
 };
 };
