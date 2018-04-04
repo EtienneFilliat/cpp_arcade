@@ -45,7 +45,8 @@ namespace arc {
 		void displayText();
 		void waitCycle() const noexcept;
 		void menu();
-		size_t playerInput();
+		void getPlayerName();
+		size_t getGameNumber();
 		DynamicLib<IGame> _gameLib;
 		DynamicLib<IDisplay> _displayLib;
 		std::unique_ptr<IGame> _game;
@@ -54,6 +55,7 @@ namespace arc {
 		std::vector<std::string> _gameList;
 		std::string _displayName;
 		std::string _gameName;
+		std::string _userName;
 		std::chrono::high_resolution_clock::time_point _startLoop;
 		int _tryInteraction;
 	};
