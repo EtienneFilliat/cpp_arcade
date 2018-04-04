@@ -9,6 +9,7 @@
 	#define PACMAN_HPP_
 	#include "IGame.hpp"
 	#include "Exception.hpp"
+	#include <unordered_map>
 
 namespace arc {
 
@@ -30,8 +31,9 @@ class Pacman : public arc::IGame {
 		Item createPacgum(const int, const int) noexcept;
 		Item createFirstPacman(const int, const int) noexcept;
 		void createSecondPacman(Item &item) noexcept;
+		Item createGhost(const int, const int) noexcept;
 		char findInMap(const float, const float) noexcept;
-		void autorun() noexcept;
+		void autorun();
 		bool isAWall(Interaction &key, const float &itemX,
 				const float &itemY) noexcept;
 		void checkCollision1(Interaction &, float &, float &) noexcept;
@@ -39,12 +41,24 @@ class Pacman : public arc::IGame {
 		void movePos(Interaction &, Item &item) noexcept;
 		void removePacgum(const Item &item) noexcept;
 		void teleport(Item &item) noexcept;
+		void moveGhosts(const int i) noexcept;
+		void movePosGhost(Interaction &, Item &item) noexcept;
+		void checkIntersec(arc::Item &item,
+					arc::Interaction &dir) noexcept;
+		void chooseGhostDirection(std::vector<Interaction> &vec,
+						arc::Interaction &dir) noexcept;
+		void killPacman(arc::Item &ghost, arc::Item &pacman) noexcept;
+		void reset();
+		void chooseGhostColor(arc::Sprite &sprite) noexcept;
 		std::vector<std::string> _map;
 		ItemList _mapItems;
 		Specs _spec;
 		Interaction _direction;
 		float _eating;
 		int _score;
+		int _ghNbr;
+		using GhostMap = std::unordered_map<std::string, Interaction>;
+		GhostMap _ghostDirection;
 };
 }
 

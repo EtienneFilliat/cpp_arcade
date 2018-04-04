@@ -9,6 +9,7 @@
 #include <fstream>
 #include <memory>
 #include <cmath>
+#include <cstdlib>
 #include "Pacman.hpp"
 
 extern "C" std::unique_ptr<arc::IGame> create_object()
@@ -27,6 +28,7 @@ arc::Pacman::Pacman()
 	_spec.pixelStep = 32;
 	_direction = arc::Interaction::MOVE_RIGHT;
 	_eating = 0;
+	_ghNbr = 0;
 	_score = 0;
 	std::ifstream F ("./games/pacman/pacman_map.txt", std::ifstream::in);
 	if (!F)
@@ -73,6 +75,8 @@ void arc::Pacman::createItem(const char type, const int posx,
 		case '.':
 			_mapItems.insert(it, createPacgum(posx, posy));
 			break;
+		case 'H':
+			_mapItems.push_back(createGhost(posx, posy));
 		default:
 			return;
 	}
@@ -108,7 +112,6 @@ arc::Item arc::Pacman::createFirstPacman(const int x, const int y) noexcept
 	sprite1.path = "games/pacman/sprites/pacman1.png";
 	sprite1.name = "pacman";
 	sprite1.substitute = 'C';
-
 	item.name = "pacman";
 	sprite1.color = arc::Color::YELLOW;
 	sprite1.background = arc::Color::BLACK;
@@ -162,6 +165,54 @@ void arc::Pacman::createSecondPacman(Item &item) noexcept
 	item.sprites.push_back(sprite2);
 }
 
+arc::Item arc::Pacman::createGhost(const int x, const int y) noexcept
+{
+	arc::Item item;
+	arc::Sprite sprite;
+
+	chooseGhostColor(sprite);
+	sprite.name = "ghost";
+	sprite.substitute = '@';
+	item.name = "ghost" + std::to_string(_ghNbr);
+	_ghostDirection[item.name] = arc::Interaction::MOVE_RIGHT;
+	_ghNbr++;
+	sprite.background = arc::Color::BLACK;
+	sprite.x = 0;
+	sprite.y = 0;
+	sprite.rotation = 0;
+	item.sprites.push_back(sprite);
+	item.spritesPath = "";
+	item.x = y;
+	item.y = x;
+	item.currSpriteIdx = 0;
+	return (item);
+}
+
+void arc::Pacman::chooseGhostColor(arc::Sprite &sprite) noexcept
+{
+	int nbr;
+
+	nbr = _ghNbr % 4;
+	switch (nbr) {
+		case 1:
+			sprite.path = "games/pacman/sprites/green_ghost1.png";
+			sprite.color = arc::Color::GREEN;
+			break;
+		case 2:
+			sprite.path = "games/pacman/sprites/purple_ghost1.png";
+			sprite.color = arc::Color::MAGENTA;
+			break;
+		case 3:
+			sprite.path = "games/pacman/sprites/red_ghost1.png";
+			sprite.color = arc::Color::RED;
+			break;
+		default:
+			sprite.path = "games/pacman/sprites/blue_ghost1.png";
+			sprite.color = arc::Color::CYAN;
+
+	}
+}
+
 const arc::ItemList &arc::Pacman::getItems() const noexcept
 {
 	return (_mapItems);
@@ -174,10 +225,98 @@ const arc::IGame::Specs &arc::Pacman::getSpecs() const noexcept
 
 void arc::Pacman::envUpdate() noexcept
 {
-	autorun();
+	try {
+		autorun();
+		for (int i = 0; i < _ghNbr; i++)
+			moveGhosts(i);
+	}
+	catch (std::exception &err) {
+		std::cerr << err.what() << std::endl;
+	}
 }
 
-void arc::Pacman::autorun() noexcept
+void arc::Pacman::moveGhosts(const int i) noexcept
+{
+	std::string name = "ghost" + std::to_string(i);
+	arc::Item &item = getItemFromName(name);
+	arc::Item &pac = getItemFromName("pacman");
+	auto search = _ghostDirection.find(name);
+
+	checkIntersec(item, search->second);
+	if (isAWall(search->second, item.x, item.y)) {
+		movePosGhost(search->second, item);
+		teleport(item);
+		killPacman(item, pac);
+	}
+}
+
+void arc::Pacman::killPacman(arc::Item &ghost, arc::Item &pacman) noexcept
+{
+	if ((std::floor(ghost.x) == std::floor(pacman.x))
+		&& (std::floor(ghost.y) == std::floor(pacman.y)))
+		reset();
+}
+
+void arc::Pacman::reset()
+{
+	std::string S;
+
+	_map.clear();
+	_mapItems.clear();
+	_ghostDirection.clear();
+	_eating = 0;
+	_ghNbr = 0;
+	_direction = arc::Interaction::MOVE_RIGHT;
+	std::ifstream F ("./games/pacman/pacman_map.txt", std::ifstream::in);
+	if (!F)
+		throw arc::Exception("Cannot initialise file stream",
+					"Pacman");
+	while (getline(F, S))
+		_map.push_back(S);
+	setItems();
+}
+
+void arc::Pacman::checkIntersec(arc::Item &item,
+				arc::Interaction &dir) noexcept
+{
+	arc::Interaction key = arc::Interaction::MOVE_LEFT;
+	std::vector<Interaction> available;
+
+	if (isAWall(key, item.x, item.y) && dir != Interaction::MOVE_RIGHT)
+		available.push_back(key);
+	key = arc::Interaction::MOVE_RIGHT;
+	if (isAWall(key, item.x, item.y) && dir != Interaction::MOVE_LEFT)
+		available.push_back(key);
+	key = arc::Interaction::MOVE_DOWN;
+	if (isAWall(key, item.x, item.y) && dir != Interaction::MOVE_UP)
+		available.push_back(key);
+	key = arc::Interaction::MOVE_UP;
+	if (isAWall(key, item.x, item.y) && dir != Interaction::MOVE_DOWN)
+		available.push_back(key);
+	chooseGhostDirection(available, dir);
+
+}
+
+void arc::Pacman::chooseGhostDirection(std::vector<Interaction> &vec,
+					arc::Interaction &dir) noexcept
+{
+	int rnd;
+	int i = 0;
+
+	rnd = vec.size();
+	if (rnd > 1) {
+		rnd = rand() % rnd;
+		for (auto it = vec.begin(); it < vec.end(); it++) {
+			if (i == rnd)
+				dir = *it;
+			i++;
+		}
+	} else {
+		dir = vec.front();
+	}
+}
+
+void arc::Pacman::autorun()
 {
 	arc::Item &item = getItemFromName("pacman");
 
@@ -242,10 +381,10 @@ bool arc::Pacman::isAWall(Interaction &key, const float &itemX,
 	y = itemY;
 	checkCollision2(key, x, y);
 	check2 = findInMap(x, y);
-	if (check1 != ' ' && check1 != 'P' && check1 != '.' && check1 != 'G' && 	check1 != 'D')
+	if (check1 != ' ' && check1 != 'P' && check1 != '.' && check1 != 'G' && 	check1 != 'D' && check1 != 'H')
 		return false;
 	else if (check2 != ' ' && check2 != 'P' && check2 != '.' &&
-			check1 != 'G' && check1 != 'D')
+			check2 != 'G' && check2 != 'D' && check2 != 'H')
 		return false;
 	else
 		return true;
@@ -319,12 +458,35 @@ void arc::Pacman::movePos(Interaction &key, Item &item) noexcept
 	}
 }
 
+void arc::Pacman::movePosGhost(Interaction &key, Item &item) noexcept
+{
+	switch (key) {
+		case arc::Interaction::MOVE_LEFT:
+			item.x -= 0.1;
+			break;
+		case arc::Interaction::MOVE_RIGHT:
+			item.x += 0.1;
+			break;
+		case arc::Interaction::MOVE_UP:
+			item.y -= 0.1;
+			break;
+		case arc::Interaction::MOVE_DOWN:
+			item.y += 0.1;
+			break;
+		default:
+			return;
+	}
+}
+
 arc::Item &arc::Pacman::getItemFromName(const std::string &name)
 {
+	std::string err;
 	for (auto it = _mapItems.begin(); it < _mapItems.end(); it++) {
 		if (it->name == name)
 			return *it;
 	}
+	err += "Item name: " + name + " don't exist";
+	throw arc::Exception(err, "Pacman");
 	return *_mapItems.begin();
 }
 
