@@ -169,13 +169,12 @@ arc::Item arc::Pacman::createGhost(const int x, const int y) noexcept
 	arc::Item item;
 	arc::Sprite sprite;
 
-	sprite.path = "games/pacman/sprites/pacman_debug.png";
+	chooseGhostColor(sprite);
 	sprite.name = "ghost";
 	sprite.substitute = '@';
 	item.name = "ghost" + std::to_string(_ghNbr);
 	_ghostDirection[item.name] = arc::Interaction::MOVE_RIGHT;
 	_ghNbr++;
-	sprite.color = arc::Color::RED;
 	sprite.background = arc::Color::BLACK;
 	sprite.x = 0;
 	sprite.y = 0;
@@ -186,6 +185,31 @@ arc::Item arc::Pacman::createGhost(const int x, const int y) noexcept
 	item.y = x;
 	item.currSpriteIdx = 0;
 	return (item);
+}
+
+void arc::Pacman::chooseGhostColor(arc::Sprite &sprite) noexcept
+{
+	int nbr;
+
+	nbr = _ghNbr % 4;
+	switch (nbr) {
+		case 1:
+			sprite.path = "games/pacman/sprites/green_ghost1.png";
+			sprite.color = arc::Color::GREEN;
+			break;
+		case 2:
+			sprite.path = "games/pacman/sprites/purple_ghost1.png";
+			sprite.color = arc::Color::MAGENTA;
+			break;
+		case 3:
+			sprite.path = "games/pacman/sprites/red_ghost1.png";
+			sprite.color = arc::Color::RED;
+			break;
+		default:
+			sprite.path = "games/pacman/sprites/blue_ghost1.png";
+			sprite.color = arc::Color::CYAN;
+
+	}
 }
 
 const arc::ItemList &arc::Pacman::getItems() const noexcept
@@ -219,7 +243,7 @@ void arc::Pacman::moveGhosts(const int i) noexcept
 
 	checkIntersec(item, search->second);
 	if (isAWall(search->second, item.x, item.y)) {
-		movePos(search->second, item);
+		movePosGhost(search->second, item);
 		teleport(item);
 		killPacman(item, pac);
 	}
@@ -268,11 +292,11 @@ void arc::Pacman::checkIntersec(arc::Item &item,
 	key = arc::Interaction::MOVE_UP;
 	if (isAWall(key, item.x, item.y) && dir != Interaction::MOVE_DOWN)
 		available.push_back(key);
-	choseGhostDirection(available, dir);
+	chooseGhostDirection(available, dir);
 
 }
 
-void arc::Pacman::choseGhostDirection(std::vector<Interaction> &vec,
+void arc::Pacman::chooseGhostDirection(std::vector<Interaction> &vec,
 					arc::Interaction &dir) noexcept
 {
 	int rnd;
@@ -426,6 +450,26 @@ void arc::Pacman::movePos(Interaction &key, Item &item) noexcept
 		case arc::Interaction::MOVE_DOWN:
 			item.y += 0.1;
 			item.sprites[item.currSpriteIdx].rotation = 90;
+			break;
+		default:
+			return;
+	}
+}
+
+void arc::Pacman::movePosGhost(Interaction &key, Item &item) noexcept
+{
+	switch (key) {
+		case arc::Interaction::MOVE_LEFT:
+			item.x -= 0.1;
+			break;
+		case arc::Interaction::MOVE_RIGHT:
+			item.x += 0.1;
+			break;
+		case arc::Interaction::MOVE_UP:
+			item.y -= 0.1;
+			break;
+		case arc::Interaction::MOVE_DOWN:
+			item.y += 0.1;
 			break;
 		default:
 			return;

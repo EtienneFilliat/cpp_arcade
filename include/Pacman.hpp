@@ -41,12 +41,14 @@ class Pacman : public arc::IGame {
 		void removePacgum(const Item &item) noexcept;
 		void teleport(Item &item) noexcept;
 		void moveGhosts(const int i) noexcept;
+		void movePosGhost(Interaction &, Item &item) noexcept;
 		void checkIntersec(arc::Item &item,
 					arc::Interaction &dir) noexcept;
-		void choseGhostDirection(std::vector<Interaction> &vec,
+		void chooseGhostDirection(std::vector<Interaction> &vec,
 						arc::Interaction &dir) noexcept;
 		void killPacman(arc::Item &ghost, arc::Item &pacman) noexcept;
 		void reset();
+		void chooseGhostColor(arc::Sprite &sprite) noexcept;
 		std::vector<std::string> _map;
 		ItemList _mapItems;
 		Specs _spec;
