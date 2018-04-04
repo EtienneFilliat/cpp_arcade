@@ -80,6 +80,10 @@ void arc::Pacman::createItem(const char type, const int posx,
 			break;
 		case 'H':
 			_mapItems.push_back(createGhost(posx, posy));
+			break;
+		case 'S':
+			_mapItems.push_back(createSuperPacgum(posx, posy));
+			break;
 		default:
 			return;
 	}
@@ -163,6 +167,29 @@ arc::Item arc::Pacman::createPacgum(const int x, const int y) noexcept
 	item.name = "pacgum" + std::to_string(x) + '_'
 			+ std::to_string(y);
 	sprite.color = arc::Color::CYAN;
+	sprite.background = arc::Color::BLACK;
+	sprite.x = 0;
+	sprite.y = 0;
+	sprite.rotation = 0;
+	item.sprites.push_back(sprite);
+	item.spritesPath = "";
+	item.x = y;
+	item.y = x;
+	item.currSpriteIdx = 0;
+	return (item);
+}
+
+arc::Item arc::Pacman::createSuperPacgum(const int x, const int y) noexcept
+{
+	arc::Item item;
+	arc::Sprite sprite;
+
+	sprite.path = "games/pacman/sprites/Spacgum.png";
+	sprite.name = "Spacgum";
+	sprite.substitute = '+';
+	item.name = "Spacgum" + std::to_string(x) + '_'
+			+ std::to_string(y);
+	sprite.color = arc::Color::YELLOW;
 	sprite.background = arc::Color::BLACK;
 	sprite.x = 0;
 	sprite.y = 0;
@@ -459,10 +486,11 @@ bool arc::Pacman::isAWall(Interaction &key, const float &itemX,
 	y = itemY;
 	checkCollision2(key, x, y);
 	check2 = findInMap(x, y);
-	if (check1 != ' ' && check1 != 'P' && check1 != '.' && check1 != 'G' && 	check1 != 'D' && check1 != 'H')
+	if (check1 != ' ' && check1 != 'P' && check1 != '.' && check1 != 'G' && 	check1 != 'D' && check1 != 'H' && check1 != 'S')
 		return false;
 	else if (check2 != ' ' && check2 != 'P' && check2 != '.' &&
-			check2 != 'G' && check2 != 'D' && check2 != 'H')
+			check2 != 'G' && check2 != 'D' && check2 != 'H' &&
+			check2 != 'S')
 		return false;
 	else
 		return true;
