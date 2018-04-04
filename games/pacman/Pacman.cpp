@@ -66,6 +66,9 @@ void arc::Pacman::createItem(const char type, const int posx,
 	auto it = _mapItems.begin();
 
 	switch (type) {
+		case 'M':
+			_mapItems.insert(it, createBlackWall(posx, posy));
+			break;
 		case '#':
 			_mapItems.insert(it, createWall(posx, posy));
 			break;
@@ -80,6 +83,28 @@ void arc::Pacman::createItem(const char type, const int posx,
 		default:
 			return;
 	}
+}
+
+arc::Item arc::Pacman::createBlackWall(const int x, const int y) noexcept
+{
+	arc::Item item;
+	arc::Sprite sprite;
+
+	sprite.path = "games/pacman/sprites/black_wall.png";
+	sprite.name = "blackwall";
+	sprite.substitute = ' ';
+	item.name = "Wall" + std::to_string(x) + '_' + std::to_string(y);
+	sprite.color = arc::Color::BLACK;
+	sprite.background = arc::Color::BLACK;
+	sprite.x = 0;
+	sprite.y = 0;
+	sprite.rotation = 0;
+	item.sprites.push_back(sprite);
+	item.spritesPath = "";
+	item.x = y;
+	item.y = x;
+	item.currSpriteIdx = 0;
+	return (item);
 }
 
 arc::Item arc::Pacman::createWall(const int x, const int y) noexcept
@@ -293,8 +318,32 @@ void arc::Pacman::checkIntersec(arc::Item &item,
 	key = arc::Interaction::MOVE_UP;
 	if (isAWall(key, item.x, item.y) && dir != Interaction::MOVE_DOWN)
 		available.push_back(key);
+	if(available.empty()) {
+		goInReverse(dir);
+		return;
+	}
 	chooseGhostDirection(available, dir);
 
+}
+
+void arc::Pacman::goInReverse(arc::Interaction &dir) noexcept
+{
+	switch (dir) {
+		case arc::Interaction::MOVE_LEFT:
+			dir = arc::Interaction::MOVE_RIGHT;
+			break;
+		case arc::Interaction::MOVE_RIGHT:
+			dir = arc::Interaction::MOVE_LEFT;
+			break;
+		case arc::Interaction::MOVE_UP:
+			dir = arc::Interaction::MOVE_DOWN;
+			break;
+		case arc::Interaction::MOVE_DOWN:
+			dir = arc::Interaction::MOVE_UP;
+			break;
+		default:
+			return;
+	}
 }
 
 void arc::Pacman::chooseGhostDirection(std::vector<Interaction> &vec,

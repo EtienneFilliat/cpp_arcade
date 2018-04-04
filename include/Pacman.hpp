@@ -28,6 +28,7 @@ class Pacman : public arc::IGame {
 		void createItem(const char, const int, const int) noexcept;
 		void setItems() noexcept;
 		Item createWall(const int, const int) noexcept;
+		Item createBlackWall(const int x, const int y) noexcept;
 		Item createPacgum(const int, const int) noexcept;
 		Item createFirstPacman(const int, const int) noexcept;
 		void createSecondPacman(Item &item) noexcept;
@@ -50,6 +51,7 @@ class Pacman : public arc::IGame {
 		void killPacman(arc::Item &ghost, arc::Item &pacman) noexcept;
 		void reset();
 		void chooseGhostColor(arc::Sprite &sprite) noexcept;
+		void goInReverse(arc::Interaction &dir) noexcept;
 		std::vector<std::string> _map;
 		ItemList _mapItems;
 		Specs _spec;
