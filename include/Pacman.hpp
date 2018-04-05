@@ -58,6 +58,8 @@ class Pacman : public arc::IGame {
 		void goInReverse(arc::Interaction &dir) noexcept;
 		void eatSuperPacgum(arc::Item &item) noexcept;
 		void checkTime() noexcept;
+		void createFearGhost(arc::Item &item) noexcept;
+		void chooseGhostSprite(float &state, arc::Item &item) noexcept;
 		std::vector<std::string> _map;
 		ItemList _mapItems;
 		Specs _spec;

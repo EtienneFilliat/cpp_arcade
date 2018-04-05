@@ -236,6 +236,7 @@ arc::Item arc::Pacman::createGhost(const int x, const int y) noexcept
 	sprite1.rotation = 0;
 	item.sprites.push_back(sprite1);
 	createSecondGhost(item);
+	createFearGhost(item);
 	_ghNbr++;
 	item.spritesPath = "";
 	item.x = y;
@@ -251,6 +252,29 @@ void arc::Pacman::createSecondGhost(arc::Item &item) noexcept
 	chooseGhostColor(sprite2, 2);
 	sprite2.name = "ghost" + std::to_string(_ghNbr) + "_2";
 	sprite2.substitute = 'a';
+	sprite2.background = arc::Color::BLACK;
+	sprite2.x = 0;
+	sprite2.y = 0;
+	sprite2.rotation = 0;
+	item.sprites.push_back(sprite2);
+}
+
+void arc::Pacman::createFearGhost(arc::Item &item) noexcept
+{
+	arc::Sprite sprite1;
+	arc::Sprite sprite2;
+
+	sprite1.path = "games/pacman/sprites/fear_ghost1.png";
+	sprite1.color = arc::Color::CYAN;
+	sprite1.substitute = 'F';
+	sprite1.background = arc::Color::BLACK;
+	sprite1.x = 0;
+	sprite1.y = 0;
+	sprite1.rotation = 0;
+	item.sprites.push_back(sprite1);
+	sprite2.path = "games/pacman/sprites/fear_ghost2.png";
+	sprite2.color = arc::Color::CYAN;
+	sprite2.substitute = 'f';
 	sprite2.background = arc::Color::BLACK;
 	sprite2.x = 0;
 	sprite2.y = 0;
@@ -318,17 +342,27 @@ void arc::Pacman::moveGhosts(const int i) noexcept
 	auto state = _ghostmov.find(name);
 
 	state->second += 0.15;
-	if (state->second > 2) {
-		item.currSpriteIdx = 0;
-		state->second = 0;
-	}
-	else if (state->second > 1)
-		item.currSpriteIdx = 1;
+	chooseGhostSprite(state->second, item);
 	checkIntersec(item, search->second);
 	if (isAWall(search->second, item.x, item.y)) {
 		movePosGhost(search->second, item);
 		teleport(item);
 		killPacman(item, pac);
+	}
+}
+
+void arc::Pacman::chooseGhostSprite(float &state, arc::Item &item) noexcept
+{
+	if (state > 2) {
+		item.currSpriteIdx = 0;
+		if (_eatGhosts)
+			item.currSpriteIdx = 2;
+		state = 0;
+	}
+	else if (state > 1) {
+		item.currSpriteIdx = 1;
+		if (_eatGhosts)
+			item.currSpriteIdx = 3;
 	}
 }
 
