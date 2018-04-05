@@ -8,6 +8,7 @@
 #include <iostream>
 #include <fstream>
 #include <memory>
+#include <algorithm>
 #include <cmath>
 #include <cstdlib>
 #include "Pacman.hpp"
@@ -21,6 +22,7 @@ extern "C" std::unique_ptr<arc::IGame> create_object()
 arc::Pacman::Pacman()
 {
 	std::string S;
+	std::ifstream F ("./games/pacman/pacman_map.txt", std::ifstream::in);
 
 	_spec.x = 0;
 	_spec.y = 0;
@@ -30,7 +32,6 @@ arc::Pacman::Pacman()
 	_eating = 0;
 	_ghNbr = 0;
 	_score = 0;
-	std::ifstream F ("./games/pacman/pacman_map.txt", std::ifstream::in);
 	if (!F)
 		throw arc::Exception("Cannot initialise file stream",
 					"Pacman");
@@ -66,6 +67,9 @@ void arc::Pacman::createItem(const char type, const int posx,
 	auto it = _mapItems.begin();
 
 	switch (type) {
+		case 'M':
+			_mapItems.insert(it, createBlackWall(posx, posy));
+			break;
 		case '#':
 			_mapItems.insert(it, createWall(posx, posy));
 			break;
@@ -77,9 +81,35 @@ void arc::Pacman::createItem(const char type, const int posx,
 			break;
 		case 'H':
 			_mapItems.push_back(createGhost(posx, posy));
+			break;
+		case 'S':
+			_mapItems.push_back(createSuperPacgum(posx, posy));
+			break;
 		default:
 			return;
 	}
+}
+
+arc::Item arc::Pacman::createBlackWall(const int x, const int y) noexcept
+{
+	arc::Item item;
+	arc::Sprite sprite;
+
+	sprite.path = "games/pacman/sprites/black_wall.png";
+	sprite.name = "blackwall";
+	sprite.substitute = ' ';
+	item.name = "Wall" + std::to_string(x) + '_' + std::to_string(y);
+	sprite.color = arc::Color::BLACK;
+	sprite.background = arc::Color::BLACK;
+	sprite.x = 0;
+	sprite.y = 0;
+	sprite.rotation = 0;
+	item.sprites.push_back(sprite);
+	item.spritesPath = "";
+	item.x = y;
+	item.y = x;
+	item.currSpriteIdx = 0;
+	return (item);
 }
 
 arc::Item arc::Pacman::createWall(const int x, const int y) noexcept
@@ -150,6 +180,29 @@ arc::Item arc::Pacman::createPacgum(const int x, const int y) noexcept
 	return (item);
 }
 
+arc::Item arc::Pacman::createSuperPacgum(const int x, const int y) noexcept
+{
+	arc::Item item;
+	arc::Sprite sprite;
+
+	sprite.path = "games/pacman/sprites/Spacgum.png";
+	sprite.name = "Spacgum";
+	sprite.substitute = '+';
+	item.name = "Spacgum" + std::to_string(x) + '_'
+			+ std::to_string(y);
+	sprite.color = arc::Color::YELLOW;
+	sprite.background = arc::Color::BLACK;
+	sprite.x = 0;
+	sprite.y = 0;
+	sprite.rotation = 0;
+	item.sprites.push_back(sprite);
+	item.spritesPath = "";
+	item.x = y;
+	item.y = x;
+	item.currSpriteIdx = 0;
+	return (item);
+}
+
 void arc::Pacman::createSecondPacman(Item &item) noexcept
 {
 	arc::Sprite sprite2;
@@ -168,19 +221,21 @@ void arc::Pacman::createSecondPacman(Item &item) noexcept
 arc::Item arc::Pacman::createGhost(const int x, const int y) noexcept
 {
 	arc::Item item;
-	arc::Sprite sprite;
+	arc::Sprite sprite1;
 
-	chooseGhostColor(sprite);
-	sprite.name = "ghost";
-	sprite.substitute = '@';
+	chooseGhostColor(sprite1, 1);
+	sprite1.name = "ghost";
+	sprite1.substitute = '@';
 	item.name = "ghost" + std::to_string(_ghNbr);
 	_ghostDirection[item.name] = arc::Interaction::MOVE_RIGHT;
+	_ghostmov[item.name] = 0;
+	sprite1.background = arc::Color::BLACK;
+	sprite1.x = 0;
+	sprite1.y = 0;
+	sprite1.rotation = 0;
+	item.sprites.push_back(sprite1);
+	createSecondGhost(item);
 	_ghNbr++;
-	sprite.background = arc::Color::BLACK;
-	sprite.x = 0;
-	sprite.y = 0;
-	sprite.rotation = 0;
-	item.sprites.push_back(sprite);
 	item.spritesPath = "";
 	item.x = y;
 	item.y = x;
@@ -188,27 +243,45 @@ arc::Item arc::Pacman::createGhost(const int x, const int y) noexcept
 	return (item);
 }
 
-void arc::Pacman::chooseGhostColor(arc::Sprite &sprite) noexcept
+void arc::Pacman::createSecondGhost(arc::Item &item) noexcept
+{
+	arc::Sprite sprite2;
+
+	chooseGhostColor(sprite2, 2);
+	sprite2.name = "ghost" + std::to_string(_ghNbr) + "_2";
+	sprite2.substitute = 'a';
+	sprite2.background = arc::Color::BLACK;
+	sprite2.x = 0;
+	sprite2.y = 0;
+	sprite2.rotation = 0;
+	item.sprites.push_back(sprite2);
+}
+
+void arc::Pacman::chooseGhostColor(arc::Sprite &sprite, const int i) noexcept
 {
 	int nbr;
 
 	nbr = _ghNbr % 4;
 	switch (nbr) {
 		case 1:
-			sprite.path = "games/pacman/sprites/green_ghost1.png";
+			sprite.path = "games/pacman/sprites/green_ghost"
+					+ std::to_string(i) + ".png";
 			sprite.color = arc::Color::GREEN;
 			break;
 		case 2:
-			sprite.path = "games/pacman/sprites/purple_ghost1.png";
+			sprite.path = "games/pacman/sprites/purple_ghost"
+					+ std::to_string(i) + ".png";
 			sprite.color = arc::Color::MAGENTA;
 			break;
 		case 3:
-			sprite.path = "games/pacman/sprites/red_ghost1.png";
-			sprite.color = arc::Color::RED;
+			sprite.path = "games/pacman/sprites/blue_ghost"
+					+ std::to_string(i) + ".png";
+			sprite.color = arc::Color::CYAN;
 			break;
 		default:
-			sprite.path = "games/pacman/sprites/blue_ghost1.png";
-			sprite.color = arc::Color::CYAN;
+			sprite.path = "games/pacman/sprites/red_ghost"
+					+ std::to_string(i) + ".png";
+			sprite.color = arc::Color::RED;
 
 	}
 }
@@ -241,7 +314,15 @@ void arc::Pacman::moveGhosts(const int i) noexcept
 	arc::Item &item = getItemFromName(name);
 	arc::Item &pac = getItemFromName("pacman");
 	auto search = _ghostDirection.find(name);
+	auto state = _ghostmov.find(name);
 
+	state->second += 0.15;
+	if (state->second > 2) {
+		item.currSpriteIdx = 0;
+		state->second = 0;
+	}
+	else if (state->second > 1)
+		item.currSpriteIdx = 1;
 	checkIntersec(item, search->second);
 	if (isAWall(search->second, item.x, item.y)) {
 		movePosGhost(search->second, item);
@@ -266,6 +347,7 @@ void arc::Pacman::reset()
 	_ghostDirection.clear();
 	_eating = 0;
 	_ghNbr = 0;
+	_score = 0;
 	_direction = arc::Interaction::MOVE_RIGHT;
 	std::ifstream F ("./games/pacman/pacman_map.txt", std::ifstream::in);
 	if (!F)
@@ -293,8 +375,75 @@ void arc::Pacman::checkIntersec(arc::Item &item,
 	key = arc::Interaction::MOVE_UP;
 	if (isAWall(key, item.x, item.y) && dir != Interaction::MOVE_DOWN)
 		available.push_back(key);
-	chooseGhostDirection(available, dir);
+	if(available.empty()) {
+		goInReverse(dir);
+		return;
+	}
+	chooseGhostStrategy(item, available, dir);
 
+}
+
+void arc::Pacman::goInReverse(arc::Interaction &dir) noexcept
+{
+	switch (dir) {
+		case arc::Interaction::MOVE_LEFT:
+			dir = arc::Interaction::MOVE_RIGHT;
+			break;
+		case arc::Interaction::MOVE_RIGHT:
+			dir = arc::Interaction::MOVE_LEFT;
+			break;
+		case arc::Interaction::MOVE_UP:
+			dir = arc::Interaction::MOVE_DOWN;
+			break;
+		case arc::Interaction::MOVE_DOWN:
+			dir = arc::Interaction::MOVE_UP;
+			break;
+		default:
+			return;
+	}
+}
+
+void arc::Pacman::chooseGhostStrategy(arc::Item &ghost,
+					std::vector<Interaction> &available,
+					arc::Interaction &dir) noexcept
+{
+	int choice = rand() % 3;
+
+	if (choice < 2 && _score > 200)
+		ghostFollowPacman(ghost, available, dir);
+	else
+		chooseGhostDirection(available, dir);
+}
+
+void arc::Pacman::ghostFollowPacman(arc::Item &ghost,
+					std::vector<Interaction> &dirAv,
+					arc::Interaction &dir) noexcept
+{
+	arc::Item &pac = getItemFromName("pacman");
+
+	if (pac.y < ghost.y &&
+			isDirAvailable(dirAv, Interaction::MOVE_UP))
+		dir = Interaction::MOVE_UP;
+	else if (pac.y > ghost.y &&
+			isDirAvailable(dirAv, Interaction::MOVE_DOWN))
+		dir = Interaction::MOVE_DOWN;
+	else if (pac.x < ghost.x && isDirAvailable(dirAv, Interaction::MOVE_LEFT))
+		dir = Interaction::MOVE_LEFT;
+	else if (pac.x > ghost.x &&
+			isDirAvailable(dirAv, Interaction::MOVE_RIGHT))
+		dir = Interaction::MOVE_RIGHT;
+	else
+		dir = dirAv.front();
+}
+
+bool arc::Pacman::isDirAvailable(std::vector<Interaction> &available,
+					arc::Interaction dir) noexcept
+{
+	if (std::find(available.begin(), available.end(),
+		dir) == std::end(available))
+		return false;
+	else
+		return true;
 }
 
 void arc::Pacman::chooseGhostDirection(std::vector<Interaction> &vec,
@@ -381,10 +530,11 @@ bool arc::Pacman::isAWall(Interaction &key, const float &itemX,
 	y = itemY;
 	checkCollision2(key, x, y);
 	check2 = findInMap(x, y);
-	if (check1 != ' ' && check1 != 'P' && check1 != '.' && check1 != 'G' && 	check1 != 'D' && check1 != 'H')
+	if (check1 != ' ' && check1 != 'P' && check1 != '.' && check1 != 'G' && 	check1 != 'D' && check1 != 'H' && check1 != 'S')
 		return false;
 	else if (check2 != ' ' && check2 != 'P' && check2 != '.' &&
-			check2 != 'G' && check2 != 'D' && check2 != 'H')
+			check2 != 'G' && check2 != 'D' && check2 != 'H' &&
+			check2 != 'S')
 		return false;
 	else
 		return true;
