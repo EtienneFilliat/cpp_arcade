@@ -37,7 +37,7 @@ class Pacman : public arc::IGame {
 		Item createSuperPacgum(const int, const int) noexcept;
 		void createSecondGhost(Item &item) noexcept;
 		char findInMap(const float, const float) noexcept;
-		void autorun();
+		void autorun(arc::Item &item);
 		bool isAWall(Interaction &key, const float &itemX,
 				const float &itemY) noexcept;
 		void checkCollision1(Interaction &, float &, float &) noexcept;
@@ -45,10 +45,11 @@ class Pacman : public arc::IGame {
 		void movePos(Interaction &, Item &item) noexcept;
 		void removePacgum(const Item &item) noexcept;
 		void teleport(Item &item) noexcept;
-		void moveGhosts(const int i) noexcept;
+		void moveGhosts(const int i, arc::Item &item) noexcept;
 		void movePosGhost(Interaction &, Item &item) noexcept;
 		void checkIntersec(arc::Item &item,
-					arc::Interaction &dir) noexcept;
+					arc::Interaction &dir,
+					arc::Item &pac) noexcept;
 		void chooseGhostDirection(std::vector<Interaction> &vec,
 						arc::Interaction &dir) noexcept;
 		void killPacman(arc::Item &ghost, arc::Item &pacman) noexcept;
@@ -61,14 +62,17 @@ class Pacman : public arc::IGame {
 		void createFearGhost(arc::Item &item) noexcept;
 		void chooseGhostSprite(float &state, arc::Item &item) noexcept;
 		void chooseGhostStrategy(arc::Item &ghost,
-						std::vector<Interaction> &vec,
-					arc::Interaction &dir) noexcept;
+					std::vector<Interaction> &vec,
+					arc::Interaction &dir,
+					arc::Item &pac) noexcept;
 		void ghostFollowPacman(arc::Item &ghost,
 					std::vector<Interaction> &available,
-					arc::Interaction &dir) noexcept;
+					arc::Interaction &dir,
+					arc::Item &pac) noexcept;
 		void ghostFearPacman(arc::Item &ghost,
 					std::vector<Interaction> &available,
-					arc::Interaction &dir) noexcept;
+					arc::Interaction &dir,
+					arc::Item &pac) noexcept;
 		bool isDirAvailable(std::vector<Interaction> &available,
 					arc::Interaction dir) noexcept;
 		std::vector<std::string> _map;

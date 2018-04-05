@@ -324,31 +324,32 @@ const arc::IGame::Specs &arc::Pacman::getSpecs() const noexcept
 
 void arc::Pacman::envUpdate() noexcept
 {
+	arc::Item &item = getItemFromName("pacman");
+
 	try {
-		autorun();
+		autorun(item);
 		for (int i = 0; i < _ghNbr; i++)
-			moveGhosts(i);
+			moveGhosts(i, item);
 	}
 	catch (std::exception &err) {
 		std::cerr << err.what() << std::endl;
 	}
 }
 
-void arc::Pacman::moveGhosts(const int i) noexcept
+void arc::Pacman::moveGhosts(const int i, arc::Item &pac) noexcept
 {
 	std::string name = "ghost" + std::to_string(i);
 	arc::Item &item = getItemFromName(name);
-	arc::Item &pac = getItemFromName("pacman");
 	auto search = _ghostDirection.find(name);
 	auto state = _ghostmov.find(name);
 
 	state->second += 0.15;
 	chooseGhostSprite(state->second, item);
-	checkIntersec(item, search->second);
+	checkIntersec(item, search->second, pac);
 	if (isAWall(search->second, item.x, item.y)) {
 		movePosGhost(search->second, item);
-		teleport(item);
 		killPacman(item, pac);
+		teleport(item);
 	}
 }
 
@@ -405,7 +406,8 @@ void arc::Pacman::reset()
 }
 
 void arc::Pacman::checkIntersec(arc::Item &item,
-				arc::Interaction &dir) noexcept
+				arc::Interaction &dir,
+				arc::Item &pac) noexcept
 {
 	arc::Interaction key = arc::Interaction::MOVE_LEFT;
 	std::vector<Interaction> available;
@@ -425,7 +427,7 @@ void arc::Pacman::checkIntersec(arc::Item &item,
 		goInReverse(dir);
 		return;
 	}
-	chooseGhostStrategy(item, available, dir);
+	chooseGhostStrategy(item, available, dir, pac);
 
 }
 
@@ -451,26 +453,26 @@ void arc::Pacman::goInReverse(arc::Interaction &dir) noexcept
 
 void arc::Pacman::chooseGhostStrategy(arc::Item &ghost,
 					std::vector<Interaction> &available,
-					arc::Interaction &dir) noexcept
+					arc::Interaction &dir,
+					arc::Item &pac) noexcept
 {
 	int choice = rand() % 3;
 
 	if (!_eatGhosts) {
 		if (choice < 2 && _score > 200)
-			ghostFollowPacman(ghost, available, dir);
+			ghostFollowPacman(ghost, available, dir, pac);
 		else
 			chooseGhostDirection(available, dir);
 	}
 	else
-		ghostFearPacman(ghost, available, dir);
+		ghostFearPacman(ghost, available, dir, pac);
 }
 
 void arc::Pacman::ghostFollowPacman(arc::Item &ghost,
 					std::vector<Interaction> &dirAv,
-					arc::Interaction &dir) noexcept
+					arc::Interaction &dir,
+					arc::Item &pac) noexcept
 {
-	arc::Item &pac = getItemFromName("pacman");
-
 	if (pac.y < ghost.y &&
 			isDirAvailable(dirAv, Interaction::MOVE_UP))
 		dir = Interaction::MOVE_UP;
@@ -488,10 +490,9 @@ void arc::Pacman::ghostFollowPacman(arc::Item &ghost,
 
 void arc::Pacman::ghostFearPacman(arc::Item &ghost,
 					std::vector<Interaction> &dirAv,
-					arc::Interaction &dir) noexcept
+					arc::Interaction &dir,
+					arc::Item &pac) noexcept
 {
-	arc::Item &pac = getItemFromName("pacman");
-
 	if (pac.y < ghost.y &&
 			isDirAvailable(dirAv, Interaction::MOVE_DOWN))
 		dir = Interaction::MOVE_DOWN;
@@ -536,10 +537,8 @@ void arc::Pacman::chooseGhostDirection(std::vector<Interaction> &vec,
 	}
 }
 
-void arc::Pacman::autorun()
+void arc::Pacman::autorun(arc::Item &item)
 {
-	arc::Item &item = getItemFromName("pacman");
-
 	if (_eatGhosts)
 		checkTime();
 	_eating += 0.15;
