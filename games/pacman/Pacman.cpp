@@ -31,6 +31,7 @@ arc::Pacman::Pacman()
 	_ghNbr = 0;
 	_score = 0;
 	_eatGhosts = false;
+	_startTimer = std::chrono::high_resolution_clock::now();
 	std::ifstream F ("./games/pacman/pacman_map.txt", std::ifstream::in);
 	if (!F)
 		throw arc::Exception("Cannot initialise file stream",
@@ -335,8 +336,14 @@ void arc::Pacman::killPacman(arc::Item &ghost, arc::Item &pacman) noexcept
 {
 	if ((std::floor(ghost.x) == std::floor(pacman.x))
 		&& (std::floor(ghost.y) == std::floor(pacman.y))
-		&& !_eatGhosts)
+			&& !_eatGhosts)
 		reset();
+	if ((std::floor(ghost.x) == std::floor(pacman.x))
+		&& (std::floor(ghost.y) == std::floor(pacman.y))
+			&& _eatGhosts) {
+		ghost.x = 14;
+		ghost.y = 14;
+	}
 }
 
 void arc::Pacman::reset()
@@ -351,6 +358,7 @@ void arc::Pacman::reset()
 	_score = 0;
 	_eatGhosts = false;
 	_direction = arc::Interaction::MOVE_RIGHT;
+	_startTimer = std::chrono::high_resolution_clock::now();
 	std::ifstream F ("./games/pacman/pacman_map.txt", std::ifstream::in);
 	if (!F)
 		throw arc::Exception("Cannot initialise file stream",
@@ -428,6 +436,8 @@ void arc::Pacman::autorun()
 {
 	arc::Item &item = getItemFromName("pacman");
 
+	if (_eatGhosts)
+		checkTime();
 	_eating += 0.15;
 	if (_eating > 2) {
 		item.currSpriteIdx = 0;
@@ -443,6 +453,15 @@ void arc::Pacman::autorun()
 	}
 }
 
+void arc::Pacman::checkTime() noexcept
+{
+	auto newTime = std::chrono::high_resolution_clock::now();
+	millisec diff = newTime - _startTimer;
+
+	if (diff.count() >= 10000)
+		_eatGhosts = false;
+}
+
 void arc::Pacman::eatSuperPacgum(Item &item) noexcept
 {
 	std::string pacG = "Spacgum";
@@ -453,6 +472,7 @@ void arc::Pacman::eatSuperPacgum(Item &item) noexcept
 		std::to_string(x);
 	if (removeItem(pacG)) {
 		_score += 1000;
+		_startTimer = std::chrono::high_resolution_clock::now();
 		_eatGhosts = true;
 	}
 }

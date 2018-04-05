@@ -57,6 +57,7 @@ class Pacman : public arc::IGame {
 					const int i) noexcept;
 		void goInReverse(arc::Interaction &dir) noexcept;
 		void eatSuperPacgum(arc::Item &item) noexcept;
+		void checkTime() noexcept;
 		std::vector<std::string> _map;
 		ItemList _mapItems;
 		Specs _spec;
@@ -69,7 +70,7 @@ class Pacman : public arc::IGame {
 		using GhostSpriteState = std::unordered_map<std::string, float>;
 		GhostSpriteState _ghostmov;
 		bool _eatGhosts;
-		std::chrono::high_resolution_clock::time_point _start;
+		std::chrono::high_resolution_clock::time_point _startTimer;
 };
 }
 
