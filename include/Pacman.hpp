@@ -55,6 +55,14 @@ class Pacman : public arc::IGame {
 		void chooseGhostColor(arc::Sprite &sprite,
 					const int i) noexcept;
 		void goInReverse(arc::Interaction &dir) noexcept;
+		void chooseGhostStrategy(arc::Item &ghost,
+						std::vector<Interaction> &vec,
+					arc::Interaction &dir) noexcept;
+		void ghostFollowPacman(arc::Item &ghost,
+					std::vector<Interaction> &available,
+					arc::Interaction &dir) noexcept;
+		bool isDirAvailable(std::vector<Interaction> &available,
+					arc::Interaction dir) noexcept;
 		std::vector<std::string> _map;
 		ItemList _mapItems;
 		Specs _spec;
