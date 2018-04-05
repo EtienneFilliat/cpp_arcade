@@ -10,6 +10,7 @@
 	#include "IGame.hpp"
 	#include "Exception.hpp"
 	#include <unordered_map>
+	#include <ctime>
 
 namespace arc {
 
@@ -55,6 +56,10 @@ class Pacman : public arc::IGame {
 		void chooseGhostColor(arc::Sprite &sprite,
 					const int i) noexcept;
 		void goInReverse(arc::Interaction &dir) noexcept;
+		void eatSuperPacgum(arc::Item &item) noexcept;
+		void checkTime() noexcept;
+		void createFearGhost(arc::Item &item) noexcept;
+		void chooseGhostSprite(float &state, arc::Item &item) noexcept;
 		void chooseGhostStrategy(arc::Item &ghost,
 						std::vector<Interaction> &vec,
 					arc::Interaction &dir) noexcept;
@@ -74,6 +79,8 @@ class Pacman : public arc::IGame {
 		GhostMap _ghostDirection;
 		using GhostSpriteState = std::unordered_map<std::string, float>;
 		GhostSpriteState _ghostmov;
+		bool _eatGhosts;
+		std::chrono::high_resolution_clock::time_point _startTimer;
 };
 }
 
