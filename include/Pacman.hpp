@@ -43,7 +43,7 @@ class Pacman : public arc::IGame {
 		void checkCollision1(Interaction &, float &, float &) noexcept;
 		void checkCollision2(Interaction &, float &, float &) noexcept;
 		void movePos(Interaction &, Item &item) noexcept;
-		void removePacgum(const Item &item) noexcept;
+		bool removePacgum(const float x, const float y) noexcept;
 		void teleport(Item &item) noexcept;
 		void moveGhosts(const int i, arc::Item &item) noexcept;
 		void movePosGhost(Interaction &, Item &item) noexcept;
@@ -57,7 +57,7 @@ class Pacman : public arc::IGame {
 		void chooseGhostColor(arc::Sprite &sprite,
 					const int i) noexcept;
 		void goInReverse(arc::Interaction &dir) noexcept;
-		void eatSuperPacgum(arc::Item &item) noexcept;
+		void eatSuperPacgum(const arc::Item &item) noexcept;
 		void checkTime() noexcept;
 		void createFearGhost(arc::Item &item) noexcept;
 		void chooseGhostSprite(float &state, arc::Item &item) noexcept;

@@ -550,8 +550,8 @@ void arc::Pacman::autorun(arc::Item &item)
 		item.currSpriteIdx = 1;
 	if (isAWall(_direction, item.x, item.y)) {
 		movePos(_direction, item);
-		eatSuperPacgum(item);
-		removePacgum(item);
+		if(!removePacgum(item.x, item.y))
+			eatSuperPacgum(item);
 		teleport(item);
 	}
 }
@@ -565,7 +565,7 @@ void arc::Pacman::checkTime() noexcept
 		_eatGhosts = false;
 }
 
-void arc::Pacman::eatSuperPacgum(Item &item) noexcept
+void arc::Pacman::eatSuperPacgum(const Item &item) noexcept
 {
 	std::string pacG = "Spacgum";
 	int x = std::floor(item.x + 0.5);
@@ -590,16 +590,19 @@ void arc::Pacman::teleport(Item &item) noexcept
 		item.x = 1;
 }
 
-void arc::Pacman::removePacgum(const Item &item) noexcept
+bool arc::Pacman::removePacgum(const float x, const float y) noexcept
 {
 	std::string pacG = "pacgum";
-	int x = std::floor(item.x + 0.5);
-	int y = std::floor(item.y + 0.5);
+	int xp = std::floor(x + 0.5);
+	int yp = std::floor(y + 0.5);
 
-	pacG += std::to_string(y) + '_' +
-		std::to_string(x);
-	if (removeItem(pacG))
+	pacG += std::to_string(yp) + '_' +
+		std::to_string(xp);
+	if (removeItem(pacG)) {
 		_score += 10;
+		return true;
+	}
+	return false;
 }
 
 bool arc::Pacman::processInteraction(Interaction &key) noexcept
