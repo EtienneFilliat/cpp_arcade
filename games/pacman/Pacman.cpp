@@ -34,7 +34,6 @@ arc::Pacman::Pacman()
 	_score = 0;
 	_eatGhosts = false;
 	_startTimer = std::chrono::high_resolution_clock::now();
-	std::ifstream F ("./games/pacman/pacman_map.txt", std::ifstream::in);
 	if (!F)
 		throw arc::Exception("Cannot initialise file stream",
 					"Pacman");
@@ -377,7 +376,8 @@ void arc::Pacman::killPacman(arc::Item &ghost, arc::Item &pacman) noexcept
 	if ((std::floor(ghost.x) == std::floor(pacman.x))
 		&& (std::floor(ghost.y) == std::floor(pacman.y))
 			&& _eatGhosts) {
-		ghost.x = 14;
+		_score += 500;
+		ghost.x = 13;
 		ghost.y = 14;
 	}
 }
@@ -550,7 +550,7 @@ void arc::Pacman::eatSuperPacgum(Item &item) noexcept
 	pacG += std::to_string(y) + '_' +
 		std::to_string(x);
 	if (removeItem(pacG)) {
-		_score += 1000;
+		_score += 300;
 		_startTimer = std::chrono::high_resolution_clock::now();
 		_eatGhosts = true;
 	}
