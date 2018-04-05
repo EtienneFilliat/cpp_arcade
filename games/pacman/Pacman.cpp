@@ -455,10 +455,14 @@ void arc::Pacman::chooseGhostStrategy(arc::Item &ghost,
 {
 	int choice = rand() % 3;
 
-	if (choice < 2 && _score > 200)
-		ghostFollowPacman(ghost, available, dir);
+	if (!_eatGhosts) {
+		if (choice < 2 && _score > 200)
+			ghostFollowPacman(ghost, available, dir);
+		else
+			chooseGhostDirection(available, dir);
+	}
 	else
-		chooseGhostDirection(available, dir);
+		ghostFearPacman(ghost, available, dir);
 }
 
 void arc::Pacman::ghostFollowPacman(arc::Item &ghost,
@@ -478,6 +482,27 @@ void arc::Pacman::ghostFollowPacman(arc::Item &ghost,
 	else if (pac.x > ghost.x &&
 			isDirAvailable(dirAv, Interaction::MOVE_RIGHT))
 		dir = Interaction::MOVE_RIGHT;
+	else
+		dir = dirAv.front();
+}
+
+void arc::Pacman::ghostFearPacman(arc::Item &ghost,
+					std::vector<Interaction> &dirAv,
+					arc::Interaction &dir) noexcept
+{
+	arc::Item &pac = getItemFromName("pacman");
+
+	if (pac.y < ghost.y &&
+			isDirAvailable(dirAv, Interaction::MOVE_DOWN))
+		dir = Interaction::MOVE_DOWN;
+	else if (pac.y > ghost.y &&
+			isDirAvailable(dirAv, Interaction::MOVE_UP))
+		dir = Interaction::MOVE_UP;
+	else if (pac.x < ghost.x && isDirAvailable(dirAv, Interaction::MOVE_RIGHT))
+		dir = Interaction::MOVE_RIGHT;
+	else if (pac.x > ghost.x &&
+			isDirAvailable(dirAv, Interaction::MOVE_LEFT))
+		dir = Interaction::MOVE_LEFT;
 	else
 		dir = dirAv.front();
 }

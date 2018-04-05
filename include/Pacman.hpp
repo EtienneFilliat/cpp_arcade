@@ -66,6 +66,9 @@ class Pacman : public arc::IGame {
 		void ghostFollowPacman(arc::Item &ghost,
 					std::vector<Interaction> &available,
 					arc::Interaction &dir) noexcept;
+		void ghostFearPacman(arc::Item &ghost,
+					std::vector<Interaction> &available,
+					arc::Interaction &dir) noexcept;
 		bool isDirAvailable(std::vector<Interaction> &available,
 					arc::Interaction dir) noexcept;
 		std::vector<std::string> _map;
