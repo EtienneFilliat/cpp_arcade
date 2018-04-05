@@ -124,7 +124,7 @@ int arc::Core::displayUsage() const noexcept
 
 void arc::Core::showCommands() const noexcept
 {
-	std::cout << "COMMANDS:" << std::endl;
+	std::cout << "CONTROLS:" << std::endl;
 	std::cout << "\t\tMOVE UP:\t\'z\'" << std::endl;
 	std::cout << "\t\tMOVE DOWN:\t\'s\'" << std::endl;
 	std::cout << "\t\tMOVE LEFT:\t\'q\'" << std::endl;
