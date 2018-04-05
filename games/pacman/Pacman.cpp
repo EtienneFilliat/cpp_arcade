@@ -30,6 +30,7 @@ arc::Pacman::Pacman()
 	_eating = 0;
 	_ghNbr = 0;
 	_score = 0;
+	_eatGhosts = false;
 	std::ifstream F ("./games/pacman/pacman_map.txt", std::ifstream::in);
 	if (!F)
 		throw arc::Exception("Cannot initialise file stream",
@@ -333,7 +334,8 @@ void arc::Pacman::moveGhosts(const int i) noexcept
 void arc::Pacman::killPacman(arc::Item &ghost, arc::Item &pacman) noexcept
 {
 	if ((std::floor(ghost.x) == std::floor(pacman.x))
-		&& (std::floor(ghost.y) == std::floor(pacman.y)))
+		&& (std::floor(ghost.y) == std::floor(pacman.y))
+		&& !_eatGhosts)
 		reset();
 }
 
@@ -347,6 +349,7 @@ void arc::Pacman::reset()
 	_eating = 0;
 	_ghNbr = 0;
 	_score = 0;
+	_eatGhosts = false;
 	_direction = arc::Interaction::MOVE_RIGHT;
 	std::ifstream F ("./games/pacman/pacman_map.txt", std::ifstream::in);
 	if (!F)
@@ -434,8 +437,23 @@ void arc::Pacman::autorun()
 		item.currSpriteIdx = 1;
 	if (isAWall(_direction, item.x, item.y)) {
 		movePos(_direction, item);
+		eatSuperPacgum(item);
 		removePacgum(item);
 		teleport(item);
+	}
+}
+
+void arc::Pacman::eatSuperPacgum(Item &item) noexcept
+{
+	std::string pacG = "Spacgum";
+	int x = std::floor(item.x + 0.5);
+	int y = std::floor(item.y + 0.5);
+
+	pacG += std::to_string(y) + '_' +
+		std::to_string(x);
+	if (removeItem(pacG)) {
+		_score += 1000;
+		_eatGhosts = true;
 	}
 }
 
