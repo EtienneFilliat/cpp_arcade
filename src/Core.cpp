@@ -32,7 +32,7 @@ void arc::Core::initCore(const std::string &firstGraphics,
 	if (_gameList.empty())
 		throw Exception("No game library found in \'./games\'!",
 					"Core");
-	menu();
+	menu(true);
 	setFirstGraphics(firstGraphics);
 }
 
@@ -172,14 +172,6 @@ void arc::Core::setFirstGraphics(const std::string &fullPathName)
 	}
 }
 
-void arc::Core::setFirstGame()
-{
-	_gameName = _gameList.front();
-	_gameLib.open(_gameName);
-	_gameLib.instantiate();
-	_game = _gameLib.load();
-}
-
 void arc::Core::switchToNextGraphics()
 {
 	auto it = std::find(_displayList.begin(),
@@ -310,7 +302,8 @@ bool arc::Core::computeKeys(arc::InteractionList &keys)
 				switchToNextGame();
 				break;
 			case arc::Interaction::GAME_PREV:
-				switchToPrevGame();
+				//switchToPrevGame();
+				menu(false);
 				break;
 			case arc::Interaction::QUIT:
 				return false;
@@ -334,7 +327,7 @@ void arc::Core::tryToProcessInteraction(arc::InteractionList &keys) noexcept
 	_tryInteraction++;
 }
 
-void arc::Core::menu()
+void arc::Core::menu(bool isFirstCall)
 {
 	std::ifstream s ("src/title.txt");
 
@@ -343,12 +336,36 @@ void arc::Core::menu()
 	std::cout << std::endl << std::endl;
 	showGamesAvailable();
 	std::cout << std::endl;
-	getPlayerName();
+	if (!isFirstCall) {
+		_display->~IDisplay();
+		_game->~IGame();
+		std::cout << "Your name: \'" << _userName << "\'";
+	}
+	else
+		getPlayerName();
 	std::cout << std::endl;
 	_gameName = _gameList[getGameNumber()];
-	_gameLib.open(_gameName);
-	_gameLib.instantiate();
-	_game = _gameLib.load();
+	loadFromMenu(isFirstCall);
+}
+
+void arc::Core::loadFromMenu(bool isFirstCall) noexcept
+{
+	if (!isFirstCall) {
+		_displayLib.open(_displayName);
+		_displayLib.instantiate();
+		_display.release();
+		_display = _displayLib.load();
+		_gameLib.open(_gameName);
+		_gameLib.instantiate();
+		_game.release();
+		_game = _gameLib.load();
+
+	}
+	else {
+		_gameLib.open(_gameName);
+		_gameLib.instantiate();
+		_game = _gameLib.load();
+	}
 }
 
 void arc::Core::getPlayerName()
