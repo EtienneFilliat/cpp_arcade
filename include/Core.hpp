@@ -32,7 +32,7 @@ namespace arc {
 					noexcept;
 		void searchGameLib(const std::string &fullPathName) noexcept;
 		void setFirstGraphics(const std::string &fullPathName);
-		void setFirstGame();
+		void showCommands() const noexcept;
 		void showGraphicsAvailable() const noexcept;
 		void showGamesAvailable() const noexcept;
 		void switchToNextGraphics();
@@ -44,7 +44,8 @@ namespace arc {
 		void switchToPrevGame();
 		void displayText();
 		void waitCycle() const noexcept;
-		void menu();
+		void menu(bool isFirstCall);
+		void loadFromMenu(bool isFirstCall) noexcept;
 		void getPlayerName();
 		size_t getGameNumber();
 		DynamicLib<IGame> _gameLib;

@@ -19,7 +19,7 @@ extern "C" std::unique_ptr<arc::IDisplay> create_object()
 arc::LibSfml::LibSfml()
 {
 	_step = 1;
-	_window.reset(new sf::RenderWindow(sf::VideoMode(1160, 1000),
+	_window.reset(new sf::RenderWindow(sf::VideoMode(1180, 1000),
 			"Cpp_Arcade"));
 	if (!_window.get())
 		throw arc::Exception("Cannot create window", "LibSFML");
@@ -143,6 +143,8 @@ void arc::LibSfml::setInteractions(){
 			this->_interactions.push(arc::Interaction::GAME_PREV);
 		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::M))
 			this->_interactions.push(arc::Interaction::GAME_NEXT);
+		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Tab))
+			this->_interactions.push(arc::Interaction::MENU);
 		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
 			this->_interactions.push(arc::Interaction::QUIT);
 	}

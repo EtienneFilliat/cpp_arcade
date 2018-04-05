@@ -193,6 +193,8 @@ void arc::LibNcurses::setInteractions()
 		this->_interactions.push(arc::Interaction::GAME_PREV);
 	else if (key == 'm')
 		this->_interactions.push(arc::Interaction::GAME_NEXT);
+	else if (key == '\t')
+		this->_interactions.push(arc::Interaction::MENU);
 	else if (key == 27)
 		this->_interactions.push(arc::Interaction::QUIT);
 }
