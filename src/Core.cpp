@@ -8,6 +8,7 @@
 #include <unistd.h>
 #include <iostream>
 #include <algorithm>
+#include <fstream>
 #include <dirent.h>
 #include <thread>
 #include "Core.hpp"
@@ -25,15 +26,19 @@ void arc::Core::initCore(const std::string &firstGraphics,
 				const std::string &displayDir,
 				const std::string &gameDir)
 {
+	initRandom();
 	initGraphics(displayDir);
 	initGames(gameDir);
-	setFirstGraphics(firstGraphics);
-	showGraphicsAvailable();
 	if (_gameList.empty())
 		throw Exception("No game library found in \'./games\'!",
 					"Core");
-	showGamesAvailable();
-	setFirstGame();
+	menu(true);
+	setFirstGraphics(firstGraphics);
+}
+
+void arc::Core::initRandom() const noexcept
+{
+	srand(getpid());
 }
 
 void arc::Core::initGraphics(const std::string &directory)
@@ -80,7 +85,7 @@ void arc::Core::initGames(const std::string &directory)
 	closedir(dir);
 }
 
-void arc::Core::searchDisplayLib(const std::string &fullPathName)
+void arc::Core::searchDisplayLib(const std::string &fullPathName) noexcept
 {
 
 	auto n = fullPathName.find(".so");
@@ -94,7 +99,7 @@ void arc::Core::searchDisplayLib(const std::string &fullPathName)
 	}
 }
 
-void arc::Core::searchGameLib(const std::string &fullPathName)
+void arc::Core::searchGameLib(const std::string &fullPathName) noexcept
 {
 
 	auto n = fullPathName.find(".so");
@@ -108,7 +113,7 @@ void arc::Core::searchGameLib(const std::string &fullPathName)
 	}
 }
 
-int arc::Core::displayUsage()
+int arc::Core::displayUsage() const noexcept
 {
 	std::cout << "USAGE:" << std::endl;
 	std::cout << "\t./arcade \'graphics_library.so\'" << std::endl;
@@ -117,20 +122,45 @@ int arc::Core::displayUsage()
 	return 84;
 }
 
-void arc::Core::showGraphicsAvailable()
+void arc::Core::showCommands() const noexcept
+{
+	std::cout << "CONTROLS:" << std::endl;
+	std::cout << "\t\tMOVE UP:\t\'z\'" << std::endl;
+	std::cout << "\t\tMOVE DOWN:\t\'s\'" << std::endl;
+	std::cout << "\t\tMOVE LEFT:\t\'q\'" << std::endl;
+	std::cout << "\t\tMOVE RIGHT:\t\'d\'" << std::endl;
+	std::cout << "\t\tNEXT GRAPHICS:\t\'p\'" << std::endl;
+	std::cout << "\t\tPREV GRAPHICS:\t\'o\'" << std::endl;
+	std::cout << "\t\tNEXT GAME:\t\'m\'" << std::endl;
+	std::cout << "\t\tPREV GAME:\t\'l\'" << std::endl;
+	std::cout << "\t\tBACK TO MENU:\t\'Tab\'" << std::endl;
+	std::cout << "\t\tQUIT IN GAME:\t\'Escape\'" << std::endl;
+}
+
+void arc::Core::showGraphicsAvailable() const noexcept
 {
 	std::cout << "GRAPHIC LIBRARIES AVAILABLE:" << std::endl;
 	for (auto it = _displayList.begin(); it != _displayList.end(); it++) {
-		std::cout << "\t" << *it << std::endl;
+		std::cout << "\t\t" << *it << std::endl;
 	}
-	std::cout << std::endl;
 }
 
-void arc::Core::showGamesAvailable()
+void arc::Core::showGamesAvailable() const noexcept
 {
-	std::cout << "GAME LIBRARIES AVAILABLE:" << std::endl;
+	size_t count = 1;
+	size_t nameIdx;
+	size_t nameLen;
+	std::string gameName;
+
+	std::cout << "GAME LIBRARIES AVAILABLE:";
 	for (auto it = _gameList.begin(); it != _gameList.end(); it++) {
-		std::cout << "\t" << *it << std::endl;
+		nameIdx = (*it).find_last_of("_") + 1;
+		nameLen = (*it).find_last_of(".") - nameIdx;
+		gameName = (*it).substr(nameIdx, nameLen);
+		std::cout << std::endl;
+		std::cout << "\t\tGame library:\t" << *it << std::endl;
+		std::cout << "\t\tGame name:\t" << gameName << std::endl;
+		std::cout << "\t\tGame number:\t" << count << std::endl;
 	}
 }
 
@@ -155,14 +185,6 @@ void arc::Core::setFirstGraphics(const std::string &fullPathName)
 		_displayList.push_back(fullPathName);
 		_displayName = fullPathName;
 	}
-}
-
-void arc::Core::setFirstGame()
-{
-	_gameName = _gameList.front();
-	_gameLib.open(_gameName);
-	_gameLib.instantiate();
-	_game = _gameLib.load();
 }
 
 void arc::Core::switchToNextGraphics()
@@ -265,8 +287,10 @@ void arc::Core::gameLoop()
 
 void arc::Core::displayText()
 {
-	_display->putStr("SCORE:", 30, 3);
-	_display->putStr(std::to_string(_game->getScore()), 30, 4);
+	_display->putStr("PLAYER:", 30, 1);
+	_display->putStr(_userName, 30, 2);
+	_display->putStr("SCORE:", 30, 4);
+	_display->putStr(std::to_string(_game->getScore()), 30, 5);
 }
 
 void arc::Core::waitCycle() const noexcept
@@ -295,6 +319,9 @@ bool arc::Core::computeKeys(arc::InteractionList &keys)
 			case arc::Interaction::GAME_PREV:
 				switchToPrevGame();
 				break;
+			case arc::Interaction::MENU:
+				menu(false);
+				break;
 			case arc::Interaction::QUIT:
 				return false;
 			default:
@@ -304,7 +331,7 @@ bool arc::Core::computeKeys(arc::InteractionList &keys)
 	return true;
 }
 
-void arc::Core::tryToProcessInteraction(arc::InteractionList &keys)
+void arc::Core::tryToProcessInteraction(arc::InteractionList &keys) noexcept
 {
 	if (!_game->processInteraction(keys.front())) {
 		if (_tryInteraction < 6)
@@ -315,4 +342,77 @@ void arc::Core::tryToProcessInteraction(arc::InteractionList &keys)
 	else
 		_tryInteraction = 0;
 	_tryInteraction++;
+}
+
+void arc::Core::menu(bool isFirstCall)
+{
+	std::ifstream s ("src/title.txt");
+
+	std::cout << "\033[2J\033[H" << std::endl << s.rdbuf() << std::endl;
+	showCommands();
+	std::cout << std::endl << std::endl;
+	showGraphicsAvailable();
+	std::cout << std::endl << std::endl;
+	showGamesAvailable();
+	std::cout << std::endl;
+	if (!isFirstCall) {
+		_display->~IDisplay();
+		_game->~IGame();
+		std::cout << "Your name: \'" << _userName << "\'";
+	}
+	else
+		getPlayerName();
+	std::cout << std::endl;
+	_gameName = _gameList[getGameNumber()];
+	loadFromMenu(isFirstCall);
+}
+
+void arc::Core::loadFromMenu(bool isFirstCall) noexcept
+{
+	if (!isFirstCall) {
+		_displayLib.open(_displayName);
+		_displayLib.instantiate();
+		_display.release();
+		_display = _displayLib.load();
+		_gameLib.open(_gameName);
+		_gameLib.instantiate();
+		_game.release();
+		_game = _gameLib.load();
+
+	}
+	else {
+		_gameLib.open(_gameName);
+		_gameLib.instantiate();
+		_game = _gameLib.load();
+	}
+}
+
+void arc::Core::getPlayerName()
+{
+	std::cout << "Enter your name (< 12 characters): ";
+	std::getline(std::cin, _userName);
+	while (_userName.length() >= 12) {
+		std::cout << "Your name is too long!" << std::endl;
+		std::cout << "Enter a shorter name: ";
+		std::getline(std::cin, _userName);
+	}
+}
+
+size_t arc::Core::getGameNumber()
+{
+	std::string input;
+	size_t nb = 0;
+
+	std::cout << "Enter game number :";
+	std::cin >> input;
+	if (input.find_first_not_of("0123456789") == std::string::npos)
+		nb = std::stoi(input);
+	while (nb > _gameList.size() || nb == 0) {
+		std::cout << "Wrong game number!" << std::endl;
+		std::cout << "Enter another game number :";
+		std::cin >> input;
+		if (input.find_first_not_of("0123456789") == std::string::npos)
+			nb = std::stoi(input);
+	}
+	return nb - 1;
 }

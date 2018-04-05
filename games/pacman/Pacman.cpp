@@ -8,6 +8,7 @@
 #include <iostream>
 #include <fstream>
 #include <memory>
+#include <algorithm>
 #include <cmath>
 #include <cstdlib>
 #include "Pacman.hpp"
@@ -21,6 +22,7 @@ extern "C" std::unique_ptr<arc::IGame> create_object()
 arc::Pacman::Pacman()
 {
 	std::string S;
+	std::ifstream F ("./games/pacman/pacman_map.txt", std::ifstream::in);
 
 	_spec.x = 0;
 	_spec.y = 0;
@@ -423,7 +425,7 @@ void arc::Pacman::checkIntersec(arc::Item &item,
 		goInReverse(dir);
 		return;
 	}
-	chooseGhostDirection(available, dir);
+	chooseGhostStrategy(item, available, dir);
 
 }
 
@@ -445,6 +447,49 @@ void arc::Pacman::goInReverse(arc::Interaction &dir) noexcept
 		default:
 			return;
 	}
+}
+
+void arc::Pacman::chooseGhostStrategy(arc::Item &ghost,
+					std::vector<Interaction> &available,
+					arc::Interaction &dir) noexcept
+{
+	int choice = rand() % 3;
+
+	if (choice < 2 && _score > 200)
+		ghostFollowPacman(ghost, available, dir);
+	else
+		chooseGhostDirection(available, dir);
+}
+
+void arc::Pacman::ghostFollowPacman(arc::Item &ghost,
+					std::vector<Interaction> &dirAv,
+					arc::Interaction &dir) noexcept
+{
+	arc::Item &pac = getItemFromName("pacman");
+
+	if (pac.y < ghost.y &&
+			isDirAvailable(dirAv, Interaction::MOVE_UP))
+		dir = Interaction::MOVE_UP;
+	else if (pac.y > ghost.y &&
+			isDirAvailable(dirAv, Interaction::MOVE_DOWN))
+		dir = Interaction::MOVE_DOWN;
+	else if (pac.x < ghost.x && isDirAvailable(dirAv, Interaction::MOVE_LEFT))
+		dir = Interaction::MOVE_LEFT;
+	else if (pac.x > ghost.x &&
+			isDirAvailable(dirAv, Interaction::MOVE_RIGHT))
+		dir = Interaction::MOVE_RIGHT;
+	else
+		dir = dirAv.front();
+}
+
+bool arc::Pacman::isDirAvailable(std::vector<Interaction> &available,
+					arc::Interaction dir) noexcept
+{
+	if (std::find(available.begin(), available.end(),
+		dir) == std::end(available))
+		return false;
+	else
+		return true;
 }
 
 void arc::Pacman::chooseGhostDirection(std::vector<Interaction> &vec,
