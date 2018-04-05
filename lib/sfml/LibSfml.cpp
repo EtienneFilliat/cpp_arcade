@@ -143,6 +143,8 @@ void arc::LibSfml::setInteractions(){
 			this->_interactions.push(arc::Interaction::GAME_PREV);
 		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::M))
 			this->_interactions.push(arc::Interaction::GAME_NEXT);
+		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Tab))
+			this->_interactions.push(arc::Interaction::MENU);
 		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
 			this->_interactions.push(arc::Interaction::QUIT);
 	}

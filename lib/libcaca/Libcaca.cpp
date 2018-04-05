@@ -164,6 +164,8 @@ void arc::Libcaca::setInteractions(){
 		this->_interactions.push(arc::Interaction::GAME_PREV);
 	else if (event.data.key.ch == 'm')
 		this->_interactions.push(arc::Interaction::GAME_NEXT);
+	else if (event.data.key.ch == '\t')
+		this->_interactions.push(arc::Interaction::MENU);
 	else if (event.data.key.ch == 27)
 		this->_interactions.push(arc::Interaction::QUIT);
 }

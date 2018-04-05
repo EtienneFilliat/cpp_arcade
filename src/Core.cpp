@@ -302,7 +302,9 @@ bool arc::Core::computeKeys(arc::InteractionList &keys)
 				switchToNextGame();
 				break;
 			case arc::Interaction::GAME_PREV:
-				//switchToPrevGame();
+				switchToPrevGame();
+				break;
+			case arc::Interaction::MENU:
 				menu(false);
 				break;
 			case arc::Interaction::QUIT:
