@@ -267,7 +267,7 @@ void arc::Pacman::createFearGhost(arc::Item &item) noexcept
 
 	sprite1.path = "games/pacman/sprites/fear_ghost1.png";
 	sprite1.color = arc::Color::CYAN;
-	sprite1.substitute = 'F';
+	sprite1.substitute = 'o';
 	sprite1.background = arc::Color::BLACK;
 	sprite1.x = 0;
 	sprite1.y = 0;
@@ -275,7 +275,7 @@ void arc::Pacman::createFearGhost(arc::Item &item) noexcept
 	item.sprites.push_back(sprite1);
 	sprite2.path = "games/pacman/sprites/fear_ghost2.png";
 	sprite2.color = arc::Color::CYAN;
-	sprite2.substitute = 'f';
+	sprite2.substitute = 'O';
 	sprite2.background = arc::Color::BLACK;
 	sprite2.x = 0;
 	sprite2.y = 0;
