@@ -122,6 +122,21 @@ int arc::Core::displayUsage() const noexcept
 	return 84;
 }
 
+void arc::Core::showCommands() const noexcept
+{
+	std::cout << "COMMANDS:" << std::endl;
+	std::cout << "\t\tMOVE UP:\t\'z\'" << std::endl;
+	std::cout << "\t\tMOVE DOWN:\t\'s\'" << std::endl;
+	std::cout << "\t\tMOVE LEFT:\t\'q\'" << std::endl;
+	std::cout << "\t\tMOVE RIGHT:\t\'d\'" << std::endl;
+	std::cout << "\t\tNEXT GRAPHICS:\t\'p\'" << std::endl;
+	std::cout << "\t\tPREV GRAPHICS:\t\'o\'" << std::endl;
+	std::cout << "\t\tNEXT GAME:\t\'m\'" << std::endl;
+	std::cout << "\t\tPREV GAME:\t\'l\'" << std::endl;
+	std::cout << "\t\tBACK TO MENU:\t\'Tab\'" << std::endl;
+	std::cout << "\t\tQUIT IN GAME:\t\'Escape\'" << std::endl;
+}
+
 void arc::Core::showGraphicsAvailable() const noexcept
 {
 	std::cout << "GRAPHIC LIBRARIES AVAILABLE:" << std::endl;
@@ -334,6 +349,8 @@ void arc::Core::menu(bool isFirstCall)
 	std::ifstream s ("src/title.txt");
 
 	std::cout << "\033[2J\033[H" << std::endl << s.rdbuf() << std::endl;
+	showCommands();
+	std::cout << std::endl << std::endl;
 	showGraphicsAvailable();
 	std::cout << std::endl << std::endl;
 	showGamesAvailable();

@@ -32,6 +32,7 @@ namespace arc {
 					noexcept;
 		void searchGameLib(const std::string &fullPathName) noexcept;
 		void setFirstGraphics(const std::string &fullPathName);
+		void showCommands() const noexcept;
 		void showGraphicsAvailable() const noexcept;
 		void showGamesAvailable() const noexcept;
 		void switchToNextGraphics();
