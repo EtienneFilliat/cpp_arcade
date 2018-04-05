@@ -19,7 +19,7 @@ extern "C" std::unique_ptr<arc::IDisplay> create_object()
 arc::LibSfml::LibSfml()
 {
 	_step = 1;
-	_window.reset(new sf::RenderWindow(sf::VideoMode(1160, 1000),
+	_window.reset(new sf::RenderWindow(sf::VideoMode(1180, 1000),
 			"Cpp_Arcade"));
 	if (!_window.get())
 		throw arc::Exception("Cannot create window", "LibSFML");
