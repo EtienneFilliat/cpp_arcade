@@ -33,6 +33,7 @@ arc::Pacman::Pacman()
 	_ghNbr = 0;
 	_score = 0;
 	_eatGhosts = false;
+	_Over = false;
 	_startTimer = std::chrono::high_resolution_clock::now();
 	if (!F)
 		throw arc::Exception("Cannot initialise file stream",
@@ -326,6 +327,7 @@ void arc::Pacman::envUpdate() noexcept
 {
 	arc::Item &item = getItemFromName("pacman");
 
+	_Over = checkEnd();
 	try {
 		autorun(item);
 		for (int i = 0; i < _ghNbr; i++)
@@ -334,6 +336,16 @@ void arc::Pacman::envUpdate() noexcept
 	catch (std::exception &err) {
 		std::cerr << err.what() << std::endl;
 	}
+}
+
+bool arc::Pacman::checkEnd() noexcept
+{
+	for (auto it = _mapItems.begin(); it < _mapItems.end(); it++) {
+		if (it->sprites[0].name == "pacgum"
+			|| it->sprites[0].name == "Spacgum")
+			return false;
+	}
+	return true;
 }
 
 void arc::Pacman::moveGhosts(const int i, arc::Item &pac) noexcept
@@ -370,7 +382,7 @@ void arc::Pacman::chooseGhostSprite(float &state, arc::Item &item) noexcept
 
 void arc::Pacman::killPacman(arc::Item &ghost, arc::Item &pacman) noexcept
 {
-	if (pacman.name == "")
+	if (pacman.name != "pacman")
 		return;
 	if ((std::floor(ghost.x) == std::floor(pacman.x))
 		&& (std::floor(ghost.y) == std::floor(pacman.y))
@@ -396,6 +408,7 @@ void arc::Pacman::reset()
 	_ghNbr = 0;
 	_score = 0;
 	_eatGhosts = false;
+	_Over = false;
 	_direction = arc::Interaction::MOVE_RIGHT;
 	_startTimer = std::chrono::high_resolution_clock::now();
 	std::ifstream F ("./games/pacman/pacman_map.txt", std::ifstream::in);
@@ -780,4 +793,9 @@ char arc::Pacman::findInMap(const float posx, const float posy) noexcept
 int arc::Pacman::getScore() noexcept
 {
 	return _score;
+}
+
+bool arc::Pacman::isOver() const noexcept
+{
+	return _Over;
 }
