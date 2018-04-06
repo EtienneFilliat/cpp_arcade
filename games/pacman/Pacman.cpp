@@ -326,6 +326,8 @@ void arc::Pacman::envUpdate() noexcept
 {
 	arc::Item &item = getItemFromName("pacman");
 
+	if (checkEnd())
+		exit(127);
 	try {
 		autorun(item);
 		for (int i = 0; i < _ghNbr; i++)
@@ -334,6 +336,16 @@ void arc::Pacman::envUpdate() noexcept
 	catch (std::exception &err) {
 		std::cerr << err.what() << std::endl;
 	}
+}
+
+bool arc::Pacman::checkEnd() noexcept
+{
+	for (auto it = _mapItems.begin(); it < _mapItems.end(); it++) {
+		if (it->sprites[0].name == "pacgum"
+			|| it->sprites[0].name == "Spacgum")
+			return false;
+	}
+	return true;
 }
 
 void arc::Pacman::moveGhosts(const int i, arc::Item &pac) noexcept
@@ -370,7 +382,7 @@ void arc::Pacman::chooseGhostSprite(float &state, arc::Item &item) noexcept
 
 void arc::Pacman::killPacman(arc::Item &ghost, arc::Item &pacman) noexcept
 {
-	if (pacman.name == "")
+	if (pacman.name != "pacman")
 		return;
 	if ((std::floor(ghost.x) == std::floor(pacman.x))
 		&& (std::floor(ghost.y) == std::floor(pacman.y))

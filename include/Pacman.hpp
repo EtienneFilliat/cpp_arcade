@@ -75,6 +75,7 @@ class Pacman : public arc::IGame {
 					arc::Item &pac) noexcept;
 		bool isDirAvailable(std::vector<Interaction> &available,
 					arc::Interaction dir) noexcept;
+		bool checkEnd() noexcept;
 		std::vector<std::string> _map;
 		ItemList _mapItems;
 		Specs _spec;
