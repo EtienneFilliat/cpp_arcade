@@ -49,8 +49,8 @@ graphicals:
 		@ln -sf lib/ncurses/*.so ./
 
 games:
-		@$(MAKE) -C games/pacman/
-		@ln -sf games/pacman/*.so ./
+		@$(MAKE) -C games/nibbler/
+		@ln -sf games/nibbler/*.so ./
 
 $(CORE):	$(OBJS) $(MAINOBJ)
 		$(CXX) $(OBJS) $(MAINOBJ) -ldl -o $(CORE)
@@ -69,6 +69,7 @@ clean:
 		@$(MAKE) fclean fsym -C lib/sfml/
 		@$(MAKE) fclean fsym -C lib/ncurses/
 		@$(MAKE) fclean fsym -C games/pacman/
+		@$(MAKE) fclean fsym -C games/nibbler/
 
 fclean:		clean
 		$(RM) $(CORE)
