@@ -335,7 +335,19 @@ void arc::Core::gameLoop()
 		_game->envUpdate();
 		items = _game->getItems();
 		waitCycle();
+		if (_game->isOver())
+			youWin();
 	}
+}
+
+void arc::Core::youWin()
+{
+	millisec wait(3000);
+
+	_display->putStr("YOU WIN!", 11, 20);
+	_display->refresh();
+	std::this_thread::sleep_for(wait);
+	menu(false);
 }
 
 void arc::Core::displayText()
