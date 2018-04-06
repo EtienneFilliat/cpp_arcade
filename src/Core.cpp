@@ -344,6 +344,14 @@ void arc::Core::displayText()
 	_display->putStr(_userName, 30, 2);
 	_display->putStr("SCORE:", 30, 4);
 	_display->putStr(std::to_string(_game->getScore()), 30, 5);
+	for (auto it = _highScores.begin(); it != _highScores.end(); it++) {
+		if ((*it).gameLibName == _gameName) {
+			_display->putStr("HIGH SCORE:", 30, 7);
+			_display->putStr(std::to_string((*it).score), 30, 8);
+			_display->putStr("SCORED BY:", 30, 10);
+			_display->putStr((*it).player, 30, 11);
+		}
+	}
 }
 
 void arc::Core::waitCycle() const noexcept
