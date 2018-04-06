@@ -203,6 +203,7 @@ void arc::Core::showGamesAvailable() const noexcept
 		std::cout << "\t\tGame name:\t" << gameName << std::endl;
 		showGameHighScore(*it);
 		std::cout << "\t\tGame number:\t" << count << std::endl;
+		count++;
 	}
 }
 
