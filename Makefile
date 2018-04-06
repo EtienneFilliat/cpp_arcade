@@ -52,7 +52,7 @@ games:
 		@$(MAKE) -C games/nibbler/
 		@ln -sf games/nibbler/*.so ./
 		@$(MAKE) -C games/pacman/
-		@ln -sf gaems/pacman/*.so ./
+		@ln -sf games/pacman/*.so ./
 
 $(CORE):	$(OBJS) $(MAINOBJ)
 		$(CXX) $(OBJS) $(MAINOBJ) -ldl -o $(CORE)
