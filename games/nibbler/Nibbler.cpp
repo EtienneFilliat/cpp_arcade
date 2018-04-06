@@ -158,8 +158,9 @@ arc::Item arc::Nibbler::createSnakeItem(const std::string &name,
 	sprite.y = 0;
 	sprite.rotation = 0;
 	sprite.path = "games/nibbler/sprites/snake.png";
-	sprite.substitute = '#';
-	sprite.color = WHITE;
+	sprite.substitute = 'O';
+	sprite.color = GREEN;
+	sprite.background = BLACK;
 	snake.name = name;
 	snake.x = x;
 	snake.y = y;
@@ -178,9 +179,10 @@ arc::Item arc::Nibbler::createWallItem(int x, int y) noexcept
 	sprite.x = 0;
 	sprite.y = 0;
 	sprite.rotation = 0;
-	sprite.path = "games/nibbler/sprites/snake.png";
+	sprite.path = "games/nibbler/sprites/blue_wall.png";
 	sprite.substitute = '#';
-	sprite.color = WHITE;
+	sprite.color = BLUE;
+	sprite.background = BLUE;
 	wall.name = "wall";
 	wall.x = x;
 	wall.y = y;
