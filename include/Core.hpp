@@ -56,7 +56,8 @@ namespace arc {
 		void initHighScores(const std::string &fileName
 					= "src/HighScores.txt");
 		void createHighScore(const std::string &line);
-		bool findInHighScores(const std::string &gameLibName);
+		bool findInHighScores(const std::string &gameLibName) noexcept;
+		void showGameHighScore(const std::string &GameLibName) const noexcept;
 		DynamicLib<IGame> _gameLib;
 		DynamicLib<IDisplay> _displayLib;
 		std::unique_ptr<IGame> _game;

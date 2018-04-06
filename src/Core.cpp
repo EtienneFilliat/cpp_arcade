@@ -55,11 +55,11 @@ void arc::Core::initHighScores(const std::string &fileName)
 	}
 	for (auto it = _gameList.begin(); it != _gameList.end(); it++) {
 		if (!findInHighScores(*it))
-			createHighScore(*it + " default 0");
+			createHighScore(*it + " nobody 0");
 	}
 }
 
-bool arc::Core::findInHighScores(const std::string &gameLibName)
+bool arc::Core::findInHighScores(const std::string &gameLibName) noexcept
 {
 	for (auto it = _highScores.begin(); it != _highScores.end(); it++) {
 		if ((*it).gameLibName == gameLibName)
@@ -201,7 +201,19 @@ void arc::Core::showGamesAvailable() const noexcept
 		std::cout << std::endl;
 		std::cout << "\t\tGame library:\t" << *it << std::endl;
 		std::cout << "\t\tGame name:\t" << gameName << std::endl;
+		showGameHighScore(*it);
 		std::cout << "\t\tGame number:\t" << count << std::endl;
+	}
+}
+
+void arc::Core::showGameHighScore(const std::string &gameLibName)
+					const noexcept
+{
+	for (auto it = _highScores.begin(); it != _highScores.end(); it++) {
+		if ((*it).gameLibName == gameLibName) {
+			std::cout << "\t\tHigh score:\t" << (*it).score;
+			std::cout << " by " << (*it).player << std::endl;
+		}
 	}
 }
 
