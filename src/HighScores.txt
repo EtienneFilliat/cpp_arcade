@@ -1,1 +1,0 @@
-games/pacman/lib_arcade_pacman.so mael 0
