@@ -32,6 +32,7 @@ void arc::Core::initCore(const std::string &firstGraphics,
 	if (_gameList.empty())
 		throw Exception("No game library found in \'./games\'!",
 					"Core");
+	initHighScores();
 	menu(true);
 	setFirstGraphics(firstGraphics);
 }
@@ -39,6 +40,46 @@ void arc::Core::initCore(const std::string &firstGraphics,
 void arc::Core::initRandom() const noexcept
 {
 	srand(getpid());
+}
+
+void arc::Core::initHighScores(const std::string &fileName)
+{
+	std::ifstream s (fileName);
+	std::string line;
+
+	if (!s)
+		throw Exception("Cannot find \'src/HighScores.txt\'!", "Core");
+	while (std::getline(s, line)) {
+		if (!line.empty())
+			createHighScore(line);
+	}
+	for (auto it = _gameList.begin(); it != _gameList.end(); it++) {
+		if (!findInHighScores(*it))
+			createHighScore(*it + ";nobody;0");
+	}
+}
+
+bool arc::Core::findInHighScores(const std::string &gameLibName) noexcept
+{
+	for (auto it = _highScores.begin(); it != _highScores.end(); it++) {
+		if ((*it).gameLibName == gameLibName)
+			return true;
+	}
+	return false;
+}
+
+void arc::Core::createHighScore(const std::string &line)
+{
+	size_t space1 = line.find(";");
+	size_t space2 = line.find(";", space1 + 1);
+	highScore high;
+
+	if (space1 == std::string::npos || space2 == std::string::npos)
+		throw Exception("Wrong HighScores file!", "Core");
+	high.gameLibName = line.substr(0, space1);
+	high.player = line.substr(space1 + 1, space2 - space1 - 1);
+	high.score = std::stoi(line.substr(space2 + 1));
+	_highScores.push_back(high);
 }
 
 void arc::Core::initGraphics(const std::string &directory)
@@ -160,7 +201,19 @@ void arc::Core::showGamesAvailable() const noexcept
 		std::cout << std::endl;
 		std::cout << "\t\tGame library:\t" << *it << std::endl;
 		std::cout << "\t\tGame name:\t" << gameName << std::endl;
+		showGameHighScore(*it);
 		std::cout << "\t\tGame number:\t" << count << std::endl;
+	}
+}
+
+void arc::Core::showGameHighScore(const std::string &gameLibName)
+					const noexcept
+{
+	for (auto it = _highScores.begin(); it != _highScores.end(); it++) {
+		if ((*it).gameLibName == gameLibName) {
+			std::cout << "\t\tHigh score:\t" << (*it).score;
+			std::cout << " by " << (*it).player << std::endl;
+		}
 	}
 }
 
@@ -282,7 +335,19 @@ void arc::Core::gameLoop()
 		_game->envUpdate();
 		items = _game->getItems();
 		waitCycle();
+		if (_game->isOver())
+			youWin();
 	}
+}
+
+void arc::Core::youWin()
+{
+	millisec wait(3000);
+
+	_display->putStr("YOU WIN!", 11, 20);
+	_display->refresh();
+	std::this_thread::sleep_for(wait);
+	menu(false);
 }
 
 void arc::Core::displayText()
@@ -291,6 +356,31 @@ void arc::Core::displayText()
 	_display->putStr(_userName, 30, 2);
 	_display->putStr("SCORE:", 30, 4);
 	_display->putStr(std::to_string(_game->getScore()), 30, 5);
+	for (auto it = _highScores.begin(); it != _highScores.end(); it++) {
+		if ((*it).score < _game->getScore()) {
+			(*it).score = _game->getScore();
+			(*it).player = _userName;
+			saveHighScores();
+		}
+		if ((*it).gameLibName == _gameName) {
+			_display->putStr("HIGH SCORE:", 30, 7);
+			_display->putStr(std::to_string((*it).score), 30, 8);
+			_display->putStr("SCORED BY:", 30, 10);
+			_display->putStr((*it).player, 30, 11);
+		}
+	}
+}
+
+void arc::Core::saveHighScores() const
+{
+	std::ofstream s ("src/HighScores.txt");
+
+	if (!s)
+		throw Exception("Cannot find \'src/HighScore.txt\'!", "Core");
+	for (auto it = _highScores.begin(); it != _highScores.end(); it++) {
+		s << (*it).gameLibName << ";" << (*it).player << ";";
+		s << (*it).score << std::endl;
+	}
 }
 
 void arc::Core::waitCycle() const noexcept
@@ -346,8 +436,10 @@ void arc::Core::tryToProcessInteraction(arc::InteractionList &keys) noexcept
 
 void arc::Core::menu(bool isFirstCall)
 {
-	std::ifstream s ("src/title.txt");
+	std::ifstream s ("src/Title.txt");
 
+	if (!s)
+		throw Exception("Cannot find \'src/Title.txt\'!", "Core");
 	std::cout << "\033[2J\033[H" << std::endl << s.rdbuf() << std::endl;
 	showCommands();
 	std::cout << std::endl << std::endl;
@@ -391,7 +483,8 @@ void arc::Core::getPlayerName()
 {
 	std::cout << "Enter your name (< 12 characters): ";
 	std::getline(std::cin, _userName);
-	while (_userName.length() >= 12) {
+	while (_userName.length() >= 12 ||
+		_userName.find(";") != std::string::npos) {
 		std::cout << "Your name is too long!" << std::endl;
 		std::cout << "Enter a shorter name: ";
 		std::getline(std::cin, _userName);

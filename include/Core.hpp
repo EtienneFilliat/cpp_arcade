@@ -24,6 +24,11 @@ namespace arc {
 				const std::string &displayDir = "lib",
 				const std::string &gameDir = "games");
 		void gameLoop();
+		struct highScore {
+			std::string gameLibName;
+			std::string player;
+			int score;
+		};
 	private:
 		void initRandom() const noexcept;
 		void initGraphics(const std::string &directory);
@@ -48,12 +53,20 @@ namespace arc {
 		void loadFromMenu(bool isFirstCall) noexcept;
 		void getPlayerName();
 		size_t getGameNumber();
+		void initHighScores(const std::string &fileName
+					= "src/HighScores.txt");
+		void createHighScore(const std::string &line);
+		bool findInHighScores(const std::string &gameLibName) noexcept;
+		void showGameHighScore(const std::string &GameLibName) const noexcept;
+		void youWin();
+		void saveHighScores() const;
 		DynamicLib<IGame> _gameLib;
 		DynamicLib<IDisplay> _displayLib;
 		std::unique_ptr<IGame> _game;
 		std::unique_ptr<IDisplay> _display;
 		std::vector<std::string> _displayList;
 		std::vector<std::string> _gameList;
+		std::vector<highScore> _highScores;
 		std::string _displayName;
 		std::string _gameName;
 		std::string _userName;
