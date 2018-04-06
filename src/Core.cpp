@@ -357,6 +357,10 @@ void arc::Core::displayText()
 	_display->putStr("SCORE:", 30, 4);
 	_display->putStr(std::to_string(_game->getScore()), 30, 5);
 	for (auto it = _highScores.begin(); it != _highScores.end(); it++) {
+		if ((*it).score < _game->getScore()) {
+			(*it).score = _game->getScore();
+			(*it).player = _userName;
+		}
 		if ((*it).gameLibName == _gameName) {
 			_display->putStr("HIGH SCORE:", 30, 7);
 			_display->putStr(std::to_string((*it).score), 30, 8);
