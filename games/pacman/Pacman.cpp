@@ -85,7 +85,7 @@ void arc::Pacman::createItem(const char type, const int posx,
 			_mapItems.push_back(createGhost(posx, posy));
 			break;
 		case 'S':
-			_mapItems.push_back(createSuperPacgum(posx, posy));
+			_mapItems.insert(it, createSuperPacgum(posx, posy));
 			break;
 		default:
 			return;
@@ -370,6 +370,8 @@ void arc::Pacman::chooseGhostSprite(float &state, arc::Item &item) noexcept
 
 void arc::Pacman::killPacman(arc::Item &ghost, arc::Item &pacman) noexcept
 {
+	if (pacman.name == "")
+		return;
 	if ((std::floor(ghost.x) == std::floor(pacman.x))
 		&& (std::floor(ghost.y) == std::floor(pacman.y))
 			&& !_eatGhosts)
