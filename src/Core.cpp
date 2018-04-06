@@ -327,14 +327,14 @@ void arc::Core::gameLoop()
 		_display->clear();
 		for (auto it = items.begin(); it < items.end(); it++)
 			_display->putItem(*it);
+		displayText();
+		_display->refresh();
 		if (keys.empty())
 			keys = _display->getInteractions();
 		else
 			keys.pop();
 		_game->envUpdate();
 		items = _game->getItems();
-		displayText();
-		_display->refresh();
 		waitCycle();
 		if (_game->isOver())
 			youWin();
