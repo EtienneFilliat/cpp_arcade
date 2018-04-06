@@ -23,6 +23,7 @@ class Pacman : public arc::IGame {
 		bool processInteraction(Interaction &) noexcept final;
 		void envUpdate() noexcept final;
 		int getScore() noexcept final;
+		bool isOver() const noexcept final;
 	private:
 		Item &getItemFromName(const std::string &);
 		bool removeItem(const std::string &);
@@ -75,6 +76,7 @@ class Pacman : public arc::IGame {
 					arc::Item &pac) noexcept;
 		bool isDirAvailable(std::vector<Interaction> &available,
 					arc::Interaction dir) noexcept;
+		bool checkEnd() noexcept;
 		std::vector<std::string> _map;
 		ItemList _mapItems;
 		Specs _spec;
@@ -88,6 +90,7 @@ class Pacman : public arc::IGame {
 		GhostSpriteState _ghostmov;
 		bool _eatGhosts;
 		std::chrono::high_resolution_clock::time_point _startTimer;
+		bool _Over;
 };
 }
 
