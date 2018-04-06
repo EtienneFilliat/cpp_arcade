@@ -33,6 +33,7 @@ arc::Pacman::Pacman()
 	_ghNbr = 0;
 	_score = 0;
 	_eatGhosts = false;
+	_Over = false;
 	_startTimer = std::chrono::high_resolution_clock::now();
 	if (!F)
 		throw arc::Exception("Cannot initialise file stream",
@@ -326,8 +327,7 @@ void arc::Pacman::envUpdate() noexcept
 {
 	arc::Item &item = getItemFromName("pacman");
 
-	if (checkEnd())
-		exit(127);
+	_Over = checkEnd();
 	try {
 		autorun(item);
 		for (int i = 0; i < _ghNbr; i++)
@@ -408,6 +408,7 @@ void arc::Pacman::reset()
 	_ghNbr = 0;
 	_score = 0;
 	_eatGhosts = false;
+	_Over = false;
 	_direction = arc::Interaction::MOVE_RIGHT;
 	_startTimer = std::chrono::high_resolution_clock::now();
 	std::ifstream F ("./games/pacman/pacman_map.txt", std::ifstream::in);
@@ -792,4 +793,9 @@ char arc::Pacman::findInMap(const float posx, const float posy) noexcept
 int arc::Pacman::getScore() noexcept
 {
 	return _score;
+}
+
+bool arc::Pacman::isOver() const noexcept
+{
+	return _Over;
 }
