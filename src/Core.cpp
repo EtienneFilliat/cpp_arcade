@@ -327,14 +327,14 @@ void arc::Core::gameLoop()
 		_display->clear();
 		for (auto it = items.begin(); it < items.end(); it++)
 			_display->putItem(*it);
-		displayText();
-		_display->refresh();
 		if (keys.empty())
 			keys = _display->getInteractions();
 		else
 			keys.pop();
 		_game->envUpdate();
 		items = _game->getItems();
+		displayText();
+		_display->refresh();
 		waitCycle();
 		if (_game->isOver())
 			youWin();
@@ -358,7 +358,8 @@ void arc::Core::displayText()
 	_display->putStr("SCORE:", 30, 4);
 	_display->putStr(std::to_string(_game->getScore()), 30, 5);
 	for (auto it = _highScores.begin(); it != _highScores.end(); it++) {
-		if ((*it).score < _game->getScore()) {
+		if ((*it).gameLibName == _gameName &&
+			(*it).score < _game->getScore()) {
 			(*it).score = _game->getScore();
 			(*it).player = _userName;
 			saveHighScores();
