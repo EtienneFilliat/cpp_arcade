@@ -55,7 +55,7 @@ void arc::Core::initHighScores(const std::string &fileName)
 	}
 	for (auto it = _gameList.begin(); it != _gameList.end(); it++) {
 		if (!findInHighScores(*it))
-			createHighScore(*it + " nobody 0");
+			createHighScore(*it + ";nobody;0");
 	}
 }
 
@@ -70,15 +70,15 @@ bool arc::Core::findInHighScores(const std::string &gameLibName) noexcept
 
 void arc::Core::createHighScore(const std::string &line)
 {
-	size_t space1 = line.find(" ");
-	size_t space2 = line.find(" ", space1 + 1);
+	size_t space1 = line.find(";");
+	size_t space2 = line.find(";", space1 + 1);
 	highScore high;
 
 	if (space1 == std::string::npos || space2 == std::string::npos)
 		throw Exception("Wrong HighScores file!", "Core");
 	high.gameLibName = line.substr(0, space1);
-	high.player = line.substr(space1 + 1, space2 - space1);
-	high.score = std::stoi(line.substr(space2));
+	high.player = line.substr(space1 + 1, space2 - space1 - 1);
+	high.score = std::stoi(line.substr(space2 + 1));
 	_highScores.push_back(high);
 }
 
@@ -360,6 +360,7 @@ void arc::Core::displayText()
 		if ((*it).score < _game->getScore()) {
 			(*it).score = _game->getScore();
 			(*it).player = _userName;
+			saveHighScores();
 		}
 		if ((*it).gameLibName == _gameName) {
 			_display->putStr("HIGH SCORE:", 30, 7);
@@ -367,6 +368,18 @@ void arc::Core::displayText()
 			_display->putStr("SCORED BY:", 30, 10);
 			_display->putStr((*it).player, 30, 11);
 		}
+	}
+}
+
+void arc::Core::saveHighScores() const
+{
+	std::ofstream s ("src/HighScores.txt");
+
+	if (!s)
+		throw Exception("Cannot find \'src/HighScore.txt\'!", "Core");
+	for (auto it = _highScores.begin(); it != _highScores.end(); it++) {
+		s << (*it).gameLibName << ";" << (*it).player << ";";
+		s << (*it).score << std::endl;
 	}
 }
 
@@ -470,7 +483,8 @@ void arc::Core::getPlayerName()
 {
 	std::cout << "Enter your name (< 12 characters): ";
 	std::getline(std::cin, _userName);
-	while (_userName.length() >= 12) {
+	while (_userName.length() >= 12 ||
+		_userName.find(";") != std::string::npos) {
 		std::cout << "Your name is too long!" << std::endl;
 		std::cout << "Enter a shorter name: ";
 		std::getline(std::cin, _userName);

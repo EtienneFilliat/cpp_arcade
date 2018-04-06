@@ -59,6 +59,7 @@ namespace arc {
 		bool findInHighScores(const std::string &gameLibName) noexcept;
 		void showGameHighScore(const std::string &GameLibName) const noexcept;
 		void youWin();
+		void saveHighScores() const;
 		DynamicLib<IGame> _gameLib;
 		DynamicLib<IDisplay> _displayLib;
 		std::unique_ptr<IGame> _game;
