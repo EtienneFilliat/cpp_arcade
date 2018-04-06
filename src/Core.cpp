@@ -403,13 +403,13 @@ size_t arc::Core::getGameNumber()
 	std::string input;
 	size_t nb = 0;
 
-	std::cout << "Enter game number :";
+	std::cout << "Enter game number: ";
 	std::cin >> input;
 	if (input.find_first_not_of("0123456789") == std::string::npos)
 		nb = std::stoi(input);
 	while (nb > _gameList.size() || nb == 0) {
 		std::cout << "Wrong game number!" << std::endl;
-		std::cout << "Enter another game number :";
+		std::cout << "Enter another game number: ";
 		std::cin >> input;
 		if (input.find_first_not_of("0123456789") == std::string::npos)
 			nb = std::stoi(input);
