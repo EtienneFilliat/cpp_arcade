@@ -32,6 +32,7 @@ void arc::Core::initCore(const std::string &firstGraphics,
 	if (_gameList.empty())
 		throw Exception("No game library found in \'./games\'!",
 					"Core");
+	initHighScores();
 	menu(true);
 	setFirstGraphics(firstGraphics);
 }
@@ -39,6 +40,46 @@ void arc::Core::initCore(const std::string &firstGraphics,
 void arc::Core::initRandom() const noexcept
 {
 	srand(getpid());
+}
+
+void arc::Core::initHighScores(const std::string &fileName)
+{
+	std::ifstream s (fileName);
+	std::string line;
+
+	if (!s)
+		throw Exception("Cannot find \'src/HighScores.txt\'!", "Core");
+	while (std::getline(s, line)) {
+		if (!line.empty())
+			createHighScore(line);
+	}
+	for (auto it = _gameList.begin(); it != _gameList.end(); it++) {
+		if (!findInHighScores(*it))
+			createHighScore(*it + " default 0");
+	}
+}
+
+bool arc::Core::findInHighScores(const std::string &gameLibName)
+{
+	for (auto it = _highScores.begin(); it != _highScores.end(); it++) {
+		if ((*it).gameLibName == gameLibName)
+			return true;
+	}
+	return false;
+}
+
+void arc::Core::createHighScore(const std::string &line)
+{
+	size_t space1 = line.find(" ");
+	size_t space2 = line.find(" ", space1 + 1);
+	highScore high;
+
+	if (space1 == std::string::npos || space2 == std::string::npos)
+		throw Exception("Wrong HighScores file!", "Core");
+	high.gameLibName = line.substr(0, space1);
+	high.player = line.substr(space1 + 1, space2 - space1);
+	high.score = std::stoi(line.substr(space2));
+	_highScores.push_back(high);
 }
 
 void arc::Core::initGraphics(const std::string &directory)
@@ -346,8 +387,10 @@ void arc::Core::tryToProcessInteraction(arc::InteractionList &keys) noexcept
 
 void arc::Core::menu(bool isFirstCall)
 {
-	std::ifstream s ("src/title.txt");
+	std::ifstream s ("src/Title.txt");
 
+	if (!s)
+		throw Exception("Cannot find \'src/Title.txt\'!", "Core");
 	std::cout << "\033[2J\033[H" << std::endl << s.rdbuf() << std::endl;
 	showCommands();
 	std::cout << std::endl << std::endl;
