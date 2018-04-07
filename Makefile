@@ -50,11 +50,9 @@ graphicals:
 
 games:
 		@$(MAKE) -C games/nibbler/
-		@ln -sf games/nibbler/*.so ./
-		@cp games/nibbler/*.so ./games/
+		@mv games/nibbler/*.so ./games/
 		@$(MAKE) -C games/pacman/
-		@ln -sf games/pacman/*.so ./
-		@cp games/pacman/*.so ./games/
+		@mv games/pacman/*.so ./games/
 
 $(CORE):	$(OBJS) $(MAINOBJ)
 		$(CXX) $(OBJS) $(MAINOBJ) -ldl -o $(CORE)
@@ -72,8 +70,8 @@ clean:
 		@$(MAKE) fclean fsym -C lib/libcaca/
 		@$(MAKE) fclean fsym -C lib/sfml/
 		@$(MAKE) fclean fsym -C lib/ncurses/
-		@$(MAKE) fclean fsym -C games/pacman/
-		@$(MAKE) fclean fsym -C games/nibbler/
+		@$(MAKE) fsym -C games/pacman/
+		@$(MAKE) fsym -C games/nibbler/
 
 fclean:		clean
 		$(RM) $(CORE)
