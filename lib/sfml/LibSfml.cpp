@@ -27,7 +27,6 @@ arc::LibSfml::LibSfml()
 		throw Exception("Cannot load \'FiraMono-Medium.ttf\' font!",
 				"LibSFML");
 	_text.setFont(_font);
-	//_text.setColor(sf::Color::White);
 	_text.setPosition(0, 0);
 }
 

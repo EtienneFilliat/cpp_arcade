@@ -226,8 +226,6 @@ void arc::Core::setFirstGraphics(const std::string &fullPathName)
 	std::string libName = fullPathName;
 	auto isADir = fullPathName.find_last_of("/");
 
-	_displayLib.open(fullPathName);
-	_displayLib.instantiate();
 	_display = _displayLib.load();
 	if (isADir != std::string::npos)
 		libName = fullPathName.substr(isADir + 1);
