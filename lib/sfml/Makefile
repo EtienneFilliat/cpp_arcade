@@ -27,7 +27,7 @@ $(NAME):		$(OBJS)
 			$(CXX) $(CXXFLAGS) $(SRC) -o $(NAME) $(LDFLAGS)
 
 fclean:
-		$(RM) $(NAME)
+	$(RM) $(NAME)
 
 fsym:
 	$(RM) ../../$(NAME)
