@@ -1,2 +1,2 @@
-games/pacman/lib_arcade_pacman.so;Mael;3360
-games/nibbler/lib_arcade_nibbler.so;Mael;8
+games/lib_arcade_pacman.so;Mael;3360
+games/lib_arcade_nibbler.so;Mael;8

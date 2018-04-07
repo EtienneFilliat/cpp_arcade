@@ -33,6 +33,8 @@ void arc::Core::initCore(const std::string &firstGraphics,
 		throw Exception("No game library found in \'./games\'!",
 					"Core");
 	initHighScores();
+	_displayLib.open(firstGraphics);
+	_displayLib.instantiate();
 	menu(true);
 	setFirstGraphics(firstGraphics);
 }
