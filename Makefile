@@ -42,11 +42,12 @@ core:		$(CORE)
 
 graphicals:
 		@$(MAKE) -C lib/libcaca/
-		@ln -sf lib/libcaca/*.so ./
+		@mv lib/libcaca/*.so ./lib
 		@$(MAKE) -C lib/sfml/
-		@ln -sf lib/sfml/*.so ./
-		@$(MAKE) --no-print-directory -C lib/ncurses
-		@ln -sf lib/ncurses/*.so ./
+		@mv lib/sfml/*.so ./lib
+		@$(MAKE) -C lib/ncurses
+		@mv lib/ncurses/*.so ./lib
+		@ln -sf lib/*.so ./
 
 games:
 		@$(MAKE) -C games/nibbler/
