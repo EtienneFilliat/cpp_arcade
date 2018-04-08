@@ -23,8 +23,14 @@ arc::LibSdl2::LibSdl2()
 	_window = SDL_CreateWindow("CPP_ARCADE SLD2", SDL_WINDOWPOS_CENTERED,
 					SDL_WINDOWPOS_CENTERED, 1180, 1000,
 					SDL_WINDOW_SHOWN);
+	if (!_window)
+		throw arc::Exception(SDL_GetError(), "LibSDL2");
 	_renderer = SDL_CreateRenderer(_window, -1, 0);
+	if (!_renderer)
+		throw arc::Exception(SDL_GetError(), "LibSDL2");
 	_font = TTF_OpenFont("lib/sdl2/FiraMono-Medium.ttf", 24);
+	if (!_font)
+		throw arc::Exception(SDL_GetError(), "LibSDL2");
 	_fontcolor = {255, 255, 255, 0};
 	_step = 1;
 }
@@ -60,7 +66,11 @@ void arc::LibSdl2::putStr(const std::string &text, int x, int y)
 	SDL_Rect rect;
 
 	surface = TTF_RenderText_Solid(_font, text.c_str(), _fontcolor);
+	if (!surface)
+		throw arc::Exception(SDL_GetError(), "LibSDL2");
 	texture = SDL_CreateTextureFromSurface(_renderer, surface);
+	if (!texture)
+		throw arc::Exception(SDL_GetError(), "LibSDL2");
 	text_width = surface->w;
 	text_height = surface->h;
 	SDL_FreeSurface(surface);
@@ -89,6 +99,8 @@ void arc::LibSdl2::putItem(const arc::Item &item)
 	if (search == _map.end()) {
 		texture = IMG_LoadTexture(_renderer,
 				item.sprites[item.currSpriteIdx].path.c_str());
+		if (!texture)
+			throw arc::Exception(SDL_GetError(), "LibSDL2");
 		SDL_QueryTexture(texture, NULL, NULL, &w, &h);
 		sp->texture = std::make_unique<SDL_Texture *>(texture);
 		sp->rect = std::make_unique<SDL_Rect>(rect);
@@ -100,6 +112,8 @@ void arc::LibSdl2::putItem(const arc::Item &item)
 		SDL_DestroyTexture(*search->second->texture);
 		texture = IMG_LoadTexture(_renderer,
 			item.sprites[item.currSpriteIdx].path.c_str());
+		if (!texture)
+			throw arc::Exception(SDL_GetError(), "LibSDL2");
 		search->second->texture =
 			std::make_unique<SDL_Texture *>(texture);
 	}
@@ -124,6 +138,8 @@ void arc::LibSdl2::putItem(const arc::Item &item, int x, int y)
 	if (search == _map.end()) {
 		texture = IMG_LoadTexture(_renderer,
 				item.sprites[item.currSpriteIdx].path.c_str());
+		if (!texture)
+			throw arc::Exception(SDL_GetError(), "LibSDL2");
 		SDL_QueryTexture(texture, NULL, NULL, &w, &h);
 		sp->texture = std::make_unique<SDL_Texture *>(texture);
 		sp->rect = std::make_unique<SDL_Rect>(rect);
@@ -135,6 +151,8 @@ void arc::LibSdl2::putItem(const arc::Item &item, int x, int y)
 		SDL_DestroyTexture(*search->second->texture);
 		texture = IMG_LoadTexture(_renderer,
 			item.sprites[item.currSpriteIdx].path.c_str());
+		if (!texture)
+			throw arc::Exception(SDL_GetError(), "LibSDL2");
 		search->second->texture =
 			std::make_unique<SDL_Texture *>(texture);
 	}
