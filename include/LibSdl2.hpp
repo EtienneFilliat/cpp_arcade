@@ -10,6 +10,8 @@
 	#include <SDL2/SDL.h>
 	#include <SDL2/SDL_ttf.h>
 	#include <SDL2/SDL_image.h>
+	#include <chrono>
+	#include <thread>
 	#include <unordered_map>
 	#include "IDisplay.hpp"
 

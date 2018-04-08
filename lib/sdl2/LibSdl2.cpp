@@ -44,7 +44,10 @@ void arc::LibSdl2::clear()
 
 void arc::LibSdl2::refresh()
 {
+	millisec wait(10);
+
 	SDL_RenderPresent(_renderer);
+	std::this_thread::sleep_for(wait);
 	return;
 }
 
@@ -87,13 +90,11 @@ void arc::LibSdl2::putItem(const arc::Item &item)
 		texture = IMG_LoadTexture(_renderer,
 				item.sprites[item.currSpriteIdx].path.c_str());
 		SDL_QueryTexture(texture, NULL, NULL, &w, &h);
-		rect.w = w;
-		rect.h = h;
 		sp->texture = std::make_unique<SDL_Texture *>(texture);
 		sp->rect = std::make_unique<SDL_Rect>(rect);
 		sp->lastindex = item.currSpriteIdx;
-		_map.emplace(item.name, std::move(sp));
 		SDL_RenderCopy(_renderer, texture, NULL, &rect);
+		_map.emplace(item.name, std::move(sp));
 		return;
 	} else if (item.currSpriteIdx != search->second->lastindex) {
 		SDL_DestroyTexture(*search->second->texture);
@@ -109,18 +110,50 @@ void arc::LibSdl2::putItem(const arc::Item &item)
 
 void arc::LibSdl2::putItem(const arc::Item &item, int x, int y)
 {
-	(void) item;
-	(void) x;
-	(void) y;
+	auto search = _map.find(item.name);
+	auto sp = std::unique_ptr<spriteStruct>(new spriteStruct);
+	SDL_Texture *texture;
+	SDL_Rect rect;
+	int w;
+	int h;
+
+	rect.x = x * 32;
+	rect.y = y * 32;
+	rect.w = 32;
+	rect.h = 32;
+	if (search == _map.end()) {
+		texture = IMG_LoadTexture(_renderer,
+				item.sprites[item.currSpriteIdx].path.c_str());
+		SDL_QueryTexture(texture, NULL, NULL, &w, &h);
+		sp->texture = std::make_unique<SDL_Texture *>(texture);
+		sp->rect = std::make_unique<SDL_Rect>(rect);
+		sp->lastindex = item.currSpriteIdx;
+		SDL_RenderCopy(_renderer, texture, NULL, &rect);
+		_map.emplace(item.name, std::move(sp));
+		return;
+	} else if (item.currSpriteIdx != search->second->lastindex) {
+		SDL_DestroyTexture(*search->second->texture);
+		texture = IMG_LoadTexture(_renderer,
+			item.sprites[item.currSpriteIdx].path.c_str());
+		search->second->texture =
+			std::make_unique<SDL_Texture *>(texture);
+	}
+	SDL_RenderCopy(_renderer, *search->second->texture, NULL,
+			&rect);
 	return;
 }
 
 void arc::LibSdl2::putItem(const arc::Item &item,
 			const std::vector<struct Position> &pos)
 {
-	(void) item;
-	(void) pos;
-	return;
+	auto it = pos.begin();
+
+	while (it != pos.end()) {
+		this->putItem(item,
+			(*it).x / this->_step,
+			(*it).y / this->_step);
+		std::next(it);
+	}
 }
 
 void arc::LibSdl2::setStep(uint step)
