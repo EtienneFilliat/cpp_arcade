@@ -21,7 +21,8 @@ arc::LibSdl2::LibSdl2()
 	SDL_Init(SDL_INIT_EVERYTHING);
 	TTF_Init();
 	_window = SDL_CreateWindow("CPP_ARCADE SLD2", SDL_WINDOWPOS_CENTERED,
-					SDL_WINDOWPOS_CENTERED,1180, 1000, SDL_WINDOW_SHOWN);
+					SDL_WINDOWPOS_CENTERED, 1180, 1000,
+					SDL_WINDOW_SHOWN);
 	_renderer = SDL_CreateRenderer(_window, -1, 0);
 	_font = TTF_OpenFont("lib/sdl2/FiraMono-Medium.ttf", 24);
 	_fontcolor = {255, 255, 255, 0};
@@ -71,34 +72,38 @@ void arc::LibSdl2::putStr(const std::string &text, int x, int y)
 
 void arc::LibSdl2::putItem(const arc::Item &item)
 {
-	// auto search = _map.find(item.name);
-	// auto sp = std::unique_ptr<spriteStruct>(new spriteStruct);
-	// auto texture = std::make_unique<SDL_Texture>();
-	// auto rect = std::unique_ptr<SDL_Rect>(new SDL_Rect);
+	auto search = _map.find(item.name);
+	auto sp = std::unique_ptr<spriteStruct>(new spriteStruct);
 	SDL_Texture *texture;
 	SDL_Rect rect;
 	int w;
 	int h;
 
-	// if (search == _map.end()) {
-		// texture.reset(IMG_LoadTexture(_renderer,
-				// item.sprites[item.currSpriteIdx].path.c_str()));
+	rect.x = item.x * 32;
+	rect.y = item.y * 32;
+	rect.w = 32;
+	rect.h = 32;
+	if (search == _map.end()) {
 		texture = IMG_LoadTexture(_renderer,
 				item.sprites[item.currSpriteIdx].path.c_str());
 		SDL_QueryTexture(texture, NULL, NULL, &w, &h);
-		rect.x = item.x * 32;
-		rect.y = item.y * 32;
 		rect.w = w;
 		rect.h = h;
-		// sp->texture = std::move(texture);
-		// sp->rect = std::move(rect);
-		// _map.emplace(item.name, std::move(sp));
+		sp->texture = std::make_unique<SDL_Texture *>(texture);
+		sp->rect = std::make_unique<SDL_Rect>(rect);
+		sp->lastindex = item.currSpriteIdx;
+		_map.emplace(item.name, std::move(sp));
 		SDL_RenderCopy(_renderer, texture, NULL, &rect);
-		SDL_DestroyTexture(texture);
-	// } else {
-		// SDL_RenderCopy(_renderer, search->second->texture.get(), NULL,
-				// search->second->rect.get());
-	// }
+		return;
+	} else if (item.currSpriteIdx != search->second->lastindex) {
+		SDL_DestroyTexture(*search->second->texture);
+		texture = IMG_LoadTexture(_renderer,
+			item.sprites[item.currSpriteIdx].path.c_str());
+		search->second->texture =
+			std::make_unique<SDL_Texture *>(texture);
+	}
+	SDL_RenderCopy(_renderer, *search->second->texture, NULL,
+			&rect);
 	return;
 }
 
@@ -134,6 +139,22 @@ void arc::LibSdl2::setInteractions()
 				_inter.push(arc::Interaction::QUIT);
 			if (ev.key.keysym.scancode == SDL_SCANCODE_TAB)
 				_inter.push(arc::Interaction::MENU);
+			if (ev.key.keysym.scancode == SDL_SCANCODE_W)
+				_inter.push(arc::Interaction::MOVE_UP);
+			if (ev.key.keysym.scancode == SDL_SCANCODE_S)
+				_inter.push(arc::Interaction::MOVE_DOWN);
+			if (ev.key.keysym.scancode == SDL_SCANCODE_A)
+				_inter.push(arc::Interaction::MOVE_LEFT);
+			if (ev.key.keysym.scancode == SDL_SCANCODE_D)
+				_inter.push(arc::Interaction::MOVE_RIGHT);
+			if (ev.key.keysym.scancode == SDL_SCANCODE_O)
+				_inter.push(arc::Interaction::LIB_PREV);
+			if (ev.key.keysym.scancode == SDL_SCANCODE_P)
+				_inter.push(arc::Interaction::LIB_NEXT);
+			if (ev.key.keysym.scancode == SDL_SCANCODE_L)
+				_inter.push(arc::Interaction::GAME_PREV);
+			if (ev.key.keysym.scancode == SDL_SCANCODE_M)
+				_inter.push(arc::Interaction::GAME_NEXT);
 		}
 	}
 }

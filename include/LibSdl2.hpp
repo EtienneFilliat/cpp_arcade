@@ -36,14 +36,14 @@ class LibSdl2 : public arc::IDisplay {
 		SDL_Renderer *_renderer;
 		InteractionList _inter;
 		uint _step;
-		// struct spriteStruct {
-		// 	// SDL_Texture *sprite;
-		// 	std::unique_ptr<SDL_Texture> texture;
-		// 	std::unique_ptr<SDL_Rect> rect;
-		// };
-		// using spriteMap = std::unordered_map<
-		// 	std::string, std::unique_ptr<spriteStruct>>;
-		// spriteMap _map;
+		struct spriteStruct {
+			std::unique_ptr<SDL_Texture *> texture;
+			std::unique_ptr<SDL_Rect> rect;
+			int lastindex;
+		};
+		using spriteMap = std::unordered_map<
+			std::string, std::unique_ptr<spriteStruct>>;
+		spriteMap _map;
 };
 }
 
