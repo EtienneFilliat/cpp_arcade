@@ -73,6 +73,7 @@ clean:
 		@$(MAKE) fclean fsym -C lib/libcaca/
 		@$(MAKE) fclean fsym -C lib/sfml/
 		@$(MAKE) fclean fsym -C lib/ncurses/
+		@$(MAKE) fclean fsym -C lib/sdl2/
 		@$(MAKE) fsym -C games/pacman/
 		@$(MAKE) fsym -C games/nibbler/
 
