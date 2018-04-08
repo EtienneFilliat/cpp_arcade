@@ -32,6 +32,7 @@ class LibSdl2 : public arc::IDisplay {
 		arc::InteractionList getInteractions() final;
 	private:
 		void setInteractions();
+		int setAngle(int angle);
 		TTF_Font* _font;
 		SDL_Color _fontcolor;
 		SDL_Window *_window;

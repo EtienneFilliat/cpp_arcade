@@ -83,12 +83,27 @@ void arc::LibSdl2::putStr(const std::string &text, int x, int y)
 	return;
 }
 
+int arc::LibSdl2::setAngle(int angle)
+{
+	switch (angle) {
+		case 90:
+			return 270;
+		case 180:
+			return 0;
+		case -90:
+			return 90;
+		default:
+			return 180;
+	}
+}
+
 void arc::LibSdl2::putItem(const arc::Item &item)
 {
 	auto search = _map.find(item.name);
 	auto sp = std::unique_ptr<spriteStruct>(new spriteStruct);
 	SDL_Texture *texture;
 	SDL_Rect rect;
+	int angle = 0;
 	int w;
 	int h;
 
@@ -96,6 +111,8 @@ void arc::LibSdl2::putItem(const arc::Item &item)
 	rect.y = item.y * 32;
 	rect.w = 32;
 	rect.h = 32;
+	if (item.name == "pacman")
+		angle = setAngle(item.sprites[item.currSpriteIdx].rotation);
 	if (search == _map.end()) {
 		texture = IMG_LoadTexture(_renderer,
 				item.sprites[item.currSpriteIdx].path.c_str());
@@ -105,7 +122,8 @@ void arc::LibSdl2::putItem(const arc::Item &item)
 		sp->texture = std::make_unique<SDL_Texture *>(texture);
 		sp->rect = std::make_unique<SDL_Rect>(rect);
 		sp->lastindex = item.currSpriteIdx;
-		SDL_RenderCopy(_renderer, texture, NULL, &rect);
+		SDL_RenderCopyEx(_renderer, texture, NULL, &rect, angle, NULL,
+					SDL_FLIP_HORIZONTAL);
 		_map.emplace(item.name, std::move(sp));
 		return;
 	} else if (item.currSpriteIdx != search->second->lastindex) {
@@ -118,8 +136,8 @@ void arc::LibSdl2::putItem(const arc::Item &item)
 			std::make_unique<SDL_Texture *>(texture);
 		search->second->lastindex = item.currSpriteIdx;
 	}
-	SDL_RenderCopy(_renderer, *search->second->texture, NULL,
-			&rect);
+	SDL_RenderCopyEx(_renderer, *search->second->texture, NULL, &rect,
+				angle, NULL, SDL_FLIP_HORIZONTAL);
 	return;
 }
 
@@ -129,6 +147,7 @@ void arc::LibSdl2::putItem(const arc::Item &item, int x, int y)
 	auto sp = std::unique_ptr<spriteStruct>(new spriteStruct);
 	SDL_Texture *texture;
 	SDL_Rect rect;
+	int angle = 0;
 	int w;
 	int h;
 
@@ -136,6 +155,8 @@ void arc::LibSdl2::putItem(const arc::Item &item, int x, int y)
 	rect.y = y * 32;
 	rect.w = 32;
 	rect.h = 32;
+	if (item.name == "pacman")
+		angle = setAngle(item.sprites[item.currSpriteIdx].rotation);
 	if (search == _map.end()) {
 		texture = IMG_LoadTexture(_renderer,
 				item.sprites[item.currSpriteIdx].path.c_str());
@@ -145,7 +166,8 @@ void arc::LibSdl2::putItem(const arc::Item &item, int x, int y)
 		sp->texture = std::make_unique<SDL_Texture *>(texture);
 		sp->rect = std::make_unique<SDL_Rect>(rect);
 		sp->lastindex = item.currSpriteIdx;
-		SDL_RenderCopy(_renderer, texture, NULL, &rect);
+		SDL_RenderCopyEx(_renderer, texture, NULL, &rect, angle, NULL,
+					SDL_FLIP_HORIZONTAL);
 		_map.emplace(item.name, std::move(sp));
 		return;
 	} else if (item.currSpriteIdx != search->second->lastindex) {
@@ -157,8 +179,8 @@ void arc::LibSdl2::putItem(const arc::Item &item, int x, int y)
 		search->second->texture =
 			std::make_unique<SDL_Texture *>(texture);
 	}
-	SDL_RenderCopy(_renderer, *search->second->texture, NULL,
-			&rect);
+	SDL_RenderCopyEx(_renderer, *search->second->texture, NULL, &rect,
+				angle, NULL, SDL_FLIP_HORIZONTAL);
 	return;
 }
 
