@@ -36,7 +36,7 @@ ifndef VERBOSE
 	MAKEFLAGS	+=	--no-print-directory
 endif
 
-all:		core graphicals games
+all:		core games graphicals
 
 core:		$(CORE)
 
