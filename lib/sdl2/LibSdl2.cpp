@@ -116,6 +116,7 @@ void arc::LibSdl2::putItem(const arc::Item &item)
 			throw arc::Exception(SDL_GetError(), "LibSDL2");
 		search->second->texture =
 			std::make_unique<SDL_Texture *>(texture);
+		search->second->lastindex = item.currSpriteIdx;
 	}
 	SDL_RenderCopy(_renderer, *search->second->texture, NULL,
 			&rect);
