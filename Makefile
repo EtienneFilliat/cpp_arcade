@@ -47,6 +47,8 @@ graphicals:
 		@mv lib/sfml/*.so ./lib
 		@$(MAKE) -C lib/ncurses
 		@mv lib/ncurses/*.so ./lib
+		@$(MAKE) -C lib/sdl2
+		@mv lib/sdl2/*.so ./lib
 		@ln -sf lib/*.so ./
 
 games:
